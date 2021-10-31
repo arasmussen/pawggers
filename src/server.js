@@ -1,5 +1,9 @@
-const database = require('./database');
 const http = require('http');
+const { URL } = require('url');
+
+const Endpoints = {
+  '/api/reward-redeemed': require('./endpoints/reward-redeemed'),
+};
 
 class Server {
   async getPostData(request) { 
@@ -20,21 +24,20 @@ class Server {
 
   requestHandler = async (request, response) => {
     if (request.method === 'POST') {
-      const data = await this.getPostData(request);
-      request.postData = data;
-      console.log('post data');
-      console.log(data);
+      request.postData = await this.getPostData(request);
     }
 
-    if (request.url === '/api/reward-redeemed') {
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(request.postData.challenge);
-      return;
-    } else {
-      response.writeHead(404);
-      response.end();
+    const baseURL = 'https://emmy.dog/';
+    const url = new URL(request.url, baseURL);
+
+    const endpoint = Endpoints[url.pathname];
+    if (endpoint) {
+      endpoint(request, response);
       return;
     }
+
+    response.writeHead(404);
+    response.end();
   }
 
   start() {
