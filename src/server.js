@@ -13,7 +13,7 @@ class Server {
         }
       });
       request.on('end', () => {
-        resolve(body);
+        resolve(JSON.parse(body));
       });
     });
   }
@@ -21,19 +21,20 @@ class Server {
   requestHandler = async (request, response) => {
     if (request.method === 'POST') {
       const data = await this.getPostData(request);
+      request.postData = data;
       console.log('post data');
       console.log(data);
     }
-    if (request.url !== '/') {
+
+    if (request.url === '/api/reward-redeemed') {
+      request.writeHead(200, { 'Content-Type': 'application/json' });
+      request.end(request.postData.challenge);
+      return;
+    } else {
       response.writeHead(404);
       response.end();
       return;
     }
-
-    response.writeHead(200, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({
-      foo: 'bar',
-    }));
   }
 
   start() {
