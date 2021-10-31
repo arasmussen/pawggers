@@ -37,6 +37,11 @@ module.exports = function(request, response) {
   userSpendTable[periodKey][user.id].spend += spend;
   database.set('userSpendTable', userSpendTable);
 
+  let userTable = database.get('userTable');
+  userTable = userTable || {};
+  userTable[user.id] = user;
+  database.set('userTable', userTable);
+
   // respond
   response.writeHead(200, { 'Content-Type': 'application/json' });
   response.end('success');
