@@ -27,8 +27,8 @@ class Server {
     }
 
     if (request.url === '/api/reward-redeemed') {
-      request.writeHead(200, { 'Content-Type': 'application/json' });
-      request.end(request.postData.challenge);
+      response.writeHead(200, { 'Content-Type': 'application/json' });
+      response.end(request.postData.challenge);
       return;
     } else {
       response.writeHead(404);
