@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const DatabaseFile = path.resolve(__dirname, '../data/db.json');
+const DatabaseDir = path.resolve(__dirname, '../data')
+const DatabaseFile = path.resolve(DatabaseDir, 'db.json');
 const FSOptions = {
   encoding: 'utf8',
 };
@@ -13,6 +14,9 @@ class Database {
   }
 
   _load() {
+    if (!fs.existsSync(DatabaseDir)) {
+      fs.mkdirSync(DatabaseDir);
+    }
     if (!fs.existsSync(DatabaseFile)) {
       fs.writeFileSync(DatabaseFile, '{}', FSOptions);
     }
