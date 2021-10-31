@@ -23,7 +23,7 @@ module.exports = function(request, response) {
     month: now.getMonth() + 1,
     year: now.getFullYear(),
   };
-  const periodKey = JSON.stringify(period);
+  const periodKey = JSON.stringify(`${period.month}/${period.year}`);
 
   // get spend
   const spend = data.event.reward.cost;
