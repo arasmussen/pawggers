@@ -1,6 +1,7 @@
 const database = require('../database');
 
 module.exports = function(request, response) {
+  console.log(`[${new Date().toISOString()}] /api/reward-redeemed`);
   const data = request.postData;
 
   // data validation
