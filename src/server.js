@@ -3,6 +3,7 @@ const { URL } = require('url');
 
 const Endpoints = {
   '/api/reward-redeemed': require('./endpoints/reward-redeemed'),
+  '/api/reward-updated': require('./endpoints/reward-updated'),
 };
 
 class Server {
