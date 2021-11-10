@@ -11,7 +11,7 @@ module.exports = function(request, response) {
   }
 
   // early return for fulfilled
-  if (data?.event?.status !== 'cancelled') {
+  if (data?.event?.status !== 'canceled') {
     response.writeHead(200, { 'Content-Type': 'application/json' });
     response.end('success');
     return;
