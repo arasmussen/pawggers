@@ -17,6 +17,11 @@ class Server {
         }
       });
       request.on('end', () => {
+        if (body === '') {
+          resolve({});
+          return;
+        }
+        
         resolve(JSON.parse(body));
       });
     });
