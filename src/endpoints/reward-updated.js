@@ -1,3 +1,5 @@
+const database = require('../database');
+
 module.exports = function(request, response) {
   console.log(`[${new Date().toISOString()}] /api/reward-updated`);
   const data = request.postData;
