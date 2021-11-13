@@ -1,29 +1,24 @@
+const { ClientRequest } = require('http');
+const { client } = require('tmi.js');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
 
-module.exports = function(request, response) {
-  console.log(`[${new Date().toISOString()}] /api/reward-redeemed`);
-  const data = request.postData;
-
+module.exports = function(context) {
   // data validation
-  if (!data?.event?.user_id ||
-      !data?.event?.user_name ||
-      !data?.event?.reward?.cost) {
-    response.writeHead(404, { 'Content-Type': 'application/json' });
-    response.end('bad data');
+  if (!context?.['display-name'] ||
+      !context?.['user-id']) {
+    console.log('validation failed');
+    return;
   }
-  
+
   // get user
   const user = {
-    id: data.event.user_id,
-    name: data.event.user_name,
+    id: context['user-id'],
+    name: context['display-name'],
   };
 
   // get period
   const period = getPeriod();
-
-  // get spend
-  const spend = data.event.reward.cost;
 
   // update database
   let userSpendTable = database.get('userSpendTable');
@@ -31,7 +26,6 @@ module.exports = function(request, response) {
   userSpendTable[period] = userSpendTable[period] || {};
   userSpendTable[period][user.id] = userSpendTable[period][user.id] || {};
   userSpendTable[period][user.id].spend = userSpendTable[period][user.id].spend || 0;
-  userSpendTable[period][user.id].spend += spend;
   database.set('userSpendTable', userSpendTable);
 
   let userTable = database.get('userTable');
@@ -39,7 +33,10 @@ module.exports = function(request, response) {
   userTable[user.id] = user;
   database.set('userTable', userTable);
 
-  // respond
-  response.writeHead(200, { 'Content-Type': 'application/json' });
-  response.end('success');
+  // get spend
+  const spend = userSpendTable[period][user.id].spend;
+
+  // print result
+  const { client, target } = context;
+  client.say(target, `${context['display-name']}, you've spent ${spend} pawggers so far this month`);
 }

@@ -1,4 +1,5 @@
 const database = require('../database');
+const getPeriod = require('../util/getPeriod');
 
 module.exports = function(request, response) {
   console.log(`[${new Date().toISOString()}] /api/reward-updated`);
@@ -26,12 +27,7 @@ module.exports = function(request, response) {
   };
 
   // get period
-  const now = new Date();
-  const period = {
-    month: now.getMonth() + 1,
-    year: now.getFullYear(),
-  };
-  const periodKey = JSON.stringify(`${period.month}/${period.year}`);
+  const period = getPeriod();
 
   // get spend
   const spend = data.event.reward.cost;
@@ -39,10 +35,10 @@ module.exports = function(request, response) {
   // update database
   let userSpendTable = database.get('userSpendTable');
   userSpendTable = userSpendTable || {};
-  userSpendTable[periodKey] = userSpendTable[periodKey] || {};
-  userSpendTable[periodKey][user.id] = userSpendTable[periodKey][user.id] || {};
-  userSpendTable[periodKey][user.id].spend = userSpendTable[periodKey][user.id].spend || 0;
-  userSpendTable[periodKey][user.id].spend -= spend;
+  userSpendTable[period] = userSpendTable[period] || {};
+  userSpendTable[period][user.id] = userSpendTable[period][user.id] || {};
+  userSpendTable[period][user.id].spend = userSpendTable[period][user.id].spend || 0;
+  userSpendTable[period][user.id].spend -= spend;
   database.set('userSpendTable', userSpendTable);
 
   let userTable = database.get('userTable');

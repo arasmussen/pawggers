@@ -1,6 +1,9 @@
 const http = require('http');
 const { URL } = require('url');
 
+require('./config');
+require('./managers/twitch');
+
 const Endpoints = {
   '/api/reward-redeemed': require('./endpoints/reward-redeemed'),
   '/api/reward-updated': require('./endpoints/reward-updated'),
