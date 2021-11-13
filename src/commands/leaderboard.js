@@ -2,7 +2,15 @@ const { ClientRequest } = require('http');
 const { client } = require('tmi.js');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
+const numberWithCommas = require ('../util/numberWithCommas');
 
+const ModIDs = [
+  '594470471', // cait
+  '151640996', // imad
+  '509514282', // rngie
+  '679555136', // xhumming
+  '470611865', // razzy
+];
 const NumLeaders = 5;
 
 module.exports = function(context) {
@@ -25,6 +33,8 @@ module.exports = function(context) {
     } else {
       return 1;
     }
+  }).filter((userID) => {
+    return !ModIDs.includes(userID);
   }).filter((userID, i) => {
     return i < NumLeaders;
   });
@@ -33,9 +43,9 @@ module.exports = function(context) {
   const userTable = database.get('userTable');
   const leaderboard = userIDs.map((userID) => {
     const userName = userTable[userID].name;
-    const userSpend = periodData[userID].spend;
+    const userSpend = numberWithCommas(Number(periodData[userID].spend));
     return `${userName}: ${userSpend}`;
-  }).join('\n');
+  }).join(', ');
   const { client, target } = context;
   client.say(target, leaderboard);
 }
