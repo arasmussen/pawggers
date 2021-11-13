@@ -1,8 +1,8 @@
+const abbreviateNumber = require ('../util/abbreviateNumber');
 const { ClientRequest } = require('http');
 const { client } = require('tmi.js');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
-const numberWithCommas = require ('../util/numberWithCommas');
 
 module.exports = function(context) {
   // data validation
@@ -35,7 +35,7 @@ module.exports = function(context) {
   database.set('userTable', userTable);
 
   // get spend
-  const spend = numberWithCommas(Number(userSpendTable[period][user.id].spend));
+  const spend = abbreviateNumber(Number(userSpendTable[period][user.id].spend));
 
   // print result
   const { client, target } = context;

@@ -1,8 +1,8 @@
+const abbreviateNumber = require ('../util/abbreviateNumber');
 const { ClientRequest } = require('http');
 const { client } = require('tmi.js');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
-const numberWithCommas = require ('../util/numberWithCommas');
 
 const ModIDs = [
   '594470471', // cait
@@ -43,7 +43,7 @@ module.exports = function(context) {
   const userTable = database.get('userTable');
   const leaderboard = userIDs.map((userID) => {
     const userName = userTable[userID].name;
-    const userSpend = numberWithCommas(Number(periodData[userID].spend));
+    const userSpend = abbreviateNumber(Number(periodData[userID].spend));
     return `${userName}: ${userSpend}`;
   }).join(', ');
   const { client, target } = context;
