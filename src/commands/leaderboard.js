@@ -47,5 +47,5 @@ module.exports = function(context) {
     return `${userName}: ${userSpend}`;
   }).join(', ');
   const { client, target } = context;
-  client.say(target, leaderboard);
+  client.say(target, `Top pawggers spenders this month so far are... ${leaderboard}`);
 }
