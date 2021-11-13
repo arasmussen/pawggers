@@ -35,7 +35,7 @@ module.exports = function(context) {
   database.set('userTable', userTable);
 
   // get spend
-  const spend = userSpendTable[period][user.id].spend;
+  const spend = numberWithCommas(Number(userSpendTable[period][user.id].spend));
 
   // print result
   const { client, target } = context;
