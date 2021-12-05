@@ -97,8 +97,8 @@ module.exports = function(context) {
   database.set('userSpendTable', userSpendTable);
 
   // get spend
-  const spend = abbreviateNumber(Number(userSpendTable[period][user.id].spend));
+  const spend = abbreviateNumber(Number(userSpendTable[period][userID].spend));
 
   // print result
-  client.say(target, `${username}, you now have ${userSpendTable[period][userID].spend} pawggers`);
+  client.say(target, `${username}, you now have ${spend} pawggers`);
 }
