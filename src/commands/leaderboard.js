@@ -3,14 +3,8 @@ const { ClientRequest } = require('http');
 const { client } = require('tmi.js');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
+const isMod = require('../util/isMod');
 
-const ModIDs = [
-  '594470471', // cait
-  '151640996', // imad
-  '509514282', // rngie
-  '679555136', // xhumming
-  '470611865', // razzy
-];
 const NumLeaders = 5;
 
 module.exports = function(context) {
@@ -34,7 +28,7 @@ module.exports = function(context) {
       return 1;
     }
   }).filter((userID) => {
-    return !ModIDs.includes(userID);
+    return !isMod(userID);
   }).filter((userID, i) => {
     return i < NumLeaders;
   });

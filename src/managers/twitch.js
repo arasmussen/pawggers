@@ -29,7 +29,8 @@ const Twitch = {
       return;
     }
 
-    const command = message.trim().toLowerCase();
+    const commandParts = message.trim().toLowerCase().split(' ');
+    const command = commandParts[0];
     const commandHandler = commands[command];
     if (!commandHandler) {
       // ignore non-commands
@@ -39,6 +40,7 @@ const Twitch = {
     console.log(`Twitch Command: ${command}`);
     context.client = client;
     context.target = target;
+    context.variables = commandParts.slice(1);
     commandHandler(context);
   },
 };
