@@ -39,5 +39,5 @@ module.exports = function(context) {
 
   // print result
   const { client, target } = context;
-  client.say(target, `${context['display-name']}, you've spent ${spend} pawggers so far this month`);
+  client.say(target, `${context['display-name']}, you have earned ${spend} pawggers so far this month`);
 }
