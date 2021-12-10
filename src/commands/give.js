@@ -3,6 +3,7 @@ const { ClientRequest } = require('http');
 const { client } = require('tmi.js');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
+const isAndrew = require('../util/isAndrew');
 const isSarah = require('../util/isSarah');
 
 module.exports = function(context) {
@@ -28,7 +29,7 @@ module.exports = function(context) {
   database.set('userTable', userTable);
 
   // return if not sarah
-  if (!isSarah(user.id)) {
+  if (!isSarah(user.id) && !isAndrew(user.id)) {
     client.say(target, `Nice try, ${user.name}`);
     return;
   }
@@ -76,6 +77,7 @@ module.exports = function(context) {
 
   // make sure user exists
   const userID = Object.keys(userTable).find((userID) => {
+    console.log(userTable[userID].name, username, userTable[userID].name === username);
     return userTable[userID].name === username;
   });
   if (!userID) {
