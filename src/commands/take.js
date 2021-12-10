@@ -76,7 +76,7 @@ module.exports = function(context) {
 
   // make sure user exists
   const userID = Object.keys(userTable).find((userID) => {
-    return userTable[userID].name === username;
+    return userTable[userID].name.toLowerCase() === username.toLowerCase();
   });
   if (!userID) {
     client.say(target, `Beep boop, ${username} please type !pawggers in chat`);
