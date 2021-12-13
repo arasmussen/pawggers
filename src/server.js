@@ -2,7 +2,7 @@ const http = require('http');
 const { URL } = require('url');
 
 require('./config');
-require('./managers/twitch');
+const twitch = require('./managers/twitch');
 
 const Endpoints = {
   '/api/reward-redeemed': require('./endpoints/reward-redeemed'),
@@ -10,7 +10,7 @@ const Endpoints = {
 };
 
 class Server {
-  async getPostData(request) { 
+  async getPostData(request) {
     return new Promise((resolve, reject) => {
       var body = '';
       request.on('data', (data) => {
@@ -25,7 +25,7 @@ class Server {
           resolve({});
           return;
         }
-        
+
         resolve(JSON.parse(body));
       });
     });
@@ -50,6 +50,8 @@ class Server {
   }
 
   start() {
+    twitch.start();
+
     const server = http.createServer(this.requestHandler);
     server.listen(3000);
   }
