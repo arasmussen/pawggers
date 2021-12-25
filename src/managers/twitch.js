@@ -36,7 +36,12 @@ const Twitch = {
     const commandParts = message.trim().toLowerCase().split(' ');
     const command = commandParts[0];
     const commandHandler = commands[command];
-    if (!commandHandler) {
+    const listenToAllMessages = false;
+    if (commandHandler === '!ttol') {
+      listenToAllMessages = true;
+    } else if (commandHandler === '!answer) {
+      listenToAllMessages = false;
+    } else if (!commandHandler) {
       // ignore non-commands
       return;
     }
