@@ -4,4 +4,5 @@ module.exports = {
   '!leaderboard': require('./leaderboard'),
   '!pawggers': require('./pawggers'),
   '!take': require('./take'),
+  '!ttol': require('./ttol'),
 };
