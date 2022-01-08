@@ -13,10 +13,36 @@ module.exports = function(context) {
   }
 
   // get user
-  const user = {
-    id: context['user-id'],
-    name: context['display-name'],
-  };
+  let user;
+  const lookupForDifferentUser = context.variables.length === 1;
+  if (lookupForDifferentUser) {
+    const username = context.variables[0].replace(/^@/, '');
+    const isUsernameValid = user.name.match(/^[a-z0-9][a-z0-9_]{2,23}$/i);
+    if (!isUsernameValid) {
+      const { client, target } = context;
+      client.say(target, `Beep boop, ${username} doesn't look like a valid username`);
+      return;
+    }
+    
+    const userTable = database.get('userTable');
+    const userID = Object.keys(userTable).find((userID) => {
+      return userTable[userID].name.toLowerCase() === username.toLowerCase();
+    });
+    if (!userID) {
+      const { client, target } = context;
+      client.say(target, `Beep boop, couldn't find ${username}`);
+      return;
+    }
+    user = {
+      id: userID,
+      name: username,
+    };
+  } else {
+    user = {
+      id: context['user-id'],
+      name: context['display-name'],
+    };
+  }
 
   // get period
   const period = getPeriod();
@@ -39,5 +65,9 @@ module.exports = function(context) {
 
   // print result
   const { client, target } = context;
-  client.say(target, `${context['display-name']}, you have earned ${spend} pawggers so far this month`);
+  if (lookupForDifferentUser) {  
+    client.say(target, `${user.name} has earned ${spend} pawggers so far this month`);
+  } else {
+    client.say(target, `${user.name}, you have earned ${spend} pawggers so far this month`);
+  }
 }
