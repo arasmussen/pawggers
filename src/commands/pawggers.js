@@ -24,6 +24,7 @@ module.exports = function(context) {
       return;
     }
     
+    const userTable = database.get('userTable');
     const userID = Object.keys(userTable).find((userID) => {
       return userTable[userID].name.toLowerCase() === username.toLowerCase();
     });
