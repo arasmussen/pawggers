@@ -17,7 +17,7 @@ module.exports = function(context) {
   const lookupForDifferentUser = context.variables.length === 1;
   if (lookupForDifferentUser) {
     const username = context.variables[0].replace(/^@/, '');
-    const isUsernameValid = user.name.match(/^[a-z0-9][a-z0-9_]{2,23}$/i);
+    const isUsernameValid = username.match(/^[a-z0-9][a-z0-9_]{2,23}$/i);
     if (!isUsernameValid) {
       const { client, target } = context;
       client.say(target, `Beep boop, ${username} doesn't look like a valid username`);

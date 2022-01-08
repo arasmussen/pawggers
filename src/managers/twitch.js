@@ -42,7 +42,7 @@ const Twitch = {
     }
 
     console.log(`Twitch Command: ${command}`);
-    context.client = client;
+    context.client = Twitch.client;
     context.target = target;
     context.variables = commandParts.slice(1);
     commandHandler(context);
@@ -80,6 +80,7 @@ const Twitch = {
     client.on('connected', Twitch.onConnected);
     client.on('message', Twitch.onMessage);
     client.connect().catch(console.error);
+    Twitch.client = client;
   },
 };
 
