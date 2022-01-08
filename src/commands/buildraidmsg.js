@@ -1,6 +1,7 @@
 const { ClientRequest } = require('http');
 const { client } = require('tmi.js');
 const database = require('../database');
+const isMod = require('../util/isMod');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -11,6 +12,12 @@ module.exports = function(context) {
     console.log('validation failed');
     return;
   }
+
+  // get user
+  const user = {
+    id: context['user-id'],
+    name: context['display-name'],
+  };
   
   // return if not mod
   if (!isMod(user.id)) {

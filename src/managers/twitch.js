@@ -33,7 +33,7 @@ const Twitch = {
       return;
     }
 
-    const commandParts = message.trim().toLowerCase().split(' ');
+    const commandParts = message.trim().split(' ');
     const command = commandParts[0];
     const commandHandler = commands[command];
     if (!commandHandler) {
