@@ -1,5 +1,6 @@
 const ModIDs = [
   '594470471', // cait
+  '738584885', // emmydotjs
   '151640996', // imad
   '509514282', // rngie
   '679555136', // xhumming
