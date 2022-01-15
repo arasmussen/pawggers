@@ -2,6 +2,7 @@ const { ClientRequest } = require('http');
 const { client } = require('tmi.js');
 const database = require('../database');
 const getDay = require('../util/getDay');
+const isMod = require('../util/isMod');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -37,32 +38,49 @@ module.exports = function(context) {
   }
   database.set('todoTable', todoTable);
 
-  // find tasks for user
-  const tasksForUser = todoTable.tasks.filter((task) => {
-    return user.name === task.username;
-  });
+  const userIsMentioned = context.variables.length === 1 && context.variables[0].substring(0,1) === '@';
 
-  // if all tasks are done
-  const userHasAllDoneTasks = tasksForUser.every((task) => {
-    return task.done;
-  });
+  // remove all tasks if mod is removing for user (in case TOS), else remove active task for author
+  if (isMod(user.id) && userIsMentioned) {
+    const atUsername = context.variables[0].replace(/^@/, '');
 
-  if (userHasAllDoneTasks) {
-    client.say(target, `${user.name}, you don't have any active tasks.`);
-    return;
-  }
+    todoTable.tasks.splice(todoTable.tasks.find((task) => {
+        return task.username === atUsername;
+      })
+    );
+    database.set('todoTable', todoTable);
 
-  // handle if active task exists
-  const activeTaskForUser = tasksForUser.find((task) => {
-    return !task.done;
-  });
+    client.say(target, `Removed all tasks from @${atUsername}`);
+    
+  } else {
 
-  const index = todoTable.tasks.indexOf(activeTaskForUser);
-  if (index > -1) {
-    todoTable.tasks.splice(index, 1);
-  }
-  database.set('todoTable', todoTable);
+    // find tasks for user
+    const tasksForUser = todoTable.tasks.filter((task) => {
+      return user.name === task.username;
+    });
 
-  // print result
-  client.say(target, `Task removed, ${user.name}.`);
+    // if all tasks are done
+    const userHasAllDoneTasks = tasksForUser.every((task) => {
+      return task.done;
+    });
+
+    if (userHasAllDoneTasks) {
+      client.say(target, `${user.name}, you don't have any active tasks.`);
+      return;
+    }
+
+    // handle if active task exists
+    const activeTaskForUser = tasksForUser.find((task) => {
+      return !task.done;
+    });
+
+    const index = todoTable.tasks.indexOf(activeTaskForUser);
+    if (index > -1) {
+      todoTable.tasks.splice(index, 1);
+    }
+    database.set('todoTable', todoTable);
+
+    // print result
+    client.say(target, `Task removed, ${user.name}.`);
+  };
 }
