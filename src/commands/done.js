@@ -60,10 +60,13 @@ module.exports = function(context) {
   activeTaskForUser.done = true;
   database.set('todoTable', todoTable);
 
+  // number of tasks complete
+  const totalCompletedTasks = tasksForUser.length;
+
   // random encouragement
-  const celebrationList = ['Good job!', 'Good stuff!', 'Amazing!', 'You\'re killing it!', 'Keep it up!', 'Heck yeah!'];
+  const celebrationList = ['good job!', 'good stuff!', 'amazing!', 'you\'re killing it!', 'keep it up!', 'heck yeah!', 'hypeeeee!', 'let\'s goooo!', 'pawg!'];
   const celebration = celebrationList[Math.floor(Math.random() * celebrationList.length)];
 
   // print result
-  client.say(target, `Task done, ${user.name}. ${celebration}`);
+  client.say(target, `Task done, ${user.name}. That's ${totalCompletedTasks} today—${celebration}`);
 }

@@ -69,7 +69,7 @@ module.exports = function(context) {
   database.set('todoTable', todoTable);
 
   // random encouragement
-  const encouragementList = ['Good luck!', 'You got this!', 'Get that bread!', 'Focus up!'];
+  const encouragementList = ['Good luck!', 'You got this!', 'Get that bread!', 'Focus up!', 'We believe in you!'];
   const encouragement = encouragementList[Math.floor(Math.random() * encouragementList.length)];
 
   // print result
