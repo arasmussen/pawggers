@@ -1,15 +1,17 @@
 const http = require('http');
 const { URL } = require('url');
 
-require('./config');
 const twitch = require('./managers/twitch');
 
 const Endpoints = {
+  '/api/live-task-view': require('./endpoints/live-task-view'),
   '/api/reward-redeemed': require('./endpoints/reward-redeemed'),
   '/api/reward-updated': require('./endpoints/reward-updated'),
 };
 
 class Server {
+  server = null;
+
   async getPostData(request) {
     return new Promise((resolve, reject) => {
       var body = '';
@@ -41,7 +43,7 @@ class Server {
 
     const endpoint = Endpoints[url.pathname];
     if (endpoint) {
-      endpoint(request, response);
+      endpoint(request, response, this.server);
       return;
     }
 
@@ -52,8 +54,8 @@ class Server {
   start() {
     twitch.start();
 
-    const server = http.createServer(this.requestHandler);
-    server.listen(3000);
+    this.server = http.createServer(this.requestHandler.bind(this));
+    this.server.listen(3000);
   }
 }
 

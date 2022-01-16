@@ -1,7 +1,9 @@
 const { ClientRequest } = require('http');
 const { client } = require('tmi.js');
 const database = require('../database');
-const getDay = require('../util/getDay');
+const generateTaskBody = require('../tasks/generateTaskBody');
+const setupTaskTable = require('../tasks/setupTaskTable');
+const socket = require('../managers/socket');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -19,23 +21,8 @@ module.exports = function(context) {
     name: context['display-name'],
   };
   
-  // clear list if out of date
-  const today = getDay();
-  let todoTable = database.get('todoTable');
-  todoTable = todoTable || {
-    day: today,
-    tasks: [],
-  };
-
-  if (todoTable.day) {
-    if (todoTable.day !== today) {
-      todoTable = {
-        day: today,
-        tasks: [],
-      };
-    }
-  }
-  database.set('todoTable', todoTable);
+  // setup database table
+  const todoTable = setupTaskTable();
 
   // find tasks for user
   const tasksForUser = todoTable.tasks.filter((task) => {
@@ -69,4 +56,7 @@ module.exports = function(context) {
 
   // print result
   client.say(target, `Task done, ${user.name}. That's ${totalCompletedTasks} today—${celebration}`);
+
+  // update socket clients
+  socket.emit('update-task-view', generateTaskBody());
 }

@@ -1,8 +1,10 @@
 const { ClientRequest } = require('http');
 const { client } = require('tmi.js');
 const database = require('../database');
-const getDay = require('../util/getDay');
 const isMod = require('../util/isMod');
+const generateTaskBody = require('../tasks/generateTaskBody');
+const setupTaskTable = require('../tasks/setupTaskTable');
+const socket = require('../managers/socket');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -20,23 +22,8 @@ module.exports = function(context) {
     name: context['display-name'],
   };
   
-  // clear list if out of date
-  const today = getDay();
-  let todoTable = database.get('todoTable');
-  todoTable = todoTable || {
-    day: today,
-    tasks: [],
-  };
-
-  if (todoTable.day) {
-    if (todoTable.day !== today) {
-      todoTable = {
-        day: today,
-        tasks: [],
-      };
-    }
-  }
-  database.set('todoTable', todoTable);
+  // setup database table
+  const todoTable = setupTaskTable();
 
   const userIsMentioned = context.variables.length === 1 && context.variables[0][0] === '@';
 
@@ -46,43 +33,48 @@ module.exports = function(context) {
       client.say(target, 'Only mods can remove tasks by others.');
       return;
     }
-    const atUsername = context.variables[0].replace(/^@/, '');
 
+    const atUsername = context.variables[0].replace(/^@/, '');
     todoTable.tasks = todoTable.tasks.filter((task) => {
       return task.username !== atUsername;
     });
     database.set('todoTable', todoTable);
 
     client.say(target, `Removed all tasks from @${atUsername}`);
-    
-  } else {
 
-    // find tasks for user
-    const tasksForUser = todoTable.tasks.filter((task) => {
-      return user.name === task.username;
-    });
+    // update socket clients
+    socket.emit('update-task-view', generateTaskBody());
+    return;
+  }
+  
+  // find tasks for user
+  const tasksForUser = todoTable.tasks.filter((task) => {
+    return user.name === task.username;
+  });
 
-    // if all tasks are done
-    const userHasAllDoneTasks = tasksForUser.every((task) => {
-      return task.done;
-    });
+  // if all tasks are done
+  const userHasAllDoneTasks = tasksForUser.every((task) => {
+    return task.done;
+  });
 
-    if (userHasAllDoneTasks) {
-      client.say(target, `${user.name}, you don't have any active tasks.`);
-      return;
-    }
+  if (userHasAllDoneTasks) {
+    client.say(target, `${user.name}, you don't have any active tasks.`);
+    return;
+  }
 
-    // handle if active task exists
-    const activeTaskForUser = tasksForUser.find((task) => {
-      return !task.done;
-    });
+  // handle if active task exists
+  const activeTaskForUser = tasksForUser.find((task) => {
+    return !task.done;
+  });
 
-    todoTable.tasks = todoTable.tasks.filter((task) => {
-      return task !== activeTaskForUser;
-    });
-    database.set('todoTable', todoTable);
+  todoTable.tasks = todoTable.tasks.filter((task) => {
+    return task !== activeTaskForUser;
+  });
+  database.set('todoTable', todoTable);
 
-    // print result
-    client.say(target, `Task removed, ${user.name}.`);
-  };
+  // print result
+  client.say(target, `Task removed, ${user.name}.`);
+
+  // update socket clients
+  socket.emit('update-task-view', generateTaskBody());
 }
