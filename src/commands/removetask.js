@@ -44,10 +44,9 @@ module.exports = function(context) {
   if (isMod(user.id) && userIsMentioned) {
     const atUsername = context.variables[0].replace(/^@/, '');
 
-    todoTable.tasks.splice(todoTable.tasks.find((task) => {
-        return task.username === atUsername;
-      })
-    );
+    todoTable.tasks = todoTable.tasks.filter((task) => {
+      return task.username !== atUsername;
+    });
     database.set('todoTable', todoTable);
 
     client.say(target, `Removed all tasks from @${atUsername}`);
