@@ -41,7 +41,11 @@ module.exports = function(context) {
   const userIsMentioned = context.variables.length === 1 && context.variables[0][0] === '@';
 
   // remove all tasks if mod is removing for user (in case TOS), else remove active task for author
-  if (isMod(user.id) && userIsMentioned) {
+  if (userIsMentioned) {
+    if (!isMod(user.id)) {
+      client.say(target, 'Only mods can remove tasks by others.');
+      return;
+    }
     const atUsername = context.variables[0].replace(/^@/, '');
 
     todoTable.tasks = todoTable.tasks.filter((task) => {
