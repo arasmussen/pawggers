@@ -38,7 +38,7 @@ module.exports = function(context) {
   }
   database.set('todoTable', todoTable);
 
-  const userIsMentioned = context.variables.length === 1 && context.variables[0].substring(0,1) === '@';
+  const userIsMentioned = context.variables.length === 1 && context.variables[0][0] === '@';
 
   // remove all tasks if mod is removing for user (in case TOS), else remove active task for author
   if (isMod(user.id) && userIsMentioned) {
