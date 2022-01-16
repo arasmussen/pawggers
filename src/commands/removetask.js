@@ -73,7 +73,7 @@ module.exports = function(context) {
   database.set('todoTable', todoTable);
 
   // print result
-  client.say(target, `Task removed, ${user.name}.`);
+  client.say(target, `Active task removed, ${user.name}.`);
 
   // update socket clients
   socket.emit('update-task-view', generateTaskBody());
