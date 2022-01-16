@@ -73,10 +73,9 @@ module.exports = function(context) {
       return !task.done;
     });
 
-    const index = todoTable.tasks.indexOf(activeTaskForUser);
-    if (index > -1) {
-      todoTable.tasks.splice(index, 1);
-    }
+    todoTable.tasks = todoTable.tasks.filter((task) => {
+      return task !== activeTaskForUser;
+    });
     database.set('todoTable', todoTable);
 
     // print result
