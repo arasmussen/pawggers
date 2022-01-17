@@ -1,6 +1,7 @@
 const http = require('http');
 const { URL } = require('url');
 
+const socket = require('./managers/socket');
 const twitch = require('./managers/twitch');
 
 const Endpoints = {
@@ -28,7 +29,14 @@ class Server {
           return;
         }
 
-        resolve(JSON.parse(body));
+        let parsedBody;
+        try {
+          parsedBody = JSON.parse(body);
+        } catch (error) {
+          parsedBody = {};
+        }
+
+        resolve(parsedBody);
       });
     });
   }
@@ -56,6 +64,8 @@ class Server {
 
     this.server = http.createServer(this.requestHandler.bind(this));
     this.server.listen(3000);
+
+    socket.start(this.server);
   }
 }
 
