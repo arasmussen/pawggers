@@ -23,10 +23,6 @@ module.exports = function(context) {
   
   // get task
   const task = context.variables.join(' ').trim();
-  if (task === '') {
-    client.say(target, `What is your task?`);
-    return;
-  }
   
   // setup database table
   const todoTable = setupTaskTable();
@@ -37,12 +33,17 @@ module.exports = function(context) {
   });
 
   // handle if active task exists
-  const userHasActiveTask = tasksForUser.some((task) => {
+  const activeTaskForUser = tasksForUser.find((task) => {
     return !task.done;
   });
 
-  if (userHasActiveTask) {
-    client.say(target, `${user.name}, you already have an active task.`);
+  if (task === '' && !activeTaskForUser) {
+    client.say(target, `You don't have an active task. Use !task [task name] to start one.`);
+    return;
+  }
+
+  if (activeTaskForUser) {
+    client.say(target, `${user.name}, you're working on: ${activeTaskForUser.task}`);
     return;
   }
 
