@@ -8,11 +8,12 @@ module.exports = function renderHTML(contents) {
     css = '',
     includeSocketIO = false,
     js = '',
+    link = '',
     title = '',
   } = contents;
   const htmlTitle = `<title>${escapeHTML(title)}</title>`;
   const htmlJS = `<script type="text/javascript">${js}</script>`;
-  const htmlCSS = `<style>${CSSReset}${escapeHTML(css)}</style>`;
+  const htmlCSS = `<style>${CSSReset}${css}</style>`;
   const socketIO = includeSocketIO ? '<script src="/socket.io/socket.io.js"></script>' : '';
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8">${htmlTitle}${htmlCSS}${socketIO}${htmlJS}</head><body>${body}</body></html>`;
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8">${htmlTitle}${link}${htmlCSS}${socketIO}${htmlJS}</head><body>${body}</body></html>`;
 }

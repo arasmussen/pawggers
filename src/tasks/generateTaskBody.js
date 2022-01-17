@@ -10,12 +10,23 @@ function generateTaskBody() {
     return task.done;
   }).length;
 
+  const itemLength = todoTable.tasks.filter((task) => {
+    return
+  });
+
+  const totalTasks = todoTable.tasks.length;
+
   // generate body
   const body = todoTable.tasks.map((task) => {
-    return `<li>${task.done ? '☑' : '☐'} ${escapeHTML(task.username)} – ${escapeHTML(task.task)}</li>`;
+    const itemLength = task.username.length + task.task.length + 1;
+    let truncatedTask = task.task;
+    if (itemLength >= 35) {
+      truncatedTask = task.task.substr(0, 35 - task.username.length - 1) + '…';
+    }
+    return `<li>${task.done ? '<div class="box checked"><div class="check"></div></div>' : '<div class="box"></div>'} <div><span class="username">${escapeHTML(task.username)}</span> ${escapeHTML(truncatedTask)}</div></li>`;
   }).join('');
 
-  return `<ul>${body}</ul>${tasksDone}`;
+  return `<div class="tasksDone">!TASKS ${tasksDone}/${totalTasks}</div><div id="scrollContainer"><ul>${body}</ul></div>`;
 }
 
 module.exports = generateTaskBody;
