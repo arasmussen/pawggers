@@ -1,4 +1,5 @@
 module.exports = {
+  '!addtask': require('./task'),
   '!buildraidmsg': require('./buildraidmsg'),
   '!done': require('./done'),
   '!edittask': require('./edittask'),
@@ -8,4 +9,5 @@ module.exports = {
   '!removetask': require('./removetask'),
   '!take': require('./take'),
   '!task': require('./task'),
+  '!taskdone': require('./done'),
 };
