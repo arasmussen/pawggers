@@ -55,7 +55,7 @@ module.exports = function(context) {
   const celebration = celebrationList[Math.floor(Math.random() * celebrationList.length)];
 
   // print result
-  client.say(target, `${activeTaskForUser.task} done, ${user.name}. That's ${totalCompletedTasks} today—${celebration}`);
+  client.say(target, `Check check on ${activeTaskForUser.task}, ${user.name}. That's ${totalCompletedTasks} today—${celebration}`);
 
   // update socket clients
   socket.emit('update-task-view', generateTaskBody());
