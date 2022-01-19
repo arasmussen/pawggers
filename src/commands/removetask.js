@@ -36,7 +36,7 @@ module.exports = function(context) {
 
     const atUsername = context.variables[0].replace(/^@/, '');
     todoTable.tasks = todoTable.tasks.filter((task) => {
-      return task.username !== atUsername;
+      return task.username.toLowerCase() !== atUsername.toLowerCase();
     });
     database.set('todoTable', todoTable);
 
