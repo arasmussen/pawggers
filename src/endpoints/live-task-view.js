@@ -21,7 +21,10 @@ const PageCSS = `
     color: #c09dc2;
     font-family: 'Visitor', sans-serif
   }
-  .username {font-weight: 500;color: #222;}
+  .username {
+    font-weight: 500;
+    color: #222;
+  }
   #scrollContainer {
     height: 363px;
     overflow-y:scroll;
@@ -36,6 +39,7 @@ const PageCSS = `
     display: flex;
     align-items: center;
     margin-bottom: 2.5px;
+    letter-spacing: -0.02em;
   }
   .box {
     width: 20px;

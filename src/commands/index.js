@@ -9,5 +9,7 @@ module.exports = {
   '!removetask': require('./removetask'),
   '!take': require('./take'),
   '!task': require('./task'),
+  '!taskadd': require('./task'),
+  '!taskedit': require('./edittask'),
   '!taskdone': require('./done'),
 };
