@@ -18,4 +18,5 @@ module.exports = {
   '!ttolanswer': require('./ttolend'),
   '!ttolend': require('./ttolend'),
   '!ttolstart': require('./ttolstart'),
+  '!ttolguesses': require('./ttolguesses'),
 };
