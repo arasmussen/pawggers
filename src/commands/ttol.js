@@ -35,6 +35,4 @@ module.exports = function(context) {
   // add guess to list
   ttolTable[user.id] = { guess };
   database.set('ttolTable', ttolTable);
-
-  // consider whispering to user they guessed
 }
