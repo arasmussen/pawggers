@@ -33,8 +33,7 @@ module.exports = function(context) {
   }
 
   // add guess to list
-  ttolTable[user.id] = ttolTable[user.id] || {};
-  ttolTable[user.id].guess = guess || {};
+  ttolTable[user.id] = { guess };
   database.set('ttolTable', ttolTable);
 
   // consider whispering to user they guessed
