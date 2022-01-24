@@ -33,6 +33,12 @@ module.exports = function(context) {
 
   // get answer
   const answer = context.variables.join(' ').trim().toLowerCase();
+  
+  // handle if guess isn't legit
+  if (answer !== 'a' && answer !== 'b' && answer !== 'c') {
+    client.say(target, `${user.name}, what's the answer?`);
+    return;
+  }
 
   // get people who got it right
   const correctGuesserIDs = Object.keys(ttolTable).filter((userID) => {
