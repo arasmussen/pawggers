@@ -31,6 +31,12 @@ module.exports = function(context) {
   ttolTable = ttolTable || {};
   database.set('ttolTable', ttolTable);
 
+  // if game isn't active
+  if (!ttolTable.active) {
+    client.say(target, `${user.name}, we're not playing a game right now.`);
+    return;
+  }
+
   // get answer
   const answer = context.variables.join(' ').trim().toLowerCase();
   
@@ -41,8 +47,8 @@ module.exports = function(context) {
   }
 
   // get people who got it right
-  const correctGuesserIDs = Object.keys(ttolTable).filter((userID) => {
-    return ttolTable[userID].guess === answer;
+  const correctGuesserIDs = Object.keys(ttolTable.guesses).filter((userID) => {
+    return ttolTable.guesses[userID].guess === answer;
   });
 
   // get period
@@ -59,8 +65,14 @@ module.exports = function(context) {
     database.set('userSpendTable', userSpendTable);
   });
 
+  // reset table after game
+  ttolTable = {
+    active: false,
+    guesses: [],
+  };
+  database.set('ttolTable', ttolTable);
+
   // print result
   const correctGuesses = correctGuesserIDs.length;
   client.say(target, `The answer was ${answer.toUpperCase()}! ${correctGuesses} ${correctGuesses === 1 ? 'person' : 'people'} got it right. Thanks for playing Two Truths, One Lie!`);
-
 }

@@ -20,8 +20,14 @@ module.exports = function(context) {
 
   // update database
   let ttolTable = database.get('ttolTable');
-  ttolTable = ttolTable || {};
+  ttolTable = ttolTable;
   database.set('ttolTable', ttolTable);
+
+  // if no game running
+  if (!ttolTable.active) {
+    client.say(target, `${user.name}, we're not playing games right now.`);
+    return;
+  }
 
   // get guess
   const guess = context.variables.join(' ').trim().toLowerCase();
@@ -33,6 +39,6 @@ module.exports = function(context) {
   }
 
   // add guess to list
-  ttolTable[user.id] = { guess };
+  ttolTable.guesses[user.id] = { guess };
   database.set('ttolTable', ttolTable);
 }

@@ -26,7 +26,18 @@ module.exports = function(context) {
   }
 
   // update database
-  database.set('ttolTable', {});
+  let ttolTable = database.get('ttolTable');
+
+  if (ttolTable.active) {
+    client.say(target, `We're already playing TTOL.`);
+    return;
+  }
+
+  ttolTable = {
+    active: true,
+    guesses: {},
+  };
+  database.set('ttolTable', ttolTable);
 
   // print result
   client.say(target, `Two Truths, One Lie game started, use !ttol [A/B/C] to guess which is the lie.`);
