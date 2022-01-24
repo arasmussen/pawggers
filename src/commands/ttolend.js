@@ -33,7 +33,7 @@ module.exports = function(context) {
 
   // if game isn't active
   if (!ttolTable.active) {
-    client.say(target, `${user.name}, we're not playing a game right now.`);
+    client.say(target, `${user.name}, we're not playing TTOL right now.`);
     return;
   }
 

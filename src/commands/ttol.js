@@ -25,7 +25,7 @@ module.exports = function(context) {
 
   // if no game running
   if (!ttolTable.active) {
-    client.say(target, `${user.name}, we're not playing games right now.`);
+    client.say(target, `${user.name}, we're not playing TTOL right now.`);
     return;
   }
 
