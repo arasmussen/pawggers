@@ -35,8 +35,8 @@ module.exports = function(context) {
   const answer = context.variables.join(' ').trim().toLowerCase();
 
   // get people who got it right
-  const correctGuesserIDs = Object.keys(ttolTable).filter((guess) => {
-    return ttolTable[guess].guess = answer;
+  const correctGuesserIDs = Object.keys(ttolTable).filter((userID) => {
+    return ttolTable[userID].guess === answer;
   });
 
   // get period
