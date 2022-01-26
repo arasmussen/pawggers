@@ -1,5 +1,4 @@
 const { ClientRequest } = require('http');
-const { client } = require('tmi.js');
 const database = require('../database');
 
 module.exports = function(context) {

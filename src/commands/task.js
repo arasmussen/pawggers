@@ -1,5 +1,4 @@
 const { ClientRequest } = require('http');
-const { client } = require('tmi.js');
 const database = require('../database');
 const generateTaskBody = require('../tasks/generateTaskBody');
 const socket = require('../managers/socket');

@@ -1,5 +1,4 @@
 const { ClientRequest } = require('http');
-const { client } = require('tmi.js');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
 const isSarah = require('../util/isSarah');
