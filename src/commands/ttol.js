@@ -19,11 +19,9 @@ module.exports = function(context) {
 
   // update database
   let ttolTable = database.get('ttolTable');
-  ttolTable = ttolTable;
-  database.set('ttolTable', ttolTable);
 
   // if no game running
-  if (!ttolTable.active) {
+  if (!ttolTable || !ttolTable.active) {
     client.say(target, `${user.name}, we're not playing TTOL right now.`);
     return;
   }

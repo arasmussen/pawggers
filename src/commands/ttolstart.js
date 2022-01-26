@@ -27,7 +27,7 @@ module.exports = function(context) {
   // update database
   let ttolTable = database.get('ttolTable');
 
-  if (ttolTable.active) {
+  if (ttolTable && ttolTable.active) {
     client.say(target, `We're already playing TTOL.`);
     return;
   }
