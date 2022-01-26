@@ -9,6 +9,7 @@ module.exports = {
   '!pawggers': require('./pawggers'),
   '!removetask': require('./removetask'),
   '!take': require('./take'),
+  '!task': require('./task'),
   '!taskadd': require('./task'),
   '!taska': require('./task'),
   '!taskedit': require('./edittask'),
