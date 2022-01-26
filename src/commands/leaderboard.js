@@ -1,6 +1,5 @@
 const abbreviateNumber = require ('../util/abbreviateNumber');
 const { ClientRequest } = require('http');
-const { client } = require('tmi.js');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
 const isMod = require('../util/isMod');
