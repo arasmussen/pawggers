@@ -1,5 +1,6 @@
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
+const rewardHooks = require('../reward-hooks');
 const twitch = require('../managers/twitch');
 
 module.exports = function(request, response) {
@@ -12,6 +13,7 @@ module.exports = function(request, response) {
       !data?.event?.reward?.cost) {
     response.writeHead(404, { 'Content-Type': 'application/json' });
     response.end('bad data');
+    return;
   }
   
   // get user
@@ -44,5 +46,11 @@ module.exports = function(request, response) {
   response.writeHead(200, { 'Content-Type': 'application/json' });
   response.end('success');
 
-  twitch.client.say('#xhumming', `${data.event.reward.id} is the id for ${data.event.reward.title}`);
+  // run reward hook, if there is one
+  const rewardHook = rewardHooks[data.event.reward.id];
+  if (!rewardHook) {
+    return;
+  }
+
+  rewardHook(data);
 }
