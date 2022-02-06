@@ -1,3 +1,4 @@
+const abbreviateNumber = require ('../util/abbreviateNumber');
 const { ClientRequest } = require('http');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
