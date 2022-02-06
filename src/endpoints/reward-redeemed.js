@@ -1,5 +1,6 @@
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
+const twitch = require('../managers/twitch');
 
 module.exports = function(request, response) {
   console.log(`[${new Date().toISOString()}] /api/reward-redeemed`);
@@ -43,5 +44,5 @@ module.exports = function(request, response) {
   response.writeHead(200, { 'Content-Type': 'application/json' });
   response.end('success');
 
-  console.log(`${data.event.reward.id} is the id for ${data.event.reward.title}`);
+  twitch.client.say('#xhumming', `${data.event.reward.id} is the id for ${data.event.reward.title}`);
 }
