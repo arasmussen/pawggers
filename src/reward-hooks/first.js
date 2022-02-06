@@ -33,6 +33,7 @@ module.exports = function(data) {
   userSpendTable[period][user.id] = userSpendTable[period][user.id] || {};
   userSpendTable[period][user.id].spend = userSpendTable[period][user.id].spend || 0;
   userSpendTable[period][user.id].spend += 1000;
+  database.set('userSpendTable', userSpendTable);
 
   // get total pawggers
   const spend = abbreviateNumber(Number(userSpendTable[period][user.id].spend));
