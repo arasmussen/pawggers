@@ -5,4 +5,5 @@ const Rewards = {
 
 module.exports = {
   [Rewards.BuriedPawggers]: require('./dig'),
+  [Rewards.First]: require('./first'),
 };
