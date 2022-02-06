@@ -2,7 +2,6 @@ const abbreviateNumber = require ('../util/abbreviateNumber');
 const { ClientRequest } = require('http');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
-const isSarah = require('../util/isSarah');
 const twitch = require('../managers/twitch');
 
 module.exports = function(data) {
