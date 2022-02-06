@@ -38,6 +38,11 @@ module.exports = function(data) {
   // get total pawggers
   const spend = abbreviateNumber(Number(userSpendTable[period][user.id].spend));
 
+  const storyList = ['The battle was fierce but', 'That was a tough battle but', 'That was an intense fight but', 'We got some lurkers but who will win?', 'Early bird catches the worm.'];
+  const resultList = ['snatches first', 'comes out on top', 'grabs first, and the crowd goes wild', 'winnnnnnns'];
+  const story = storyList[Math.floor(Math.random() * storyList.length)];
+  const result = resultList[Math.floor(Math.random() * resultList.length)];
+
   // print result
-  twitch.client.say('#xhumming', `${user.name} snatches first! They now have ${spend} pawggers.`);
+  twitch.client.say('#xhumming', `${story} ${user.name} ${result}! They now have ${spend} pawggers.`);
 }
