@@ -1,4 +1,3 @@
-const { ClientRequest } = require('http');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
 
@@ -44,5 +43,5 @@ module.exports = function(request, response) {
   response.writeHead(200, { 'Content-Type': 'application/json' });
   response.end('success');
 
-  client.say(target, `${data.event.reward.id} is the id for ${data.event.reward.title}`);
+  console.log(`${data.event.reward.id} is the id for ${data.event.reward.title}`);
 }
