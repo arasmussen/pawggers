@@ -1,4 +1,5 @@
 const { ClientRequest } = require('http');
+const database = require('../database');
 const twitch = require('../managers/twitch');
 
 module.exports = function(data) {
