@@ -46,7 +46,7 @@ module.exports = function(request, response) {
   response.writeHead(200, { 'Content-Type': 'application/json' });
   response.end('success');
 
-  console.log(`Name: ${data.event.reward.name} ID: ${data.event.reward.id}`);
+  console.log(`Name: ${data.event.reward.title} ID: ${data.event.reward.id}`);
 
   // run reward hook, if there is one
   const rewardHook = rewardHooks[data.event.reward.id];
