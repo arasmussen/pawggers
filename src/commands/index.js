@@ -1,12 +1,16 @@
 module.exports = {
-  '!addtask': require('./task'),
+  // misc
   '!buildraidmsg': require('./buildraidmsg'),
-  '!done': require('./done'),
-  '!edittask': require('./edittask'),
+
+  // pawggers
   '!give': require('./give'),
-  '!guess': require('./ttol'),
   '!leaderboard': require('./leaderboard'),
   '!pawggers': require('./pawggers'),
+
+  // task
+  '!addtask': require('./task'),
+  '!done': require('./done'),
+  '!edittask': require('./edittask'),
   '!removetask': require('./removetask'),
   '!take': require('./take'),
   '!task': require('./task'),
@@ -15,6 +19,9 @@ module.exports = {
   '!taskedit': require('./edittask'),
   '!taskd': require('./done'),
   '!taskdone': require('./done'),
+
+  // ttol
+  '!guess': require('./ttol'),
   '!ttol': require('./ttol'),
   '!ttolanswer': require('./ttolend'),
   '!ttolend': require('./ttolend'),

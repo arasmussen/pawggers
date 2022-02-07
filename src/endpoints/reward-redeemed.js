@@ -52,5 +52,6 @@ module.exports = function(request, response) {
     return;
   }
 
+  consold.log(`Name: ${data.event.reward.name} ID: ${data.event.reward.id}`);
   rewardHook(data);
 }
