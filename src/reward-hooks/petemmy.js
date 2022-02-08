@@ -25,5 +25,5 @@ module.exports = function(data) {
   const textList = ['Woof woof thanks for pets', 'I LOVE pets! Thanks', 'Pets are the bestest! Thanks', 'Yay for pets! Thanks', 'Woof woof woof'];
   const text = textList[Math.floor(Math.random() * textList.length)];
 
-  twitch.client.say('#xhumming', `${text} @${user.name}`);
+  twitch.client.say('#xhumming', `${text} ${user.name}`);
 }

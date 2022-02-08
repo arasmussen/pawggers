@@ -7,6 +7,9 @@ module.exports = {
   '!leaderboard': require('./leaderboard'),
   '!pawggers': require('./pawggers'),
 
+  // quotes
+  '!t': require('./t'),
+
   // task
   '!addtask': require('./task'),
   '!done': require('./done'),
