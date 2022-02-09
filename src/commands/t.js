@@ -74,10 +74,12 @@ module.exports = function(context) {
 
   // print result
   if (mode === 'pom') {
-    client.say(target, `It's pom time! Here's your motivational quote:`);
+    setTimeout(() => {
+      client.say(target, `It's pom time! Here's your motivational quote:`);
+    }, 500);
     setTimeout(() => {
       client.say(target, `${pomQuote}`);
-    }, 500);
+    }, 700);
   } else if (mode === 'break') {
     client.say(target, `${breakQuote}`);
   }

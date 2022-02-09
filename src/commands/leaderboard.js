@@ -4,7 +4,7 @@ const database = require('../database');
 const getPeriod = require('../util/getPeriod');
 const isMod = require('../util/isMod');
 
-const NumLeaders = 5;
+const NumLeaders = 10;
 
 module.exports = function(context) {
   // get period

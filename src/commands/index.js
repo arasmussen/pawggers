@@ -4,6 +4,7 @@ module.exports = {
 
   // pawggers
   '!give': require('./give'),
+  '!lb': require('./leaderboard'),
   '!leaderboard': require('./leaderboard'),
   '!pawggers': require('./pawggers'),
 
