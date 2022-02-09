@@ -46,19 +46,19 @@ module.exports = function(data) {
   let foundPawggers = 0;
   if (randomizer < 5) {
     numberOfDigs = getRandomInt(1, 4);
-  } else if (randomizer < 25) {
+  } else if (randomizer < 20) {
     foundPawggers = getRandomInt(0, 100);
     sentiment = 'Could be worse?'
     numberOfDigs = 1;
-  } else if (randomizer < 55) {
+  } else if (randomizer < 53) {
     foundPawggers = getRandomInt(100, 500);
     sentiment = 'Nice!'
     numberOfDigs = 2;
-  } else if (randomizer < 85) {
+  } else if (randomizer < 81) {
     foundPawggers = getRandomInt(500, 1000);
     sentiment = 'Not a bad haul!'
     numberOfDigs = 3;
-  } else if (randomizer < 95) {
+  } else if (randomizer < 93) {
     foundPawggers = getRandomInt(1000, 1500);
     sentiment = 'That\'s a lot of pawggers!'
     numberOfDigs = 4;
