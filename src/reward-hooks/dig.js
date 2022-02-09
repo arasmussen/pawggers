@@ -28,11 +28,11 @@ module.exports = function(data) {
 
   // dig odds
   // 5% chance to find treat for emmy
-  // 20% chance 0-100
-  // 30% chance 100-500
-  // 30% chance 500-1000
-  // 10% chance 1000-1500
-  // 5% chance 1500-2000
+  // 15% chance 0-100
+  // 33% chance 100-500
+  // 28% chance 500-1000
+  // 12% chance 1000-1500
+  // 7% chance 1500-2000
   const randomizer = Math.floor(Math.random() * 100);
   // chance for pirate
   const pirateRandomizer = Math.floor(Math.random() * 100);
@@ -75,7 +75,7 @@ module.exports = function(data) {
   userSpendTable[period][user.id] = userSpendTable[period][user.id] || {};
   userSpendTable[period][user.id].spend = userSpendTable[period][user.id].spend || 0;
   // don't add pawggers if pirate (10% chance)
-  if (pirateRandomizer > 10) {
+  if (pirateRandomizer > 9) {
     userSpendTable[period][user.id].spend += foundPawggers;
   }
   database.set('userSpendTable', userSpendTable);
@@ -96,7 +96,7 @@ module.exports = function(data) {
     }, (numberOfDigs + 1) * 1200);
   } else {
     setTimeout(() => {
-      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 10 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing…' : `${sentiment} They now have ${spend} pawggers.`}`);
+      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 9 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing…' : `${sentiment} They now have ${spend} pawggers.`}`);
     }, (numberOfDigs + 1) * 1200);
   }
 }
