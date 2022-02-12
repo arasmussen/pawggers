@@ -38,12 +38,27 @@ module.exports = function(context) {
 
   // get answer
   const answer = context.variables.join(' ').trim().toLowerCase();
-  
+
   // handle if guess isn't legit
   if (answer !== 'a' && answer !== 'b' && answer !== 'c') {
     client.say(target, `${user.name}, what's the answer?`);
     return;
   }
+
+  // people who guessed A
+  const AGuessers = Object.keys(ttolTable.guesses).filter((userID) => {
+    return ttolTable.guesses[userID].guess === 'a';
+  }).length;
+
+  // people who guessed B
+  const BGuessers = Object.keys(ttolTable.guesses).filter((userID) => {
+    return ttolTable.guesses[userID].guess === 'b';
+  }).length;
+
+  // people who guessed C
+  const CGuessers = Object.keys(ttolTable.guesses).filter((userID) => {
+    return ttolTable.guesses[userID].guess === 'c';
+  }).length;
 
   // get people who got it right
   const correctGuesserIDs = Object.keys(ttolTable.guesses).filter((userID) => {
@@ -64,14 +79,15 @@ module.exports = function(context) {
     database.set('userSpendTable', userSpendTable);
   });
 
+  // print result
+  client.say(target, `${AGuessers} ${AGuessers === 1 ? 'person' : 'people'} answered A, ${BGuessers} ${BGuessers === 1 ? 'person' : 'people'} answered B, and ${CGuessers} ${CGuessers === 1 ? 'person' : 'people'} answered C.`);
+  const correctGuesses = correctGuesserIDs.length;
+  client.say(target, `The answer was ${answer.toUpperCase()}! ${correctGuesses} ${correctGuesses === 1 ? 'person' : 'people'} got it right. Thanks for playing Two Truths, One Lie!`);
+
   // reset table after game
   ttolTable = {
     active: false,
     guesses: [],
   };
   database.set('ttolTable', ttolTable);
-
-  // print result
-  const correctGuesses = correctGuesserIDs.length;
-  client.say(target, `The answer was ${answer.toUpperCase()}! ${correctGuesses} ${correctGuesses === 1 ? 'person' : 'people'} got it right. Thanks for playing Two Truths, One Lie!`);
 }

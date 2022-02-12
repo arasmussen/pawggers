@@ -99,5 +99,5 @@ module.exports = function(context) {
   const spend = abbreviateNumber(Number(userSpendTable[period][userID].spend));
 
   // print result
-  client.say(target, `${username}, you now have ${spend} pawggers`);
+  client.say(target, `${username}, you now have ${spend} ${spend === 1 ? 'pawgger' : 'pawggers'}`);
 }

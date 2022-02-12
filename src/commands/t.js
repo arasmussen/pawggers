@@ -27,6 +27,13 @@ module.exports = function(context) {
 
   // random encouragement
   const pomQuoteList = [
+    '“Your talent determines what you can do. Your motivation determines how much you’re willing to do. Your attitude determines how well you do it.” — Lou Holtz',
+    '“Light tomorrow with today.” — Elizabeth Barrett Browning',
+    '“Never give up on a dream just because of the time it will take to accomplish it. The time will pass anyway.” — Earl Nightingale',
+    '“Someday is not a day of the week.” — Janet Dailey',
+    '“Success is a state of mind. If you want success, start thinking of yourself as a success.” — Joyce Brothers',
+    '"You\'ve got to get up every morning with determination if you\'re going to go to bed with satisfaction.” – George Lorimer',
+    '“The man who moves a mountain begins by carrying away small stones.” – Confucius',
     '"Go as far as you can see; when you get there, you\'ll be able to see further." – Thomas Carlyle',
     '"The individual who says it is not possible should move out of the way of those doing it." – Tricia Cunningham',
     '"A year from now you may wish you had started today." – Karen Lamb',
