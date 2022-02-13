@@ -16,6 +16,7 @@ module.exports = {
   '!done': require('./done'),
   '!edittask': require('./edittask'),
   '!removetask': require('./removetask'),
+  '!summary': require('./summary'),
   '!take': require('./take'),
   '!task': require('./task'),
   '!taskadd': require('./task'),
