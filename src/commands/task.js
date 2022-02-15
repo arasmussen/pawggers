@@ -42,7 +42,7 @@ module.exports = function(context) {
   }
 
   if (activeTaskForUser) {
-    client.say(target, `${user.name}, you're working on LOCAL: ${activeTaskForUser.task}`);
+    client.say(target, `${user.name}, you're working on: ${activeTaskForUser.task}`);
     return;
   }
 
