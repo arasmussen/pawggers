@@ -19,6 +19,12 @@ module.exports = function(context) {
     id: context['user-id'],
     name: context['display-name'],
   };
+
+  // add user to table
+  let userTable = database.get('userTable');
+  userTable = userTable || {};
+  userTable[user.id] = user;
+  database.set('userTable', userTable);
   
   // get task
   const task = context.variables.join(' ').trim();
