@@ -1,5 +1,6 @@
 const { ClientRequest } = require('http');
 const database = require('../database');
+const generateTaskBody = require('../ttol/generateTTOLBody');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -38,4 +39,7 @@ module.exports = function(context) {
   // add guess to list
   ttolTable.guesses[user.id] = { guess };
   database.set('ttolTable', ttolTable);
+
+  // update socket clients
+  socket.emit('update-ttol-view', generateTTOLBody());
 }

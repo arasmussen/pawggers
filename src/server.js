@@ -6,6 +6,7 @@ const twitch = require('./managers/twitch');
 
 const Endpoints = {
   '/api/live-task-view': require('./endpoints/live-task-view'),
+  '/api/live-ttol-view': require('./endpoints/live-ttol-view'),
   '/api/reward-redeemed': require('./endpoints/reward-redeemed'),
   '/api/reward-updated': require('./endpoints/reward-updated'),
 };
