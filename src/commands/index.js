@@ -26,6 +26,7 @@ module.exports = {
   '!taskedit': require('./edittask'),
   '!taskd': require('./done'),
   '!taskdone': require('./done'),
+  '!todo': require('./task'),
 
   // ttol
   '!guess': require('./ttol'),
