@@ -20,6 +20,7 @@ const PageJS = `
 
     chart.labels().format("{%x} / {%value}");
     chart.palette(["#F5A6B4", "#CE98D6", "#8E80CC"]);
+    chart.background().fill("transparent");
     chart.startAngle(270);
     // chart.innerRadius("50%");
     
