@@ -18,13 +18,13 @@ const PageJS = `
   function createChart() {
     chart = anychart.pie();
 
-    chart.labels().format("{%x} - {%value}");
-    chart.palette(["#E8B1BB", "#CE98D6", "#9E92D1"]);
+    chart.labels().format("{%x} / {%value}");
+    chart.palette(["#F5A6B4", "#CE98D6", "#8E80CC"]);
     chart.startAngle(270);
     // chart.innerRadius("50%");
     
     // set the chart title
-    chart.title("Two Truths, One Lie");
+    chart.title("!ttol A/B/C");
 
     // initialize data
     // chart.data([
@@ -40,10 +40,10 @@ const PageJS = `
     // labels setting
     labels.fontColor('white');
     labels.fontSize("20px");
-    labels.offsetY(10);
+    labels.offsetY(5);
 
     // set legend position
-    chart.legend().position("right");
+    chart.legend().position("bottom");
     // set items layout
     chart.legend().itemsLayout("vertical");
   
