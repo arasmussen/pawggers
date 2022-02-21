@@ -14,50 +14,75 @@ const PageCSS = `
   }
 `;
 const PageJS = `
-  let chart = anychart.pie();
+  let chart;
+  function createChart() {
+    chart = anychart.pie();
 
-  const socket = io();
-  socket.on('update-ttol-view', (message) => {
+    chart.labels().format("{%x} - {%value}");
+    chart.palette(["#E8B1BB", "#CE98D6", "#9E92D1"]);
+    chart.startAngle(270);
+    // chart.innerRadius("50%");
+    
+    // set the chart title
+    chart.title("Two Truths, One Lie");
+
+    // initialize data
+    // chart.data([
+    //   {x: 'A', value: 1},
+    //   {x: 'B', value: 2},
+    //   {x: 'C', value: 3},
+    // ]);
+      
+    // enable labels
+    chart.labels(true);
+    labels = chart.labels();
+
+    // labels setting
+    labels.fontColor('white');
+    labels.fontSize("20px");
+    labels.offsetY(10);
+
+    // set legend position
+    chart.legend().position("right");
+    // set items layout
+    chart.legend().itemsLayout("vertical");
+  
+    // display the chart in the container
+    chart.container('container');
+    
+    chart.draw();
+  }
+
+  function updateChart(message) {
+    if (!chart) {
+      return;
+    }
+
     chart.data(message);
     chart.draw();
-  });
+  }
 
-  // set the data
-  // var data = [
-  //     {x: "A", value: 4},
-  //     {x: "B", value: 3},
-  //     {x: "C", value: 8},
-  // ];
+  function initSocket() {
+    const socket = io();
+    socket.on('update-ttol-view', (message) => {
+      updateChart(message);
+    });
+    socket.on('connect', () => {
+      socket.emit('request-ttol-view');
+    });
+  }
 
-  // create the chart
-  chart.labels().format("{%x} - {%value}");
-  chart.palette(["#E8B1BB", "#CE98D6", "#9E92D1"]);
-  chart.startAngle(270);
-  // chart.innerRadius("50%");
+  function main() {
+    createChart();
+    initSocket();
+  }
 
-  // set the chart title
-  chart.title("Two Truths, One Lie");
-
-  // add the data
-  // chart.data(data);
-
-  // enable labels
-  chart.labels(true);
-  labels = chart.labels();
-
-  // labels setting
-  labels.fontColor('white');
-  labels.fontSize("20px");
-  labels.offsetY(10);
-
-  // set legend position
-  chart.legend().position("right");
-  // set items layout
-  chart.legend().itemsLayout("vertical");
-
-  // display the chart in the container
-  chart.container('container');
-  chart.draw();
+  // wait for DOM to load then do stuff
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(main, 0);
+  } else {
+    document.addEventListener('DOMContentLoaded', main);
+  };
 `;
 const PageLink = '<script src="https://cdn.anychart.com/js/8.0.1/anychart-core.min.js"></script><script src="https://cdn.anychart.com/js/8.0.1/anychart-pie.min.js"></script>';
 
@@ -67,13 +92,10 @@ module.exports = function(request, response, server) {
   // start socket server
   socketServer.start(server);
 
-  // generate body
-  const body = '<div id="container"></div>';
-
   // respond
   response.writeHead(200, { 'Content-Type': 'text/html' });
   response.end(renderHTML({
-    body: `${body}`,
+    body: '<div id="container"></div>',
     css: PageCSS,
     includeSocketIO: true,
     js: PageJS,

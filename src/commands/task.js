@@ -1,7 +1,7 @@
 const { ClientRequest } = require('http');
 const database = require('../database');
 const generateTaskBody = require('../tasks/generateTaskBody');
-const socket = require('../managers/socket');
+const SocketServer = require('../managers/socket');
 const setupTaskTable = require('../tasks/setupTaskTable');
 
 module.exports = function(context) {
@@ -69,5 +69,5 @@ module.exports = function(context) {
   client.say(target, `Task added, ${user.name}. ${encouragement}`);
 
   // update socket clients
-  socket.emit('update-task-view', generateTaskBody());
+  SocketServer.emit('update-task-view', generateTaskBody());
 }

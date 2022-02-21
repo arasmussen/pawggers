@@ -1,6 +1,8 @@
 const { ClientRequest } = require('http');
 const database = require('../database');
+const generateTTOLData = require('../ttol/generateTTOLData');
 const isSarah = require('../util/isSarah');
+const SocketServer = require('../managers/socket');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -40,4 +42,7 @@ module.exports = function(context) {
 
   // print result
   client.say(target, `Two Truths, One Lie game started, use !ttol [A/B/C] to guess which is the lie.`);
+
+  // update socket clients
+  SocketServer.emit('update-ttol-view', generateTTOLData());
 }

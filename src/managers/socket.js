@@ -3,6 +3,7 @@ const { Server } = require('socket.io');
 class SocketServer {
   io = null;
   server = null;
+  subscriptions = {};
 
   emit(event, message) {
     if (!this.io) {
@@ -17,6 +18,15 @@ class SocketServer {
     socket.on('disconnect', () => {
       console.log('[socket] client disconnected');
     });
+    socket.onAny((event, ...args) => {
+      if (!this.subscriptions[event]) {
+        return;
+      }
+
+      this.subscriptions[event].forEach((subscription) => {
+        subscription(socket, ...args);
+      });
+    });
   }
 
   start(server) {
@@ -28,6 +38,18 @@ class SocketServer {
     this.io = new Server(server);
     this.io.on('connection', this.onClientConnected.bind(this));
     console.log('[socket] server started');
+  }
+
+  subscribe(event, callback) {
+    if (!this.subscriptions[event]) {
+      this.subscriptions[event] = [];
+    }
+
+    if (this.subscriptions[event].includes(callback)) {
+      return;
+    }
+
+    this.subscriptions[event].push(callback);
   }
 }
 

@@ -85,9 +85,6 @@ module.exports = function(context) {
   client.say(target, `The answer was ${answer.toUpperCase()}! ${correctGuesses} ${correctGuesses === 1 ? 'person' : 'people'} got it right. Thanks for playing Two Truths, One Lie!`);
 
   // reset table after game
-  ttolTable = {
-    active: false,
-    guesses: [],
-  };
+  ttolTable.active = false;
   database.set('ttolTable', ttolTable);
 }

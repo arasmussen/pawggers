@@ -1,6 +1,7 @@
 const { ClientRequest } = require('http');
 const database = require('../database');
-const generateTaskBody = require('../ttol/generateTTOLBody');
+const generateTTOLData = require('../ttol/generateTTOLData');
+const SocketServer = require('../managers/socket');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -41,5 +42,5 @@ module.exports = function(context) {
   database.set('ttolTable', ttolTable);
 
   // update socket clients
-  socket.emit('update-ttol-view', generateTTOLBody());
+  SocketServer.emit('update-ttol-view', generateTTOLData());
 }
