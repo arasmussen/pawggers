@@ -16,6 +16,10 @@ module.exports = function(request, response, server) {
   const today = getDay();
   let giveawayEntryTable = database.get('giveawayEntryTable');
 
+  giveawayEntryTable = giveawayEntryTable || {
+    entries: [],
+  };
+
   const body = giveawayEntryTable.entries.map((entry) => {
     return `<div>${entry.date} ${entry.username}</div>`;
   }).join('');
