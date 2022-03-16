@@ -1,6 +1,7 @@
 module.exports = {
   // misc
   '!buildraidmsg': require('./buildraidmsg'),
+  '!giveawayentries': require('./giveawayentries'),
 
   // pawggers
   '!give': require('./give'),
@@ -26,6 +27,7 @@ module.exports = {
   '!taskedit': require('./edittask'),
   '!taskd': require('./done'),
   '!taskdone': require('./done'),
+  '!taskrecord': require('./taskrecord'),
   '!todo': require('./task'),
 
   // ttol
