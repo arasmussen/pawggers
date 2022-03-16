@@ -29,5 +29,5 @@ module.exports = function(context) {
     return entry.username === user.name;
   }).length;
 
-  client.say(target, `${user.name}, ${giveawayEntryTable.entries.length} people have entered the giveaway so far and you have ${totalEntriesFromUser} entries.`);
+  client.say(target, `${user.name}, ${giveawayEntryTable.entries.length} people have entered the giveaway so far and you have ${totalEntriesFromUser} ${totalEntriesFromUser === 1 ? 'entry' : 'entries'}.`);
 }
