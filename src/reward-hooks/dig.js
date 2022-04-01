@@ -46,7 +46,7 @@ module.exports = function(data) {
   let foundPawggers = 0;
   if (randomizer < 5) {
     numberOfDigs = getRandomInt(1, 4);
-  } else if (randomizer < 100) {
+  } else if (randomizer < 20) {
     foundPawggers = getRandomInt(0, 100);
     sentiment = 'Could be worse?'
     numberOfDigs = 1;
@@ -75,7 +75,7 @@ module.exports = function(data) {
   userSpendTable[period][user.id] = userSpendTable[period][user.id] || {};
   userSpendTable[period][user.id].spend = userSpendTable[period][user.id].spend || 0;
   // don't add pawggers if pirate (10% chance)
-  if (pirateRandomizer > 9) {
+  if (pirateRandomizer > 80) {
     userSpendTable[period][user.id].spend += foundPawggers;
   }
   database.set('userSpendTable', userSpendTable);
