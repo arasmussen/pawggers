@@ -46,7 +46,7 @@ module.exports = function(data) {
   let foundPawggers = 0;
   if (randomizer < 5) {
     numberOfDigs = getRandomInt(1, 4);
-  } else if (randomizer < 20) {
+  } else if (randomizer < 100) {
     foundPawggers = getRandomInt(0, 100);
     sentiment = 'Could be worse?'
     numberOfDigs = 1;
