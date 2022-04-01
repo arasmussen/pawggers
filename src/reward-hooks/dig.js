@@ -75,7 +75,7 @@ module.exports = function(data) {
   userSpendTable[period][user.id] = userSpendTable[period][user.id] || {};
   userSpendTable[period][user.id].spend = userSpendTable[period][user.id].spend || 0;
   // don't add pawggers if pirate (10% chance)
-  if (pirateRandomizer > 80) {
+  if (pirateRandomizer > 95) {
     userSpendTable[period][user.id].spend += foundPawggers;
   }
   database.set('userSpendTable', userSpendTable);
