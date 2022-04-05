@@ -75,7 +75,7 @@ module.exports = function(data) {
   userSpendTable[period][user.id] = userSpendTable[period][user.id] || {};
   userSpendTable[period][user.id].spend = userSpendTable[period][user.id].spend || 0;
   // don't add pawggers if pirate (10% chance)
-  if (pirateRandomizer > 95) {
+  if (pirateRandomizer > 9) {
     userSpendTable[period][user.id].spend += foundPawggers;
   }
   database.set('userSpendTable', userSpendTable);
@@ -96,7 +96,7 @@ module.exports = function(data) {
     }, (numberOfDigs + 1) * 1200);
   } else {
     setTimeout(() => {
-      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 95 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing…' : `${sentiment} They now have ${spend} pawggers.`}`);
+      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 9 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing…' : `${sentiment} They now have ${spend} pawggers.`}`);
     }, (numberOfDigs + 1) * 1200);
   }
 }
