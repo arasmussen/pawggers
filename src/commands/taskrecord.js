@@ -16,5 +16,5 @@ module.exports = function(context) {
     completedTaskRecord: 0,
   };
 
-  client.say(target, `The current completed task record is ${statsTable.completedTaskRecord}! xhummiPawg`);
+  client.say(target, `The current completed task record is ${statsTable.completedTaskRecord}! emmmyPawg`);
 }
