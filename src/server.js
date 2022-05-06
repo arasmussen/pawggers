@@ -7,6 +7,9 @@ const twitch = require('./managers/twitch');
 
 const Endpoints = {
   '/emmyfest': require('./pages/emmyfest'),
+  '/api/channel-gift-sub': require('./endpoints/channel-gift-sub'),
+  '/api/channel-new-sub': require('./endpoints/channel-new-sub'),
+  '/api/channel-resub': require('./endpoints/channel-resub'),
   '/api/giveaway-entries': require('./pages/giveaway-entries-page'),
   '/api/live-task-view': require('./endpoints/live-task-view'),
   '/api/live-ttol-view': require('./endpoints/live-ttol-view'),
