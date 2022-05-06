@@ -7,5 +7,5 @@ module.exports = function(request, response) {
 
   // respond
   response.writeHead(200, { 'Content-Type': 'text/plain' });
-  response.end(data.challenge);
+  response.end('success');
 }
