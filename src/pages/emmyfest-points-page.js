@@ -1,5 +1,3 @@
-const database = require('../database');
-
 const renderHTML = require('../util/renderHTML');
 
 const PageCSS = `
@@ -13,7 +11,7 @@ const PageCSS = `
 const PageJS = ``;
 
 module.exports = function(request, response, server) {
-  const subPointsTable = database.get('subPointsTable') || {};
+  const subPointsTable = database.get('subPoints') || {};
   const userTable = database.get('userTable') || {};
 
   const userIDs = Object.keys(subPointsTable);
@@ -36,20 +34,3 @@ module.exports = function(request, response, server) {
   }));
 }
 
-// subPointsTable = {
-//   1234: 5,
-//   2468: 2,
-// }
-// userTable = {
-//   1234: {
-//     id: 1234,
-//     name: 'sarah'
-//   },
-//   2468: {
-//     id: 2468,
-//     name: 'andrew'
-//   }
-// }
-
-// userIDs = ['1234', '2468']
-// users = [{id: 1234, name: 'sarah'}, {id: 2468, name: 'andrew'}]
