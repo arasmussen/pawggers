@@ -51,7 +51,7 @@ module.exports = function(request, response, server) {
   const body = `
     <h1>EMMYFEST <span>2022</span></h1>
     <h2>Milestones</h2>
-    <img src="https://bit.ly/3wjKFPR"</img>
+    <img src="https://bit.ly/3KZCEF6"</img>
     <h2>!tee</h2>
     <img src="https://cdn.discordapp.com/attachments/891339850828087436/971260143880785950/tee-mock.png"</img>
     <p>If y'all want, we can look into selling these after :)</p>
