@@ -24,7 +24,7 @@ module.exports = function(data) {
     entries: [],
   };
 
-  // handle if active task exists
+  // handle if user already entered
   const userHasEnteredToday = giveawayEntryTable.entries.find((entry) => {
     return entry.date === today && entry.username === user.name;
   });

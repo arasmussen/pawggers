@@ -33,6 +33,7 @@ module.exports = function(request, response) {
   subPointsTable = subPointsTable || {};
   subPointsTable[user.id] = subPointsTable[user.id] || 0;
   subPointsTable[user.id] += data.event.total * points;
+  database.set('subPoints', subPointsTable);
 
   // respond
   response.writeHead(200, { 'Content-Type': 'text/plain' });
