@@ -27,7 +27,7 @@ module.exports = function(request, response) {
   userTable[user.id] = user;
   database.set('userTable', userTable);
 
-  const points = tierToPoints[data.event.tier];
+  const points = tierToPoints(data.event.tier);
   let subPointsTable = database.get('subPoints');
   subPointsTable = subPointsTable || {};
   subPointsTable[user.id] = subPointsTable[user.id] || 0;
