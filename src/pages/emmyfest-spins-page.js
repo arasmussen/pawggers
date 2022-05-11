@@ -23,8 +23,13 @@ module.exports = function(request, response, server) {
   });
 
   const body = users.map((user) => {
-    return `<div>${user.name} x ${subPointsTable[user.id]}</div>`;
-  }).join('');
+    const wheelSpins = Math.floor(subPointsTable[user.id]/5);
+    let listOfSpins = '';
+    for (let i = 0; i < wheelSpins; i++) {
+       listOfSpins += `<div>${user.name}</div>`;
+    }
+    return listOfSpins;
+  });
 
   // respond
   response.writeHead(200, { 'Content-Type': 'text/html' });
@@ -33,7 +38,7 @@ module.exports = function(request, response, server) {
     css: PageCSS,
     includeSocketIO: true,
     js: PageJS,
-    title: 'EMMYFEST Points',
+    title: 'EMMYFEST Spins',
   }));
 }
 
