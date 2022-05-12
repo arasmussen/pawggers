@@ -12,6 +12,7 @@ const Endpoints = {
   '/api/channel-new-sub': require('./endpoints/channel-new-sub'),
   '/api/channel-resub': require('./endpoints/channel-resub'),
   '/api/emmyfest-points': require('./pages/emmyfest-points-page'),
+  '/api/emmyfest-spins': require('./pages/emmyfest-spins-page'),
   '/api/giveaway-entries': require('./pages/giveaway-entries-page'),
   '/api/live-task-view': require('./endpoints/live-task-view'),
   '/api/live-ttol-view': require('./endpoints/live-ttol-view'),
