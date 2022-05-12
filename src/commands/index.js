@@ -1,4 +1,7 @@
 module.exports = {
+  // emmyfest
+  '!top5': require('./top5'),
+
   // misc
   '!buildraidmsg': require('./buildraidmsg'),
   '!giveawayentries': require('./giveawayentries'),
@@ -8,6 +11,7 @@ module.exports = {
   '!lb': require('./leaderboard'),
   '!leaderboard': require('./leaderboard'),
   '!pawggers': require('./pawggers'),
+  '!points': require('./pawggers'),
 
   // quotes
   '!t': require('./t'),

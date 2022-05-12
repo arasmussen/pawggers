@@ -1,5 +1,4 @@
-const database = require('../database');
-
+const generatePointsBody = require('../subs/generatePointsBody');
 const renderHTML = require('../util/renderHTML');
 
 const PageCSS = `
@@ -8,28 +7,58 @@ const PageCSS = `
     height: 80%;
     font-family: 'Red Hat Mono', sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 20px;
+  }
+
+  .userContainer {
+    display: flex;
+    margin: 0 0 5px 0;
+    padding: 5px 10px;
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  .userContainer:nth-child(even) {
+    background: #e6e6e6;
+  }
+
+  .user {
+    margin: 0 10px 0 0;
+    white-space: nowrap;
+  }
+
+  .userRewards {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .reward {
+    display: flex;
+  }
+
+  label {
+    margin: 0 10px 0 0;
+    white-space: nowrap;
   }
 `;
-const PageJS = ``;
+const PageJS = `
+const socket = io();
+socket.on('update-points-view', (message) => {
+  document.body.innerHTML = message;
+});
+
+function onCheckboxChecked(checkbox) {
+  socket.emit('points-reward-checked', {
+    id: checkbox.id,
+    checked: checkbox.checked,
+  });
+}
+`;
 
 module.exports = function(request, response, server) {
-  const subPointsTable = database.get('subPoints') || {};
-  const userTable = database.get('userTable') || {};
-
-  const userIDs = Object.keys(subPointsTable);
-  const users = userIDs.map((userID) => {
-    return userTable[userID];
-  });
-
-  const body = users.map((user) => {
-    return `<div>${user.name} x ${subPointsTable[user.id]}</div>`;
-  }).join('');
-
-  // respond
   response.writeHead(200, { 'Content-Type': 'text/html' });
   response.end(renderHTML({
-    body: `${body}`,
+    body: generatePointsBody(),
     css: PageCSS,
     includeSocketIO: true,
     js: PageJS,
