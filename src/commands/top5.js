@@ -1,4 +1,3 @@
-const { ClientRequest } = require('http');
 const database = require('../database');
 
 const NumLeaders = 5;
