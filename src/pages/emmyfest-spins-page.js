@@ -1,5 +1,4 @@
 const database = require('../database');
-
 const renderHTML = require('../util/renderHTML');
 
 const PageCSS = `
