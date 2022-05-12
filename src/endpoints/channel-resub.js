@@ -1,4 +1,7 @@
+const SocketServer = require('../managers/socket');
+
 const database = require('../database');
+const generatePointsBody = require('../subs/generatePointsBody');
 const getPeriod = require('../util/getPeriod');
 const tierToPoints = require('../subs/tierToPoints');
 
@@ -33,6 +36,10 @@ module.exports = function(request, response) {
   subPointsTable[user.id] = subPointsTable[user.id] || 0;
   subPointsTable[user.id] += points;
   database.set('subPoints', subPointsTable);
+
+  // update clients
+  const pointsBody = generatePointsBody();
+  SocketServer.emit('update-points-view', pointsBody);
 
   // respond
   response.writeHead(200, { 'Content-Type': 'text/plain' });

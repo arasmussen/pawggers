@@ -4,10 +4,10 @@ const SocketServer = require('./socket');
 
 class SubManager {
   constructor() {
-    SocketServer.subscribe('points-reward-checked', this.onTTOLDataRequest);
+    SocketServer.subscribe('points-reward-checked', this.onPointsRewardChecked);
   }
 
-  onTTOLDataRequest = (socket, data) => {
+  onPointsRewardChecked = (socket, data) => {
     const subRewardsTable = database.get('subRewards') || {};
     subRewardsTable[data.id] = data.checked;
     database.set('subRewards', subRewardsTable);
