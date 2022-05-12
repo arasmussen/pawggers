@@ -21,7 +21,7 @@ module.exports = function(context) {
   });
 
   // print result
-  const userTable = database.get('userTable');
+  const userTable = database.get('userTable') || {};
   const top5 = userIDs.map((userID) => {
     const userName = userTable[userID].name;
     return `${userName} x ${subPointsTable[userID]}`;
