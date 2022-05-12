@@ -35,7 +35,7 @@ module.exports = function(request, response, server) {
   response.end(renderHTML({
     body: `${body}`,
     css: PageCSS,
-    includeSocketIO: true,
+    includeSocketIO: false,
     js: PageJS,
     title: 'EMMYFEST Spins',
   }));
