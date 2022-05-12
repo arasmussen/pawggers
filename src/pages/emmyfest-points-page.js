@@ -1,5 +1,4 @@
-const database = require('../database');
-
+const generatePointsBody = require('../subs/generatePointsBody');
 const renderHTML = require('../util/renderHTML');
 
 const PageCSS = `
@@ -42,56 +41,24 @@ const PageCSS = `
     white-space: nowrap;
   }
 `;
-const PageJS = ``;
+const PageJS = `
+const socket = io();
+socket.on('update-points-view', (message) => {
+  document.body.innerHTML = message;
+});
 
-const Rewards = [{
-  name: 'tattoo',
-  amount: 10,
-  every: true,
-}, {
-  name: 'inkbox',
-  amount: 25,
-  every: true,
-}];
+function onCheckboxChecked(checkbox) {
+  socket.emit('points-reward-checked', {
+    id: checkbox.id,
+    checked: checkbox.checked,
+  });
+}
+`;
 
 module.exports = function(request, response, server) {
-  const subPointsTable = database.get('subPoints') || {};
-  const subRewardsTable = database.get('subRewards') || {};
-  const userTable = database.get('userTable') || {};
-
-  const userIDs = Object.keys(subPointsTable);
-  const users = userIDs.map((userID) => {
-    return userTable[userID];
-  });
-
-  const body = users.map((user) => {
-    const userPoints = subPointsTable[user.id];
-    const userRewards = subRewardsTable[user.id] || {};
-    const rewardsPart = Rewards.map((reward) => {
-      let rewardPart = '';
-      let rewardPoints = userPoints;
-      let rewardIndex = 1;
-      while (rewardPoints >= reward.amount) {
-        const rewardID = `${reward.name}_${rewardIndex}`;
-        const checkboxID = `${user.id}_${rewardID}`;
-        rewardPart += `<div class="reward"><input type="checkbox" id="${checkboxID}" ${userRewards[rewardID] ? 'checked' : ''} />`;
-        rewardPart += `<label for="${checkboxID}">${reward.name} ${rewardIndex++}</label></div>`;
-
-        if (!reward.every) {
-          break;
-        }
-
-        rewardPoints -= reward.amount;
-      }
-      return rewardPart;
-    }).join('');
-    return `<div class="userContainer"><div class="user">${user.name} x ${subPointsTable[user.id]}</div><div class="userRewards">${rewardsPart}</div></div>`;
-  }).join('');
-
-  // respond
   response.writeHead(200, { 'Content-Type': 'text/html' });
   response.end(renderHTML({
-    body: `${body}`,
+    body: generatePointsBody(),
     css: PageCSS,
     includeSocketIO: true,
     js: PageJS,

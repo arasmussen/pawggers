@@ -3,6 +3,7 @@ const { URL } = require('url');
 
 const socket = require('./managers/socket');
 require('./managers/ttol-manager');
+require('./managers/sub-manager');
 const twitch = require('./managers/twitch');
 
 const Endpoints = {
