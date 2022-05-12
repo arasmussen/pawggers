@@ -18,7 +18,7 @@ const PageCSS = `
     border-radius: 10px;
   }
 
-  .userContainer:nth-child(1) {
+  .userContainer:nth-child(even) {
     background: #e6e6e6;
   }
 
