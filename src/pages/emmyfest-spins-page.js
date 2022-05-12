@@ -28,7 +28,7 @@ module.exports = function(request, response, server) {
        listOfSpins += `<div>${user.name}</div>`;
     }
     return listOfSpins;
-  });
+  }).join('');
 
   // respond
   response.writeHead(200, { 'Content-Type': 'text/html' });
