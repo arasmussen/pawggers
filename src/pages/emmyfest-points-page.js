@@ -3,8 +3,8 @@ const renderHTML = require('../util/renderHTML');
 
 const PageCSS = `
   html, body, #container {
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
     font-family: 'Red Hat Mono', sans-serif;
     margin: 0;
     padding: 20px;
