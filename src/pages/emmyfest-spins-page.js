@@ -22,7 +22,7 @@ module.exports = function(request, response, server) {
   });
 
   const body = users.map((user) => {
-    const wheelSpins = Math.floor(subPointsTable[user.id]/5);
+    const wheelSpins = Math.floor(subPointsTable[user.id] / 5);
     let listOfSpins = '';
     for (let i = 0; i < wheelSpins; i++) {
        listOfSpins += `<div>${user.name}</div>`;
