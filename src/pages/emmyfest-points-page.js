@@ -43,7 +43,7 @@ const PageCSS = `
 
   .totalPoints {
     color: white;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 20px;
     text-align: right;
   }
