@@ -40,6 +40,13 @@ const PageCSS = `
     margin: 0 10px 0 0;
     white-space: nowrap;
   }
+
+  .totalPoints {
+    color: white;
+    font-weight: 600;
+    font-size: 20px;
+    text-align: right;
+  }
 `;
 const PageJS = `
 const socket = io();

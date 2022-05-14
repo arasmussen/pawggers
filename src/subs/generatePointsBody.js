@@ -21,16 +21,19 @@ module.exports = function generatePointsBody() {
   });
 
   const body = users.map((user) => {
+
     const userPoints = subPointsTable[user.id];
     const userRewards = subRewardsTable || {};
     const rewardsPart = Rewards.map((reward) => {
       let rewardPart = '';
       let rewardPoints = userPoints;
       let rewardIndex = 1;
+      let totalPoints = 0;
       while (rewardPoints >= reward.amount) {
         const checkboxID = `${user.id}_${reward.name}_${rewardIndex}`;
         rewardPart += `<div class="reward"><input type="checkbox" id="${checkboxID}" ${userRewards[checkboxID] ? 'checked' : ''} onchange="onCheckboxChecked(this)" />`;
         rewardPart += `<label for="${checkboxID}">${reward.name} ${rewardIndex++}</label></div>`;
+        
 
         if (!reward.every) {
           break;
@@ -43,5 +46,11 @@ module.exports = function generatePointsBody() {
     return `<div class="userContainer"><div class="user">${user.name} x ${subPointsTable[user.id]}</div><div class="userRewards">${rewardsPart}</div></div>`;
   }).join('');
 
-  return body;
+  const totalPointsCount = users.reduce((totalPoints, user) => {
+    const userPoints = subPointsTable[user.id];
+
+    return totalPoints + userPoints;
+  }, 0);
+
+  return `<div class="totalPoints">${totalPointsCount}</div>` + body;
 }
