@@ -5,6 +5,7 @@ module.exports = {
   // misc
   '!buildraidmsg': require('./buildraidmsg'),
   '!giveawayentries': require('./giveawayentries'),
+  '!startbreak': require('./startbreak'),
 
   // pawggers
   '!give': require('./give'),
