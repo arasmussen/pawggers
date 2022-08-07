@@ -20,13 +20,13 @@ function generateTaskBody() {
   const body = todoTable.tasks.map((task) => {
     const itemLength = task.username.length + task.task.length + 1;
     let truncatedTask = task.task;
-    if (itemLength >= 39) {
-      truncatedTask = task.task.substr(0, 39 - task.username.length - 1) + '…';
+    if (itemLength >= 37) {
+      truncatedTask = task.task.substr(0, 37 - task.username.length - 1) + '…';
     }
-    return `<li>${task.done ? '<div class="box checked"><div class="check"></div></div>' : '<div class="box"></div>'} <div><span class="username">${escapeHTML(task.username)}</span> ${escapeHTML(truncatedTask)}</div></li>`;
+    return `<li>${task.done ? '<div class="box checked"><div class="check"></div></div>' : '<div class="box"></div>'} <div><span class="username">${escapeHTML(task.username)}</span><span class="task">${escapeHTML(truncatedTask)}</task></div></li>`;
   }).join('');
 
-  return `<div class="tasksDone">!TASKS ${tasksDone}/${totalTasks}</div><div id="scrollContainer"><ul>${body}</ul></div>`;
+  return `<div class="tasksDone"> TASKS<div class="tasksCounter">${tasksDone}/${totalTasks}</div></div><div id="scrollContainer"><ul>${body}</ul></div>`;
 }
 
 module.exports = generateTaskBody;

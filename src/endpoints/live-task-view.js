@@ -12,56 +12,67 @@ const PageCSS = `
   }
   body {
     font-size: 18px;
-    font-family: 'Red Hat Mono', sans-serif;
+    font-family: 'Rubik', sans-serif;
     font-weight: 400;
-    color:#555;
+    color:#fff;
+    background: rgba(0, 0, 0, 0.5);
   }
   .tasksDone {
-    font-size: 30px;
-    color: #c09dc2;
-    font-family: 'Visitor', sans-serif
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.03em;
+    color: #fff;
+    font-family: 'Rubik', sans-serif;
+    padding: 0 0 0 8px;
   }
   .username {
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.03em;
+    margin: 0 8px 0 0;
+  }
+  .task {
     font-weight: 500;
-    color: #222;
+    color: #fff;
+    letter-spacing: 0.02em;
+    margin: 0 2px 0 0;
+    opacity: 0.8;
   }
   #scrollContainer {
-    height: 363px;
+    height: 612px;
     overflow-y:scroll;
-    margin: 2px 0 0 0;
+    margin: 9px 0 0 0;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
   #scrollContainer::-webkit-scrollbar {display: none;}
-  ul {padding: 6px 0 4px 0;margin: 0;}
+  ul {padding: 5px 0 1px 0;margin: 0;}
   li {
     list-style-type:none;
     display: flex;
     align-items: center;
-    margin-bottom: 2.5px;
+    margin-bottom: 3.5px;
     letter-spacing: -0.02em;
   }
   .box {
     width: 20px;
     min-width: 20px;
     height: 20px;
-    border: 2px solid #c09dc2;
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
-    margin-right: 5px;
-  }
-  .box.checked {
-    border: 2px solid #c09dc2;
-    background: #c09dc2; 
+    margin-right: 8px;
   }
   .check:after{
     content: '';
     display: block;
-    width: 7px;
-    height: 13px;
+    width: 6px;
+    height: 12px;
     border: solid #fff;
-    border-width: 0 3px 3px 0;
+    border-width: 0 2px 2px 0;
     transform: rotate(45deg);
-    margin: 0 0 0 4px;
+    margin: 2px 0 0 7px;
   }
 `;
 const PageJS = `
@@ -119,7 +130,7 @@ function main() {
 
 window.onload = main;
 `;
-const PageLink = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@400;500" rel="stylesheet">';
+const PageLink = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700&display=swap" rel="stylesheet">';
 
 module.exports = function(request, response, server) {
   console.log(`[${new Date().toISOString()}] /api/live-task-view`);
