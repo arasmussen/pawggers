@@ -156,28 +156,27 @@ module.exports = function(request, response, server) {
       </div>
       <p class="section-paragraph">♪ playlists we listen to on stream ♫</p>
       <div class="playlists">
-      
-        <a class="playlist" href="https://open.spotify.com/playlist/1TNYJrsNfNxfOpYAxqqMYq?si=c70896b2192e4c8d">
+        <a class="playlist" target="_blank" href="https://open.spotify.com/playlist/0EdpsOs97X9EUipCJKmWJV?si=6712d83b9a1b4da1">
           <img src="https://i.scdn.co/image/ab67706c0000bebbede67dd3942faf14ad3d2669" />
           <p class="name">sarah's stream&nbsp;jams</p>
         </a>
-        <a class="playlist" href="https://open.spotify.com/playlist/1TNYJrsNfNxfOpYAxqqMYq?si=c70896b2192e4c8d">
+        <a class="playlist" target="_blank" href="https://open.spotify.com/playlist/1TNYJrsNfNxfOpYAxqqMYq?si=c70896b2192e4c8d">
           <img src="https://i.scdn.co/image/ab67706c0000da8437d68f9312e8e41bcfaa4d96" />
           <p class="name">pop culture lofi&nbsp;beats</p>
         </a>
-        <a class="playlist" href="https://open.spotify.com/playlist/0yuaNr2261ynXYz1MYO9Tm?si=ef0f6d81245b4727">
+        <a class="playlist" target="_blank" href="https://open.spotify.com/playlist/0yuaNr2261ynXYz1MYO9Tm?si=ef0f6d81245b4727">
           <img src="https://i.scdn.co/image/ab67706c0000da84aeca508f7469506a3cd2d5d6" />
           <p class="name">vibin'</p>
         </a>
-        <a class="playlist" href="https://open.spotify.com/playlist/469T18wyfKxFg8aGaNbHE1?si=7f7ec94e9f7d4c60">
+        <a class="playlist" target="_blank" href="https://open.spotify.com/playlist/469T18wyfKxFg8aGaNbHE1?si=7f7ec94e9f7d4c60">
           <img src="https://i.scdn.co/image/ab67706c0000da8422da83de42d2be0564ea5ecf" />
           <p class="name">fresh</p>
         </a>
-        <a class="playlist" href="https://open.spotify.com/playlist/3pSNie4iZR5jtb410C0W53?si=5754b6afb36845c6">
+        <a class="playlist" target="_blank" href="https://open.spotify.com/playlist/3pSNie4iZR5jtb410C0W53?si=5754b6afb36845c6">
           <img src="https://mosaic.scdn.co/300/ab67616d00001e021260c9a4d42b2615c9f67bb0ab67616d00001e02131cf6fcb170cda7a7956227ab67616d00001e022f74587e89fe803fa61d748eab67616d00001e0289a8fc641c956dc899c0b168" />
           <p class="name">kbop stan</p>
         </a>
-        <a class="playlist" href="https://open.spotify.com/playlist/1J2au2gmjucHtDOFz4Dsac?si=8eca289f682748f1">
+        <a class="playlist" target="_blank" href="https://open.spotify.com/playlist/1J2au2gmjucHtDOFz4Dsac?si=8eca289f682748f1">
           <img src="https://mosaic.scdn.co/300/ab67616d00001e0250561199d70bffacb1959021ab67616d00001e029c6590331c9a43a664a8af7bab67616d00001e02af7d03372ecfcec2b160e81dab67616d00001e02e54976b5d8f367ebeebaba8a" />
           <p class="name">mornin</p>
         </a>
