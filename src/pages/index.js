@@ -3,8 +3,51 @@ const getDay = require('../util/getDay');
 const renderHTML = require('../util/renderHTML');
 
 const PageCSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700&display=swap');
-  
+  @font-face {
+    font-family: 'Rubik';
+    src: url('../fonts/Rubik-Bold.eot');
+    src: url('../fonts/Rubik-Bold.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/Rubik-Bold.woff2') format('woff2'),
+        url('../fonts/Rubik-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+      font-family: 'Rubik';
+      src: url('../fonts/Rubik-Medium.eot');
+      src: url('../fonts/Rubik-Medium.eot?#iefix') format('embedded-opentype'),
+          url('../fonts/Rubik-Medium.woff2') format('woff2'),
+          url('../fonts/Rubik-Medium.woff') format('woff');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+  }
+
+  @font-face {
+      font-family: 'Rubik';
+      src: url('../fonts/Rubik-Regular.eot');
+      src: url('../fonts/Rubik-Regular.eot?#iefix') format('embedded-opentype'),
+          url('../fonts/Rubik-Regular.woff2') format('woff2'),
+          url('../fonts/Rubik-Regular.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+  }
+
+  @font-face {
+      font-family: 'Rubik';
+      src: url('../fonts/Rubik-SemiBold.eot');
+      src: url('../fonts/Rubik-SemiBold.eot?#iefix') format('embedded-opentype'),
+          url('../fonts/Rubik-SemiBold.woff2') format('woff2'),
+          url('../fonts/Rubik-SemiBold.woff') format('woff');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+  }
+
+
   html, body, #container {
     display: flex;
     flex-direction: column;
@@ -66,7 +109,7 @@ const PageCSS = `
     font-size: 15px;
   }
 
-  .link:hover a {
+  .link:hover {
     color: #fc7354;
   }
 
@@ -136,23 +179,13 @@ module.exports = function(request, response, server) {
     <div class="main-container">
       <img class="logo" src="https://cdn.fourthwall.com/shops/sh_4fcf7ae9-e4bd-4b13-82e0-399fc7337d97/themes/f8596938-4eaf-4123-a9eb-7b0dfcf2ffc2.png" />
       <p>cowork/study streams with sarah&nbsp;&&nbsp;emmy</p>
-      <p>tues, wed, and fri · 10:13 ET</p>
+      <p>tues, wed, fri · 10:15 ET</p>
       <div class="links">
-        <div class="link">
-          <a target="_blank" href="https://twitch.tv/xhumming">work/study streams</a>
-        </div>
-        <div class="link">
-          <a target="_blank" href="https://shop.emmy.dog">rep our merch</a>
-        </div>
-        <div class="link">
-          <a target="_blank" href="https://discord.gg/SVKHb6Xfqp">join our discord</a>
-        </div>
-        <div class="link">
-          <a target="_blank" href="https://www.twitch.tv/team/emmyhq">emmyHQ streamers</a>
-        </div>
-        <div class="link">
-          <a target="_blank" href="https://www.patreon.com/hums">sarah's audio diary</a>
-        </div>
+          <a target="_blank" class="link" href="https://twitch.tv/xhumming">work/study streams</a>
+          <a target="_blank" class="link" href="https://shop.emmy.dog">rep our merch</a>
+          <a target="_blank" class="link" href="https://discord.gg/SVKHb6Xfqp">join our discord</a>
+          <a target="_blank" class="link" href="https://www.twitch.tv/team/emmyhq">emmyHQ streamers</a>
+          <a target="_blank" class="link" href="https://www.patreon.com/hums">sarah's audio diary</a>
       </div>
       <p class="section-paragraph">♪ playlists we listen to on stream ♫</p>
       <div class="playlists">
