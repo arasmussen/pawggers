@@ -3,50 +3,6 @@ const getDay = require('../util/getDay');
 const renderHTML = require('../util/renderHTML');
 
 const PageCSS = `
-  @font-face {
-    font-family: 'Rubik';
-    src: url('../fonts/Rubik-Bold.eot');
-    src: url('../fonts/Rubik-Bold.eot?#iefix') format('embedded-opentype'),
-        url('../fonts/Rubik-Bold.woff2') format('woff2'),
-        url('../fonts/Rubik-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  @font-face {
-      font-family: 'Rubik';
-      src: url('../fonts/Rubik-Medium.eot');
-      src: url('../fonts/Rubik-Medium.eot?#iefix') format('embedded-opentype'),
-          url('../fonts/Rubik-Medium.woff2') format('woff2'),
-          url('../fonts/Rubik-Medium.woff') format('woff');
-      font-weight: 500;
-      font-style: normal;
-      font-display: swap;
-  }
-
-  @font-face {
-      font-family: 'Rubik';
-      src: url('../fonts/Rubik-Regular.eot');
-      src: url('../fonts/Rubik-Regular.eot?#iefix') format('embedded-opentype'),
-          url('../fonts/Rubik-Regular.woff2') format('woff2'),
-          url('../fonts/Rubik-Regular.woff') format('woff');
-      font-weight: normal;
-      font-style: normal;
-      font-display: swap;
-  }
-
-  @font-face {
-      font-family: 'Rubik';
-      src: url('../fonts/Rubik-SemiBold.eot');
-      src: url('../fonts/Rubik-SemiBold.eot?#iefix') format('embedded-opentype'),
-          url('../fonts/Rubik-SemiBold.woff2') format('woff2'),
-          url('../fonts/Rubik-SemiBold.woff') format('woff');
-      font-weight: 600;
-      font-style: normal;
-      font-display: swap;
-  }
-
 
   html, body, #container {
     display: flex;
@@ -172,6 +128,7 @@ const PageCSS = `
   }
 `;
 const PageJS = ``;
+const PageLink = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700&display=swap" rel="stylesheet">';
 
 module.exports = function(request, response, server) {
 
