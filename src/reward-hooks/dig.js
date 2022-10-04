@@ -96,7 +96,7 @@ module.exports = function(data) {
     }, (numberOfDigs + 1) * 1200);
   } else {
     setTimeout(() => {
-      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 9 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing…' : `${sentiment} They now have ${spend} pawggers.`}`);
+      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 9 ? 'But wait… A spooky ghost pirate stole their loot. Leaving them with… nothing…' : `${sentiment} They now have ${spend} pawggers.`}`);
     }, (numberOfDigs + 1) * 1200);
   }
 }
