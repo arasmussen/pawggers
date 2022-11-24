@@ -96,11 +96,7 @@ module.exports = function(data) {
     }, (numberOfDigs + 1) * 1200);
   } else {
     setTimeout(() => {
-      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 9 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing…' : `${sentiment} They now have ${spend} pawggers.`}`);
+      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 9 ? 'But wait… A naughty elf pirate stole their loot. Leaving them with… nothing…' : `${sentiment} They now have ${spend} pawggers.`}`);
     }, (numberOfDigs + 1) * 1200);
   }
 }
-
-
-regular
-pos: x 0.0 y 0.0 rot: 0.0 scale: x 1.336 y 1.336 crop: l 0 t 0 r 0 b 0
