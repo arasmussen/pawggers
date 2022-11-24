@@ -13,6 +13,7 @@ module.exports = {
   '!leaderboard': require('./leaderboard'),
   '!pawggers': require('./pawggers'),
   '!points': require('./pawggers'),
+  '!top': require('./leaderboard'),
 
   // quotes
   '!t': require('./t'),
