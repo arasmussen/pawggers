@@ -14,6 +14,7 @@ module.exports = {
   '!pawggers': require('./pawggers'),
   '!points': require('./pawggers'),
   '!top': require('./leaderboard'),
+  '!finalwheel': require('./finalwheel'),
 
   // quotes
   '!t': require('./t'),
