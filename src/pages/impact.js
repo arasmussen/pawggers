@@ -8,8 +8,7 @@ const PageCSS = `
     flex-direction: column;
     align-items: center;
     width: 100%;
-    margin: 50px 0;
-    padding: 0;
+    padding: 50px 0;;
     font-family: 'Rubik', sans-serif;
     text-align: center;
     box-sizing: border-box;
@@ -21,15 +20,13 @@ const PageCSS = `
   h1 {
     margin: 0 0 10px 0;
     font-size: 50px;
-    letter-spacing: 0.1em;
-    letter-spacing: 0.1em;
     color: #fc7354;
   }
 
   h2 {
     text-transform: uppercase;
     font-size: 18px;
-    margin: 50px 0 20px 0;
+    margin: 50px 0 10px 0;
     letter-spacing: 0.03em;
     color: #333;
     font-weight: 500;
@@ -38,6 +35,11 @@ const PageCSS = `
   p {
     font-size: 18px;
     color: #333;
+    max-width: 500px;
+  }
+
+  .date {
+    margin: 0 0 30px 0;
   }
 
   img {
@@ -54,6 +56,7 @@ module.exports = function(request, response, server) {
     <h1>EmmyHQ Impact</h1>
     <p>Documenting the champions from EmmyHQ who have gone above and beyond to give to those in need.</p>
     <h2>Stream for All Animals Dec 15-18, 2022</h2>
+    <p class="date">December 15-18, 2022</p>
     <p>Your names here</p>
   `;
 
