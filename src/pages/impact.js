@@ -19,25 +19,25 @@ const PageCSS = `
   }
 
   h1 {
-    margin: 0 0 50px 0;
+    margin: 0 0 10px 0;
     font-size: 50px;
     letter-spacing: 0.1em;
-    color: #CD62FF;
+    letter-spacing: 0.1em;
+    color: #fc7354;
   }
 
   h2 {
     text-transform: uppercase;
     font-size: 18px;
-    margin: 0 0 20px 0;
-    letter-spacing: 0.15em;
-    color: #E0D4EF;
+    margin: 50px 0 20px 0;
+    letter-spacing: 0.03em;
+    color: #333;
     font-weight: 500;
   }
 
   p {
     font-size: 18px;
-    color: #E0D4EF;
-    letter-spacing: 0.02em;
+    color: #333;
   }
 
   img {
@@ -51,7 +51,7 @@ const PageJS = ``;
 module.exports = function(request, response, server) {
 
   const body = `
-    <h1>EmmyHQ Impact<span>2022</span></h1>
+    <h1>EmmyHQ Impact</h1>
     <p>Documenting the champions from EmmyHQ who have gone above and beyond to give to those in need.</p>
     <h2>Stream for All Animals Dec 15-18, 2022</h2>
     <p>Your names here</p>
