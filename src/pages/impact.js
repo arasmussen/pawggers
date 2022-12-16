@@ -26,10 +26,10 @@ const PageCSS = `
   h2 {
     text-transform: uppercase;
     font-size: 18px;
-    margin: 50px 0 10px 0;
+    margin: 50px 0 5px 0;
     letter-spacing: 0.03em;
     color: #333;
-    font-weight: 500;
+    font-weight: 600;
   }
 
   p {
@@ -40,6 +40,9 @@ const PageCSS = `
 
   .date {
     margin: 0 0 30px 0;
+    font-size: 14px;
+    opacity: 0.5;
+    font-weight: 500;
   }
 
   img {
@@ -55,7 +58,7 @@ module.exports = function(request, response, server) {
   const body = `
     <h1>EmmyHQ Impact</h1>
     <p>Documenting the champions from EmmyHQ who have gone above and beyond to give to those in need.</p>
-    <h2>Stream for All Animals Dec 15-18, 2022</h2>
+    <h2>Stream for All Animals</h2>
     <p class="date">December 15-18, 2022</p>
     <p>Your names here</p>
   `;
