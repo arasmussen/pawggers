@@ -139,6 +139,7 @@ module.exports = function(request, response, server) {
       <p>tues, wed, fri · 10:15 ET</p>
       <div class="links">
           <a target="_blank" class="link" href="https://twitch.tv/xhumming">work/study streams</a>
+          <a target="_blank" class="link" href="https://emmy.dog/impact">see our impact</a>
           <a target="_blank" class="link" href="https://shop.emmy.dog">rep our merch</a>
           <a target="_blank" class="link" href="https://discord.gg/SVKHb6Xfqp">join our discord</a>
           <a target="_blank" class="link" href="https://www.twitch.tv/team/emmyhq">emmyHQ streamers</a>
