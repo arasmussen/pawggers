@@ -60,7 +60,7 @@ module.exports = function(request, response, server) {
     <p>Documenting the champions from EmmyHQ who have gone above and beyond to give to those in need.</p>
     <h2>Stream for All Animals</h2>
     <p class="date">December 15-18, 2022</p>
-    <p>Your names here</p>
+    <p>urbanbohemian · deekim · tiltify · Jayshoon · TheBigJuicy89 · HemiDex · sunfflawer · D21winters · lilsmurfyone · pranayyy · sassykatasstrophe · pixelatedsoul · toastwithjam_ · MisstyMoo · jerklynn · heytherehan · dianeland · cerealdotcom · NovaMoocakes · w0ngaccount · Forelorne · PlayItRay · theEvilChow · staymadge · saltedsaltine · kittskats · mightymur · lunar_mariya · Chebyyyyyy · ayo_frankie · doaflipguy · cbhl</p>
   `;
 
   // respond

@@ -64,7 +64,8 @@ module.exports = function(context) {
     '"Ambition is a dream with a V8 engine." – Elvis Presley',
     '"Be so happy that, when other people look at you, they become happy too." – Anonymous',
     '"Choose to be optimistic, it feels better." – Dalai Lama',
-    '"The bad news is time flies. The good news is you\'re the pilot." – Michael Altshuler'
+    '"The bad news is time flies. The good news is you\'re the pilot." – Michael Altshuler',
+    '"The sky does not begin at the stars, but at the tip of the grass blades." – Mor Jokai'
   ];
   const pomQuote = pomQuoteList[Math.floor(Math.random() * pomQuoteList.length)];
   const breakQuoteList = [
