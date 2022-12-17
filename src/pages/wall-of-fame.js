@@ -57,7 +57,7 @@ const PageJS = ``;
 module.exports = function(request, response, server) {
 
   const body = `
-    <h1>EmmyHQ Impact</h1>
+    <h1>EmmyHQ Wall of Fame</h1>
     <p>Documenting the champions from EmmyHQ who have gone above and beyond to give to those in&nbsp;need.</p>
     <h2>Stream for All Animals</h2>
     <p class="date">December 15-18, 2022</p>
@@ -72,6 +72,6 @@ module.exports = function(request, response, server) {
     css: PageCSS,
     includeSocketIO: true,
     js: PageJS,
-    title: 'EmmyHQ Impact',
+    title: 'EmmyHQ Wall of Fame',
   }));
 }
