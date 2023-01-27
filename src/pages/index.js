@@ -144,6 +144,7 @@ module.exports = function(request, response, server) {
           <a target="_blank" class="link" href="https://discord.gg/SVKHb6Xfqp">join our discord</a>
           <a target="_blank" class="link" href="https://www.twitch.tv/team/emmyhq">emmyHQ streamers</a>
           <a target="_blank" class="link" href="https://www.patreon.com/hums">sarah's audio diary</a>
+          <a target="_blank" class="link" href="https://ghostfox.studio">commission sarah</a>
       </div>
       <p class="section-paragraph">♪ playlists we listen to on stream ♫</p>
       <div class="playlists">
