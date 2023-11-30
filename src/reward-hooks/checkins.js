@@ -27,20 +27,29 @@ module.exports = function(data) {
   // get period
   const period = getPeriod();
 
-  // hydrators database
+  // checkins database
   const today = getDay();
-  let hydratorsTable = database.get('hydratorsTable');
+  let checkInUsersTable = database.get('checkInUsersTable');
 
-  hydratorsTable = hydratorsTable || {
-    hydrators: [],
+  checkInUsersTable = checkInUsersTable || {
+    checkInUsers: [],
   };
 
-  // add user to list
-  const newHydrator = {
-    date: today,
-    username: user.name,
-  };
-  hydratorsTable.hydrators.push(newHydrator);
-  database.set('hydratorsTable', hydratorsTable);
-  console.log('hydrate');
+  // see if user has checked in before
+  const userID = Object.keys(checkInUsersTable).find((userID) => {
+    return checkInUsersTable[userID].name.toLowerCase() === username.toLowerCase();
+  });
+  // if they have checked in before
+  if (userID) {
+    checkInUsersTable[userID].checkInCount += 1;
+  } else {
+    // if they have't checked in before, create new user
+    const newCheckInUser = {
+      checkInCount: 1,
+      username: user.name,
+    };
+    checkInUsersTable.checkInUsers.push(newCheckInUser);
+  }
+  database.set('checkInUsersTable', checkInUsersTable);
+  console.log('checkin');
 }

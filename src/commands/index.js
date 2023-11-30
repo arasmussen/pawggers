@@ -49,4 +49,6 @@ module.exports = {
   '!ttolend': require('./ttolend'),
   '!ttolstart': require('./ttolstart'),
   '!ttolguesses': require('./ttolguesses'),
+
+  '!h': require('../reward-hooks/hydrate.js'),
 };
