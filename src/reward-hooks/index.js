@@ -9,7 +9,7 @@ const Rewards = {
 
 module.exports = {
   [Rewards.BuriedPawggers]: require('./dig'),
-  [Rewards.CheckIn]: require('./checkin'),
+  [Rewards.CheckIn]: require('./checkins'),
   [Rewards.EarlyBirds]: require('./earlybirds'),
   [Rewards.GiveawayEntry]: require('./giveawayentry'),
   [Rewards.Hydrate]: require('./hydrate'),
