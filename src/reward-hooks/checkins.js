@@ -1,8 +1,6 @@
 const abbreviateNumber = require ('../util/abbreviateNumber');
 const { ClientRequest } = require('http');
 const database = require('../database');
-const getDay = require('../util/getDay');
-const getPeriod = require('../util/getPeriod');
 const twitch = require('../managers/twitch');
 
 module.exports = function(data) {
@@ -24,32 +22,22 @@ module.exports = function(data) {
   userTable[user.id] = user;
   database.set('userTable', userTable);
 
-  // get period
-  const period = getPeriod();
-
   // checkins database
-  const today = getDay();
   let checkInUsersTable = database.get('checkInUsersTable');
 
-  checkInUsersTable = checkInUsersTable || {
-    checkInUsers: [],
-  };
+  checkInUsersTable = checkInUsersTable || {};
 
   // see if user has checked in before
-  const userID = Object.keys(checkInUsersTable).find((userID) => {
-    return checkInUsersTable[userID].name.toLowerCase() === username.toLowerCase();
-  });
+  const checkInUser = checkInUsersTable[user.id];
+
   // if they have checked in before
-  if (userID) {
-    checkInUsersTable[userID].checkInCount += 1;
+  if (checkInUser) {
+    checkInUser.checkInCount += 1;
   } else {
     // if they have't checked in before, create new user
-    const newCheckInUser = {
+    checkInUsersTable[user.id] = {
       checkInCount: 1,
-      username: user.name,
     };
-    checkInUsersTable.checkInUsers.push(newCheckInUser);
   }
   database.set('checkInUsersTable', checkInUsersTable);
-  console.log('checkin');
 }
