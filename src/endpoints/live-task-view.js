@@ -25,7 +25,7 @@ const PageCSS = `
     letter-spacing: 0.03em;
     color: #fff;
     font-family: 'Rubik', sans-serif;
-    padding: 0 0 0 8px;
+    padding: 0 12px 0 8px;
   }
   .username {
     font-weight: 600;
