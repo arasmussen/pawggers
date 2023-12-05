@@ -20,9 +20,11 @@ module.exports = {
   '!t': require('./t'),
 
   // task
+  '!add': require('./task'),
   '!addtask': require('./task'),
   '!check': require('./done'),
   '!complete': require('./done'),
+  '!delete': require('./removetask'),
   '!done': require('./done'),
   '!donefortheday': require('./pomsdone'),
   '!donetask': require('./done'),
