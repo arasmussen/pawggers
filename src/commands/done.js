@@ -50,7 +50,7 @@ module.exports = function(context) {
   const totalCompletedTasks = tasksForUser.length;
 
   // random encouragement
-  const celebrationList = ['good job!', 'good stuff!', 'amazing!', 'you\'re killing it!', 'keep it up!', 'heck yeah!', 'hypeeeee!', 'let\'s goooo!', 'pawg!'];
+  const celebrationList = ['good job!', 'good stuff!', 'amazing!', 'you\'re killing it!', 'keep it up!', 'heck yeah!', 'hypeeeee!', 'let\'s goooo!'];
   const celebration = celebrationList[Math.floor(Math.random() * celebrationList.length)];
 
   // print result

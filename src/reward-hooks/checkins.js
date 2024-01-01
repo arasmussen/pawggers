@@ -40,4 +40,10 @@ module.exports = function(data) {
     };
   }
   database.set('checkInUsersTable', checkInUsersTable);
+
+  const greetingList = ['hii!', 'good to see you!', 'heyo!', 'welcome back!', 'hey', 'hihi'];
+  const greeting = greetingList[Math.floor(Math.random() * greetingList.length)];
+
+  // confirm checkin
+  twitch.client.say('#xhumming', `${greeting} ${user.name}! you have checked in ${checkInCount} ${checkInCount === 1 ? 'time' : 'times'}`);
 }
