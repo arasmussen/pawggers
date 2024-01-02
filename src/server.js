@@ -22,6 +22,10 @@ const Endpoints = {
   '/api/reward-updated': require('./endpoints/reward-updated'),
 };
 
+const Jobs = [
+  require('./jobs/journal-prompts'),
+];
+
 class Server {
   server = null;
 
@@ -78,6 +82,8 @@ class Server {
     this.server.listen(3000);
 
     socket.start(this.server);
+
+    Jobs.forEach(startJob => startJob());
   }
 }
 

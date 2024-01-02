@@ -6,6 +6,7 @@ const asyncRequest = util.promisify(request);
 
 const WebhookIDs = {
 	'cowork-chat': '971500686841892924',
+	'journaling': '1191579201367715933',
 };
 
 const discord = {
