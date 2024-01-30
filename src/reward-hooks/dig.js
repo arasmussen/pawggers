@@ -75,13 +75,14 @@ module.exports = function(data) {
   userSpendTable[period][user.id] = userSpendTable[period][user.id] || {};
   userSpendTable[period][user.id].spend = userSpendTable[period][user.id].spend || 0;
   // don't add pawggers if pirate (10% chance)
-  let bonusPawggers = getRandomInt(500, 2000);
+  // let bonusPawggers = getRandomInt(500, 2000);
   if (pirateRandomizer > 10) {
     userSpendTable[period][user.id].spend += foundPawggers;
-  } else {
-    // REMOVE THIS AFTER HOLIDAYS
-    userSpendTable[period][user.id].spend += foundPawggers + bonusPawggers;
   }
+  // holiday elves
+  // else {
+  //   userSpendTable[period][user.id].spend += foundPawggers + bonusPawggers;
+  // }
   database.set('userSpendTable', userSpendTable);
 
   // get total pawggers
@@ -100,8 +101,8 @@ module.exports = function(data) {
     }, (numberOfDigs + 1) * 1200);
   } else {
     setTimeout(() => {
-      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 10 ? `Oh wait… friendly holiday elves are spreading holiday cheer with ${bonusPawggers} bonus pawggers! emmmyElfPeep They now have ${spend} pawggers!` : `${sentiment} They now have ${spend} pawggers.`}`);
-      //twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 9 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing…' : `${sentiment} They now have ${spend} pawggers.`}`);
+      //twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 10 ? `Oh wait… friendly holiday elves are spreading holiday cheer with ${bonusPawggers} bonus pawggers! emmmyElfPeep They now have ${spend} pawggers!` : `${sentiment} They now have ${spend} pawggers.`}`);
+      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 10 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing…' : `${sentiment} They now have ${spend} pawggers.`}`);
     }, (numberOfDigs + 1) * 1200);
   }
 }
