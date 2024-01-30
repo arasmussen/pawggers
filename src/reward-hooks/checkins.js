@@ -46,4 +46,5 @@ module.exports = function(data) {
 
   // confirm checkin
   twitch.client.say('#xhumming', `${greeting} ${user.name}! you have checked in ${checkInCount} ${checkInCount === 1 ? 'time' : 'times'}`);
+  twitch.client.say('#xhumming', `testing checkins`);
 }
