@@ -45,6 +45,5 @@ module.exports = function(data) {
   const greeting = greetingList[Math.floor(Math.random() * greetingList.length)];
 
   // confirm checkin
-  twitch.client.say('#xhumming', `${greeting} ${user.name}! you have checked in ${checkInCount} ${checkInCount === 1 ? 'time' : 'times'}`);
-  twitch.client.say('#xhumming', `testing checkins`);
+  twitch.client.say('#xhumming', `${greeting} ${user.name}! you have checked in ${checkInUser.checkInCount} ${checkInUser.checkInCount === 1 ? 'time' : 'times'}`);
 }
