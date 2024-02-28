@@ -32,8 +32,18 @@ module.exports = function(data) {
   let hydratorsTable = database.get('hydratorsTable');
 
   hydratorsTable = hydratorsTable || {
+    day: today,
     hydrators: [],
   };
+
+  if (hydratorsTable.day) {
+    if (hydratorsTable.day !== today) {
+      hydratorsTable = {
+        day: today,
+        hydrators: [],
+      };
+    }
+  }
 
   // add user to list
   const newHydrator = {
