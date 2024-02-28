@@ -41,7 +41,7 @@ module.exports = function(data) {
   }
   database.set('checkInUsersTable', checkInUsersTable);
 
-  const greetingList = ['hii!', 'good to see you!', 'heyo!', 'welcome back!', 'hey', 'hihi'];
+  const greetingList = ['hii', 'good to see you', 'heyo', 'welcome back', 'hey', 'hihi', 'hello', 'hellooo', 'eyo'];
   const greeting = greetingList[Math.floor(Math.random() * greetingList.length)];
 
   // confirm checkin

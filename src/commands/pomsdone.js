@@ -90,6 +90,6 @@ module.exports = function(context) {
     database.set('statsTable', statsTable);
   }
 
-  client.say(target, `${userIDsWithThreeTasks.length} people completed 3 or more tasks today! They have each earned 2,000 pawggers emmmyCheer`)
+  client.say(target, `${totalCompletedTasks} tasks completed today—heck yeah! ${userIDsWithThreeTasks.length} people completed 3 or more tasks today! They have each earned 2,000 pawggers emmmyCheer`)
 }
 
