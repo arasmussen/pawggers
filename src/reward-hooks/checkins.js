@@ -34,10 +34,11 @@ module.exports = function(data) {
   if (checkInUser) {
     checkInUser.checkInCount += 1;
   } else {
-    // if they have't checked in before, create new user
-    checkInUsersTable[user.id] = {
+    // if they have't checked in before, create new user with 1 checkin
+    checkInUser = {
       checkInCount: 1,
     };
+    checkInUsersTable[user.id] = checkInUser;
   }
   database.set('checkInUsersTable', checkInUsersTable);
 
