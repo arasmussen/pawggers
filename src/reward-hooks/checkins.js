@@ -28,7 +28,7 @@ module.exports = function(data) {
   checkInUsersTable = checkInUsersTable || {};
 
   // see if user has checked in before
-  const checkInUser = checkInUsersTable[user.id];
+  var checkInUser = checkInUsersTable[user.id];
 
   // if they have checked in before
   if (checkInUser) {
