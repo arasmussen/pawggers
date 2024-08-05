@@ -31,6 +31,7 @@ module.exports = {
   '!edit': require('./edittask'),
   '!edittask': require('./edittask'),
   '!finished': require('./done'),
+  '!next': require('./next'),
   '!pomsdone': require('./pomsdone'),
   '!removetask': require('./removetask'),
   '!summary': require('./summary'),
