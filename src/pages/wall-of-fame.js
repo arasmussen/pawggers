@@ -77,19 +77,19 @@ module.exports = function(request, response, server) {
     <div class="stream">
       <h2>Stream for All Animals</h2>
       <p class="date">December 15-18, 2022</p>
-      <img src="https://media.discordapp.net/attachments/891339850828087436/1053544835560247306/image.png?width=1138&height=639"</img>
+      <img src="https://canny-assets.io/images/3103b69231d2b721aa84c9167576f757.png"</img>
       <p>${streamForAllAnimals.join("<span class='dot'> · </span>")}</p>
     </div>
     <div class="stream">
       <h2>EMMYFEST 2022 for F Cancer</h2>
       <p class="date">May 14, 2022</p>
-      <img src="https://cdn.discordapp.com/attachments/891339850828087436/1053695590409715752/image.png"</img>
+      <img src="https://canny-assets.io/images/b5f754f6c7377bbf51f028bf621a8cb1.png"</img>
       <p>${emmyfest2022.join("<span class='dot'> · </span>")}</p>
     </div>
     <div class="stream">
       <h2>Project Hope for Ukraine</h2>
       <p class="date">March 8-13, 2022</p>
-      <img src="https://media.discordapp.net/attachments/891339850828087436/1053693775282708510/image.png?width=960&height=539"</img>
+      <img src="https://canny-assets.io/images/9c7d70b3597e80a43b20972fbe903e2e.png"</img>
       <p>${ukraine.join("<span class='dot'> · </span>")}</p>
     </div>
   `;

@@ -13,14 +13,23 @@ const PageCSS = `
     font-family: 'Fredoka', sans-serif;
     text-align: center;
     box-sizing: border-box;
-    background: #1C1420;
+  }
+
+  .contentContainer {
+    display: flex;
+    padding: 0 40px;
+  }
+
+  .right {
+    max-width: 660px;
+    margin: 0 0 0 40px;
   }
 
   h1 {
     margin: 0 0 50px 0;
     font-size: 50px;
     letter-spacing: 0.1em;
-    color: #CD62FF;
+    color: #0A2EDB;
   }
 
   h2 {
@@ -28,20 +37,36 @@ const PageCSS = `
     font-size: 18px;
     margin: 0 0 20px 0;
     letter-spacing: 0.15em;
-    color: #E0D4EF;
+    color: #F05414;
     font-weight: 500;
   }
 
   p {
     font-size: 18px;
-    color: #E0D4EF;
+    color: #F05414;
     letter-spacing: 0.02em;
   }
 
   img {
-    max-width: 50%;
     border-radius: 10px;
     margin: 0 0 50px 0;
+  }
+
+  iframe {
+    max-width: 460px;
+    position: sticky;
+    top: 0;
+  }
+
+  @media only screen and (max-width: 800px) {
+    iframe {
+      position: relative;
+    }
+
+    .contentContainer {
+      flex-direction: column;
+      align-items: center;
+    }
   }
 `;
 const PageJS = ``;
@@ -50,11 +75,16 @@ module.exports = function(request, response, server) {
 
   const body = `
     <h1>EMMYFEST <span>2022</span></h1>
-    <h2>Milestones</h2>
-    <img src="https://bit.ly/3w9YUYW"</img>
-    <h2>!tee</h2>
-    <img src="https://cdn.discordapp.com/attachments/891339850828087436/971260143880785950/tee-mock.png"</img>
-    <p>If y'all want, we can look into selling these after :)</p>
+    <div class="contentContainer">
+      <iframe id='kofiframe' src='https://ko-fi.com/emmyfest/?hidefeed=true&widget=true&embed=true&preview=true' style='border:none;width:100%;padding:4px;' height='712' title='emmyfest'></iframe>
+      <div class="right">
+        <h2>Milestones</h2>
+        <img src="https://canny-assets.io/images/5f69a34681ebd27773e86803d6ec0a66.png"</img>
+        <h2>!tee</h2>
+        <img src="https://canny-assets.io/images/c1f058c219499c0835a1101b85ce3aff.png"</img>
+        <p>final shirt will be available at <a href="shop.emmy.dog">shop.emmy.dog</a></p>
+      </div>
+    </div>
   `;
 
   // respond
