@@ -8,6 +8,7 @@ const twitch = require('./managers/twitch');
 
 const Endpoints = {
   '/': require('./pages/index'),
+  '/auction': require('./pages/auction'),
   '/emmyfest': require('./pages/emmyfest'),
   '/wall-of-fame': require('./pages/wall-of-fame'),
   '/api/channel-gift-sub': require('./endpoints/channel-gift-sub'),
