@@ -81,7 +81,7 @@ const PageJS = ``;
 module.exports = function(request, response, server) {
 
   const body = `
-    <h1>EMMYFEST <span>2022</span></h1>
+    <h1>EMMYFEST <span>2024</span></h1>
     <div class="contentContainer">
       <div class="left">
         <h2>DONATE</h2>
