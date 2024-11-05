@@ -76,10 +76,13 @@ module.exports = function(request, response, server) {
   const body = `
     <h1>EMMYFEST <span>2022</span></h1>
     <div class="contentContainer">
-      <iframe id='kofiframe' src='https://ko-fi.com/emmyfest/?hidefeed=true&widget=true&embed=true&preview=true' style='border:none;width:100%;padding:4px;' height='712' title='emmyfest'></iframe>
+      <div class="left">
+        <div>Use your Twitch handle unless you want to be anon so Sarah can make sure you get your rewards</div>
+        <iframe id='kofiframe' src='https://ko-fi.com/emmyfest/?hidefeed=true&widget=true&embed=true&preview=true' style='border:none;width:100%;padding:4px;' height='712' title='emmyfest'></iframe>
+      </div>
       <div class="right">
         <h2>Milestones</h2>
-        <img src="https://canny-assets.io/images/5f69a34681ebd27773e86803d6ec0a66.png"</img>
+        <img src="https://canny-assets.io/images/7beed8c0764c5beb1268ef7a1165e4de.png"</img>
         <h2>!tee</h2>
         <img src="https://canny-assets.io/images/c1f058c219499c0835a1101b85ce3aff.png"</img>
         <p>final shirt will be available at <a href="shop.emmy.dog">shop.emmy.dog</a></p>
