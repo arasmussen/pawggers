@@ -15,5 +15,6 @@ module.exports = function renderHTML(contents) {
   const htmlJS = `<script type="text/javascript">${js}</script>`;
   const htmlCSS = `<style>${CSSReset}${css}</style>`;
   const socketIO = includeSocketIO ? '<script src="/socket.io/socket.io.js"></script>' : '';
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8">${htmlTitle}${link}${htmlCSS}${socketIO}${htmlJS}</head><body>${body}</body></html>`;
+  return `<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">${htmlTitle}${link}${htmlCSS}${socketIO}${htmlJS}</head><body>${body}</body></html>`;
 }

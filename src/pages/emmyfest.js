@@ -21,6 +21,7 @@ const PageCSS = `
   }
 
   .right {
+    width: 100%;
     max-width: 660px;
     margin: 0 0 0 40px;
   }
@@ -58,6 +59,12 @@ const PageCSS = `
     top: 0;
   }
 
+  .donation-note {
+    width 100%;
+    max-width: 300px;
+    font-size: 14px;
+  }
+
   @media only screen and (max-width: 800px) {
     iframe {
       position: relative;
@@ -77,7 +84,8 @@ module.exports = function(request, response, server) {
     <h1>EMMYFEST <span>2022</span></h1>
     <div class="contentContainer">
       <div class="left">
-        <div>Use your Twitch handle unless you want to be anon so Sarah can make sure you get your rewards</div>
+        <h2>DONATE</h2>
+        <div class="donation-note">Use your Twitch handle (unless anon) so Sarah can make sure you get your&nbsp;rewards</div>
         <iframe id='kofiframe' src='https://ko-fi.com/emmyfest/?hidefeed=true&widget=true&embed=true&preview=true' style='border:none;width:100%;padding:4px;' height='712' title='emmyfest'></iframe>
       </div>
       <div class="right">
