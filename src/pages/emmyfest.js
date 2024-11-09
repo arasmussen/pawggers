@@ -86,6 +86,7 @@ module.exports = function(request, response, server) {
       <div class="left">
         <h2>DONATE</h2>
         <div class="donation-note">Use your Twitch handle (unless anon) so Sarah can make sure you get your&nbsp;rewards</div>
+        <div class="donation-note">Your message will show on the stream overlay (up to 50 characters)</div>
         <iframe id='kofiframe' src='https://ko-fi.com/emmyfest/?hidefeed=true&widget=true&embed=true&preview=true' style='border:none;width:100%;padding:4px;' height='712' title='emmyfest'></iframe>
       </div>
       <div class="right">
