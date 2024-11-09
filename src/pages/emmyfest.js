@@ -90,7 +90,7 @@ module.exports = function(request, response, server) {
       </div>
       <div class="right">
         <h2>Milestones</h2>
-        <img src="https://canny-assets.io/images/7beed8c0764c5beb1268ef7a1165e4de.png"</img>
+        <img src="https://canny-assets.io/images/d025d2468fc3a9bfacbb5082a83a0c30.png"</img>
         <h2>!tee</h2>
         <img src="https://canny-assets.io/images/c1f058c219499c0835a1101b85ce3aff.png"</img>
         <p>final shirt will be available at <a href="shop.emmy.dog">shop.emmy.dog</a></p>
