@@ -1,6 +1,6 @@
 module.exports = {
   // emmyfest
-  '!top5': require('./top5'),
+  //'!top5': require('./top5'),
 
   // misc
   '!buildraidmsg': require('./buildraidmsg'),
