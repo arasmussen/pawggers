@@ -27,5 +27,5 @@ module.exports = function(context) {
     return `${userName} x ${subPointsTable[userID]}`;
   }).join(', ');
   const { client, target } = context;
-  client.say(target, `Top 5 are: ${top5}`);
+  //client.say(target, `Top 5 are: ${top5}`);
 }
