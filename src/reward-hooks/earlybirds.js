@@ -35,26 +35,31 @@ module.exports = function(data) {
     earlyBirds: [],
   };
 
+  // calculate how many pawggers
+  var pawggers = 0;
+  var place = '';
+  const numBirds = earlyBirdTable.earlyBirds.length;
+
+  if (numBirds === 0) {
+    pawggers = 1000;
+    place = 'FIRST';
+  } else if (numBirds === 1) {
+    pawggers = 500;
+    place = 'SECOND';
+  } else {
+    pawggers = 250;
+    place = 'THIRD';
+  }
+
   // add user to list
   const newEarlyBird = {
     date: today,
     username: user.name,
   };
   earlyBirdTable.earlyBirds.push(newEarlyBird);
-  database.set('earlyBirdTable', earlyBirdTable);
 
-  // calculate how many pawggers
-  var pawggers = 0;
-  var place = '';
-  if (earlyBirdTable.earlyBirds.length === 1) {
-    pawggers = 1000;
-    place = 'FIRST';
-  } else if (earlyBirdTable.earlyBirds.length === 2) {
-    pawggers = 500;
-    place = 'SECOND';
-  } else {
-    pawggers = 250;
-    place = 'THIRD';
+  // reset after third
+  if (earlyBirdTable.earlyBirds.length === 3) {
     earlyBirdTable.earlyBirds = [];
   }
   database.set('earlyBirdTable', earlyBirdTable);
