@@ -35,9 +35,9 @@ module.exports = function(data) {
   // 7% chance 1500-2000
   const randomizer = Math.floor(Math.random() * 100);
   // chance for pirate
-  //const pirateRandomizer = Math.floor(Math.random() * 100);
+  const pirateRandomizer = Math.floor(Math.random() * 100);
   //april fools
-  const pirateRandomizer = 1;
+  //const pirateRandomizer = 1;
 
   function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -104,8 +104,8 @@ module.exports = function(data) {
   } else {
     setTimeout(() => {
       //twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 10 ? 'Oh wait… friendly holiday elves are spreading holiday cheer with ${bonusPawggers} bonus pawggers! emmmyElfPeep They now have ${spend} pawggers!' : `${sentiment} They now have ${spend} pawggers.`}`);
-      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 10 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing… seems like pirates are everywhere today…' : `${sentiment} They now have ${spend} pawggers.`}`);
-      //twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 10 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing…' : `${sentiment} They now have ${spend} pawggers.`}`);
+      //twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 10 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing… seems like pirates are everywhere today…' : `${sentiment} They now have ${spend} pawggers.`}`);
+      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 10 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing…' : `${sentiment} They now have ${spend} pawggers.`}`);
     }, (numberOfDigs + 1) * 1200);
   }
 }
