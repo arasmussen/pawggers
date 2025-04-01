@@ -44,10 +44,10 @@ module.exports = function(data) {
     pawggers = 1000;
     place = 'FIRST';
   } else if (numBirds === 1) {
-    pawggers = 500;
+    pawggers = 1000;
     place = 'SECOND';
   } else {
-    pawggers = 250;
+    pawggers = 1000;
     place = 'THIRD';
   }
 
@@ -85,5 +85,6 @@ module.exports = function(data) {
   }
 
   // print result
-  twitch.client.say('#xhumming', `${user.name} comes in ${place} to claim a worm for ${prettyPawggers} pawggers! They now have ${spend} pawggers.`);
+  //twitch.client.say('#xhumming', `${user.name} comes in ${place} to claim a worm for ${prettyPawggers} pawggers! They now have ${spend} pawggers.`);
+  twitch.client.say('#xhumming', `${user.name} got worm for 1,000 pawggers! They now have ${spend} pawggers.`);
 }
