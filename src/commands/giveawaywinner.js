@@ -1,3 +1,5 @@
+console.log('picksubwinner triggered');
+
 const config = require('../config');
 const discord = require('../managers/discord');
 const isSarah = require('../util/isSarah');
