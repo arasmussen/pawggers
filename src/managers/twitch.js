@@ -1,5 +1,6 @@
 const commands = require('../commands');
 const config = require('../config');
+const discordClient = require('./discordClient');
 const request = require('request');
 const tmi = require('tmi.js');
 const util = require('util');
@@ -43,6 +44,7 @@ const Twitch = {
 
     console.log(`Twitch Command: ${command}`);
     context.client = Twitch.client;
+    context.discordClient = discordClient;
     context.target = target;
     context.variables = commandParts.slice(1);
     commandHandler(context);
