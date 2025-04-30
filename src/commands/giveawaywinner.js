@@ -1,5 +1,3 @@
-console.log('picksubwinner triggered');
-
 const config = require('../config');
 const discord = require('../managers/discord');
 const isSarah = require('../util/isSarah');
@@ -52,7 +50,7 @@ console.log('Picking winner...');
     const winnerMention = `<${winner.id}>`;
 
     // Announce in Twitch chat
-    client.say(target, `🎉 The winner is ${winner.user.username}!`);
+    // client.say(target, `🎉 The winner is ${winner.user.username}!`);
 console.log('Sending to Discord...');
 
     // Announce in Discord
