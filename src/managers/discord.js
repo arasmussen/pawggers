@@ -5,7 +5,7 @@ const util = require('util');
 const asyncRequest = util.promisify(request);
 
 const WebhookIDs = {
-	'bot' '1367158968241360936',
+	'bot': '1367158968241360936',
 	'chat': '1367155736240721920',
 	'cowork-chat': '971500686841892924',
 	'journaling': '1191579201367715933',
