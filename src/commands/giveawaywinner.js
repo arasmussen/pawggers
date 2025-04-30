@@ -7,6 +7,8 @@ const isSarah = require('../util/isSarah');
 module.exports = async function(context) {
   const { client, target, discordClient } = context;
 
+client.say(target, `hello`);
+
   const user = {
     id: context['user-id'],
     name: context['display-name'],
@@ -27,8 +29,10 @@ module.exports = async function(context) {
   }
 
   try {
+    console.log('Fetching members...');
     await guild.members.fetch(); // Ensure full member list is cached
 
+console.log('Looking for role...');
     const role = guild.roles.cache.find(role => role.name === subRoleName);
     if (!role) {
       client.say(target, `Sub role '${subRoleName}' not found.`);
@@ -43,12 +47,13 @@ module.exports = async function(context) {
       client.say(target, `No subs found`);
       return;
     }
-
+console.log('Picking winner...');
     const winner = eligible.random();
-    const winnerMention = `<@${winner.id}>`;
+    const winnerMention = `<${winner.id}>`;
 
     // Announce in Twitch chat
     client.say(target, `🎉 The winner is ${winner.user.username}!`);
+console.log('Sending to Discord...');
 
     // Announce in Discord
     await discord.sendMessage('bot', `🎉 Giveaway winner: ${winnerMention}`);
