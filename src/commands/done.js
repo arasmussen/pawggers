@@ -50,11 +50,11 @@ module.exports = function(context) {
   const totalCompletedTasks = tasksForUser.length;
 
   // random encouragement
-  const celebrationList = ['good job!', 'good stuff!', 'amazing!', 'you\'re killing it!', 'keep it up!', 'heck yeah!', 'hypeeeee!', 'let\'s goooo!'];
+  const celebrationList = ['good job!', 'good stuff!', 'amazing!', 'you\'re killing it!', 'keep it up!', 'heck yeah!', 'hypeeeee!', 'let\'s goooo!', 'proud of you!'];
   const celebration = celebrationList[Math.floor(Math.random() * celebrationList.length)];
 
   // print result
-  client.say(target, `Check check on ${activeTaskForUser.task}, ${user.name}. That's ${totalCompletedTasks} today—${celebration}`);
+  client.say(target, `emmmyDone Check check on ${activeTaskForUser.task}, ${user.name}. That's ${totalCompletedTasks} today—${celebration}`);
 
   // update socket clients
   socket.emit('update-task-view', generateTaskBody());

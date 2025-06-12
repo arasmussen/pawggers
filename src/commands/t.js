@@ -70,14 +70,14 @@ module.exports = function(context) {
   ];
   const pomQuote = pomQuoteList[Math.floor(Math.random() * pomQuoteList.length)];
   const breakQuoteList = [
-    'It\'s break time! Good stuff everyone!',
-    'We made it fam—break time!',
-    'Woof woof it\'s break time!',
-    'Way to get that bread y\'all. How\'s about a break?',
-    'Another pom for the books! Let\'s take a break',
+    'emmmyDone It\'s break time! Good stuff everyone!',
+    'emmmyDone We made it fam—break time!',
+    'emmmyDone Woof woof it\'s break time!',
+    'emmmyDone Way to get that bread y\'all. How\'s about a break?',
+    'emmmyDone Another pom for the books! Let\'s take a break',
     'Phew, pom done! Break time!',
-    'Break time pawggers!',
-    'Good job everyone! It\'s break time!',
+    'emmmyDone Break time pawggers!',
+    'emmmyDone Good job everyone! It\'s break time!',
   ];
   const breakQuote = breakQuoteList[Math.floor(Math.random() * breakQuoteList.length)];
 

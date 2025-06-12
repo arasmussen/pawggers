@@ -60,7 +60,7 @@ module.exports = function(context) {
     client.say(target, `/me ${user.name}, you didn't have a task going but I've added that one. ${encouragement}`);
   } else {
     // complete the existing task
-    client.say(target, `/me Nice ${user.name}! ${activeTaskForUser.task} is done. That's ${totalCompletedTasks} today—on to the next one. ${encouragement}`);
+    client.say(target, `/me Nice ${user.name}! ${activeTaskForUser.task} is emmmyDone That's ${totalCompletedTasks} today—on to the next one. ${encouragement}`);
     activeTaskForUser.done = true;
   }
 
