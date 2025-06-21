@@ -16,15 +16,31 @@ function generateTaskBody() {
 
   const totalTasks = todoTable.tasks.length;
 
+  // group by user
+  const byUser = todoTable.tasks.reduce((acc, task) => {
+    acc[task.username] = acc[task.username] || [];
+    acc[task.username].push(task);
+    return acc;
+  }, {});
+
   // generate body
-  const body = todoTable.tasks.map((task) => {
-    const itemLength = task.username.length + task.task.length + 1;
-    let truncatedTask = task.task;
-    if (itemLength >= 37) {
-      truncatedTask = task.task.substr(0, 37 - task.username.length - 1) + '…';
-    }
-    return `<li>${task.done ? '<div class="box checked"><div class="check"></div></div>' : '<div class="box"></div>'} <div><span class="username">${escapeHTML(task.username)}</span><span class="task">${escapeHTML(truncatedTask)}</task></div></li>`;
-  }).join('');
+  let body = '';
+  for (const [username, tasks] of Object.entries(byUser)) {
+    body += `<div class="username">${escapeHTML(username)}</div><ul>`;
+    tasks.forEach(task => {
+      // truncate if too long
+      let text = task.task;
+      if (task.task.length >= 40) {
+        text = text.substr(0, 39) + '…';
+      }
+      body += `<li>${
+        task.done
+          ? '<div class="box checked"><div class="check"></div></div>'
+          : '<div class="box"></div>'
+      } <div><span class="task">${escapeHTML(text)}</span></div></li>`;
+    });
+    body += `</ul>`;
+  }
 
   return `<div class="tasksDone"> TASKS<div class="tasksCounter">${tasksDone}/${totalTasks}</div></div><div id="scrollContainer"><ul>${body}</ul></div>`;
 }
