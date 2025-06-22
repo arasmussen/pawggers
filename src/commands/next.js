@@ -1,6 +1,7 @@
 const { ClientRequest } = require('http');
 const database = require('../database');
 const generateTaskBody = require('../tasks/generateTaskBody');
+const getElapsed = require('../util/getElapsed');
 const SocketServer = require('../managers/socket');
 const setupTaskTable = require('../tasks/setupTaskTable');
 
@@ -53,15 +54,23 @@ module.exports = function(context) {
   const encouragement = encouragementList[Math.floor(Math.random() * encouragementList.length)];
 
   // number of tasks complete
-  const totalCompletedTasks = tasksForUser.length;
+  const totalCompletedTasks = tasksForUser.filter(t => t.done).length;
 
-  // ANDREW: What if active task does not exist??
+  // active task does not exist
   if (!activeTaskForUser) {
     client.say(target, `/me ${user.name}, you didn't have a task going but I've added that one. ${encouragement}`);
   } else {
-    // complete the existing task
-    client.say(target, `/me Nice ${user.name}! ${activeTaskForUser.task} is emmmyDone That's ${totalCompletedTasks} today—on to the next one. ${encouragement}`);
     activeTaskForUser.done = true;
+    activeTaskForUser.doneAt = Date.now();
+    database.set('todoTable', todoTable)
+
+    const elapsed = getElapsed(
+      activeTaskForUser.created,
+      activeTaskForUser.doneAt
+    );
+    // complete the existing task
+    client.say(target, `/me Nice ${user.name}! ${activeTaskForUser.task} is emmmyDone (took ${elapsed}). That's ${totalCompletedTasks} today—on to the next one. ${encouragement}`);
+    
   }
 
   // add new task to list
@@ -69,6 +78,7 @@ module.exports = function(context) {
     username: user.name,
     task: task,
     done: false,
+    created: Date.now(),
   };
   todoTable.tasks.push(newTask);
   database.set('todoTable', todoTable);

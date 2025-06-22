@@ -1,6 +1,7 @@
 const { ClientRequest } = require('http');
 const database = require('../database');
 const generateTaskBody = require('../tasks/generateTaskBody');
+const getElapsed = require('../util/getElapsed'); 
 const setupTaskTable = require('../tasks/setupTaskTable');
 const socket = require('../managers/socket');
 
@@ -44,17 +45,22 @@ module.exports = function(context) {
   });
 
   activeTaskForUser.done = true;
+  activeTaskForUser.doneAt = Date.now();
   database.set('todoTable', todoTable);
-
+  const elapsed = getElapsed(
+    activeTaskForUser.created,
+    activeTaskForUser.doneAt
+  );
+  
   // number of tasks complete
-  const totalCompletedTasks = tasksForUser.length;
+  const totalCompletedTasks = tasksForUser.filter(t => t.done).length;
 
   // random encouragement
   const celebrationList = ['good job!', 'good stuff!', 'amazing!', 'you\'re killing it!', 'keep it up!', 'heck yeah!', 'hypeeeee!', 'let\'s goooo!', 'proud of you!'];
   const celebration = celebrationList[Math.floor(Math.random() * celebrationList.length)];
 
   // print result
-  client.say(target, `emmmyDone Check check on ${activeTaskForUser.task}, ${user.name}. That's ${totalCompletedTasks} today—${celebration}`);
+  client.say(target, `emmmyDone Check check on ${activeTaskForUser.task}, ${user.name}. That took ${elapsed}. That's ${totalCompletedTasks} today—${celebration}`);
 
   // update socket clients
   socket.emit('update-task-view', generateTaskBody());

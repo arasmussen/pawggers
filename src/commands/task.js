@@ -1,6 +1,7 @@
 const { ClientRequest } = require('http');
 const database = require('../database');
 const generateTaskBody = require('../tasks/generateTaskBody');
+const getElapsed = require('../util/getElapsed');
 const SocketServer = require('../managers/socket');
 const setupTaskTable = require('../tasks/setupTaskTable');
 
@@ -48,7 +49,8 @@ module.exports = function(context) {
   }
 
   if (activeTaskForUser) {
-    client.say(target, `${user.name}, you're working on: ${activeTaskForUser.task}`);
+    const elapsed = getElapsed(activeTaskForUser.created);
+    client.say(target, `${user.name}, you're working on: ${activeTaskForUser.task} (${elapsed})`);
     return;
   }
 
@@ -57,6 +59,7 @@ module.exports = function(context) {
     username: user.name,
     task: task,
     done: false,
+    created: Date.now(),
   };
   todoTable.tasks.push(newTask);
   database.set('todoTable', todoTable);
