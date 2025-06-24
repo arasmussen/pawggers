@@ -53,9 +53,6 @@ module.exports = function(context) {
   const encouragementList = ['Good luck!', 'You got this!', 'Get that bread!', 'Focus up!', 'We believe in you!'];
   const encouragement = encouragementList[Math.floor(Math.random() * encouragementList.length)];
 
-  // number of tasks complete
-  const totalCompletedTasks = tasksForUser.filter(t => t.done).length;
-
   // active task does not exist
   if (!activeTaskForUser) {
     client.say(target, `/me ${user.name}, you didn't have a task going but I've added that one. ${encouragement}`);
@@ -63,6 +60,9 @@ module.exports = function(context) {
     activeTaskForUser.done = true;
     activeTaskForUser.doneAt = Date.now();
     database.set('todoTable', todoTable)
+
+    // number of tasks complete
+    const totalCompletedTasks = tasksForUser.filter(t => t.done).length;
 
     const elapsed = getElapsed(
       activeTaskForUser.created,
