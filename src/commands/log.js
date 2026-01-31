@@ -76,9 +76,9 @@ module.exports = function(context) {
   const celebration = celebrationList[Math.floor(Math.random() * celebrationList.length)];
 
   if (count === 1) {
-    client.say(target, `${user.name}, I've logged that task for you. ${celebration}`);
+    client.say(target, `${user.name}, I've logged that task for you—${celebration}`);
   } else {
-    client.say(target, `${user.name}, I've logged those ${count} tasks for you. ${celebration}`);
+    client.say(target, `${user.name}, I've logged those ${count} tasks for you—${celebration}`);
   }
 
   socket.emit('update-task-view', generateTaskBody());
