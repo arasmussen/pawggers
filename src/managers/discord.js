@@ -26,7 +26,8 @@ const discord = {
 			config.discord.webhooks[channel].token
 		);
 		if (!webhookToken) {
-			throw new Error(`Could not find webhookToken for ${channel}`);
+			console.warn(`[Discord] Skipping send to "${channel}": no webhookToken in config. Add config.discord.webhooks.${channel}.token to config.json`);
+			return;
 		}
 
 		const webhookURL = `https://discord.com/api/webhooks/${webhookID}/${webhookToken}`;

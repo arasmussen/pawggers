@@ -78,8 +78,15 @@ module.exports = function(data) {
   userSpendTable[period][user.id].spend = userSpendTable[period][user.id].spend || 0;
   // don't add pawggers if pirate (10% chance)
   // let bonusPawggers = getRandomInt(500, 2000);
+  const pirateStole = pirateRandomizer <= 10;
   if (pirateRandomizer > 10) {
     userSpendTable[period][user.id].spend += foundPawggers;
+  } else {
+    // track pirate loot for the month
+    let pirateLootTable = database.get('pirateLootTable');
+    pirateLootTable = pirateLootTable || {};
+    pirateLootTable[period] = (pirateLootTable[period] || 0) + foundPawggers;
+    database.set('pirateLootTable', pirateLootTable);
   }
   // holiday elves
   // else {
@@ -89,6 +96,9 @@ module.exports = function(data) {
 
   // get total pawggers
   const spend = abbreviateNumber(Number(userSpendTable[period][user.id].spend));
+  const totalPirateLoot = pirateStole
+    ? abbreviateNumber(Number((database.get('pirateLootTable') || {})[period] || 0))
+    : null;
 
   // print result
   twitch.client.say('#xhumming', `${user.name} is digging for pawggers…`);
@@ -103,9 +113,7 @@ module.exports = function(data) {
     }, (numberOfDigs + 1) * 1200);
   } else {
     setTimeout(() => {
-      //twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 10 ? 'Oh wait… friendly holiday elves are spreading holiday cheer with ${bonusPawggers} bonus pawggers! emmmyElfPeep They now have ${spend} pawggers!' : `${sentiment} They now have ${spend} pawggers.`}`);
-      //twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 10 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing… seems like pirates are everywhere today…' : `${sentiment} They now have ${spend} pawggers.`}`);
-      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateRandomizer <= 10 ? 'But wait… A pesky pirate stole their loot. Leaving them with… nothing…' : `${sentiment} They now have ${spend} pawggers.`}`);
+      twitch.client.say('#xhumming', `${user.name} found ${foundPawggers} pawggers! ${pirateStole ? `But wait… A pesky pirate stole their loot. Leaving them with… nothing… Pirates have looted ${totalPirateLoot} pawggers this month!` : `${sentiment} They now have ${spend} pawggers.`}`);
     }, (numberOfDigs + 1) * 1200);
   }
 }

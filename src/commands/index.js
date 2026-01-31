@@ -14,6 +14,7 @@ module.exports = {
   '!lb': require('./leaderboard'),
   '!leaderboard': require('./leaderboard'),
   '!pawggers': require('./pawggers'),
+  '!pirates': require('./pirates'),
   '!points': require('./pawggers'),
   '!top': require('./leaderboard'),
   '!finalwheel': require('./finalwheel'),
