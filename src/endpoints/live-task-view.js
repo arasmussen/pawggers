@@ -38,7 +38,7 @@ const PageCSS = `
     color: #fff;
     letter-spacing: 0.02em;
     margin: 0 2px 0 0;
-    opacity: 0.8;
+    opacity: 0.9;
   }
   #scrollContainer {
     height: 612px;

@@ -134,7 +134,7 @@ module.exports = function(request, response, server) {
 
   const body = `
     <div class="main-container">
-      <img class="logo" src="https://cdn.fourthwall.com/shops/sh_4fcf7ae9-e4bd-4b13-82e0-399fc7337d97/themes/f8596938-4eaf-4123-a9eb-7b0dfcf2ffc2.png" />
+      <img class="logo" src="https://canny-assets.io/images/8964534ef3a80116f8be77f4ad336c94.png" />
       <p>cowork/study streams with sarah&nbsp;&&nbsp;emmy</p>
       <p>tues, wed, fri · 10:15 ET</p>
       <div class="links">
