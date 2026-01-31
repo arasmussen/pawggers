@@ -5,64 +5,34 @@ const socket = require('../managers/socket');
 
 module.exports = function(context) {
   const { client, target } = context;
+  if (!context?.['display-name'] || !context?.['user-id']) return;
 
-  // data validation
-  if (!context?.['display-name'] ||
-      !context?.['user-id']) {
-    console.log('validation failed');
-    return;
-  }
-
-  const user = {
-    id: context['user-id'],
-    name: context['display-name'],
-  };
-
-  // add user to table
-  let userTable = database.get('userTable');
-  userTable = userTable || {};
+  const user = { id: context['user-id'], name: context['display-name'] };
+  let userTable = database.get('userTable') || {};
   userTable[user.id] = user;
   database.set('userTable', userTable);
 
-  // parse tasks: separated by "; " only
-  const rawInput = context.variables.join(' ').trim();
-  const tasks = rawInput
-    .split('; ')
-    .map((t) => t.trim())
-    .filter(Boolean);
-
-  if (tasks.length === 0) {
+  const tasks = context.variables.join(' ').trim().split(/\s*;\s*/).map((t) => t.trim()).filter(Boolean);
+  if (!tasks.length) {
     client.say(target, 'Which tasks would you like me to log?');
     return;
   }
 
   const todoTable = setupTaskTable();
-
-  // find insertion index: after this user's last completed task, before any current task
   const now = Date.now();
-  const userTaskIndices = [];
   let firstActiveIndex = -1;
+  let lastUserIndex = -1;
 
   todoTable.tasks.forEach((task, i) => {
     if (task.username !== user.name) return;
-    userTaskIndices.push(i);
-    if (!task.done && firstActiveIndex === -1) {
-      firstActiveIndex = i;
-    }
+    lastUserIndex = i;
+    if (!task.done && firstActiveIndex === -1) firstActiveIndex = i;
   });
 
-  let insertIndex;
-  if (firstActiveIndex !== -1) {
-    insertIndex = firstActiveIndex;
-  } else if (userTaskIndices.length > 0) {
-    insertIndex = userTaskIndices[userTaskIndices.length - 1] + 1;
-  } else {
-    insertIndex = todoTable.tasks.length;
-  }
-
-  const newTasks = tasks.map((taskText) => ({
+  const insertIndex = firstActiveIndex !== -1 ? firstActiveIndex : lastUserIndex + 1;
+  const newTasks = tasks.map((task) => ({
     username: user.name,
-    task: taskText,
+    task,
     done: true,
     created: now,
     doneAt: now,
@@ -70,16 +40,13 @@ module.exports = function(context) {
 
   todoTable.tasks.splice(insertIndex, 0, ...newTasks);
   database.set('todoTable', todoTable);
-
-  const count = tasks.length;
-  const celebrationList = ['good job!', 'good stuff!', 'amazing!', 'you\'re killing it!', 'keep it up!', 'heck yeah!', 'hypeeeee!', 'let\'s goooo!', 'proud of you!'];
-  const celebration = celebrationList[Math.floor(Math.random() * celebrationList.length)];
-
-  if (count === 1) {
-    client.say(target, `${user.name}, I've logged that task for you—${celebration}`);
-  } else {
-    client.say(target, `${user.name}, I've logged those ${count} tasks for you—${celebration}`);
-  }
+  
+  const CELEBRATIONS = ['good job!', 'good stuff!', 'amazing!', 'you\'re killing it!', 'keep it up!', 'heck yeah!', 'hypeeeee!', 'let\'s goooo!', 'proud of you!'];
+  const celebration = CELEBRATIONS[Math.floor(Math.random() * CELEBRATIONS.length)];
+  const msg = tasks.length === 1
+    ? `${user.name}, I've logged that task for you—${celebration}`
+    : `${user.name}, I've logged those ${tasks.length} tasks for you—${celebration}`;
+  client.say(target, msg);
 
   socket.emit('update-task-view', generateTaskBody());
 };
