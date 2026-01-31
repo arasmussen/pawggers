@@ -1,9 +1,5 @@
-const abbreviateNumber = require ('../util/abbreviateNumber');
-const { ClientRequest } = require('http');
 const database = require('../database');
-const getDay = require('../util/getDay');
-const getPeriod = require('../util/getPeriod');
-const twitch = require('../managers/twitch');
+const setupHydratorsTable = require('../hydrators/setupHydratorsTable');
 
 module.exports = function(data) {
   // data validation
@@ -11,7 +7,7 @@ module.exports = function(data) {
       !data?.event?.user_name) {
     return;
   }
-  
+
   // get user
   const user = {
     id: data.event.user_id,
@@ -24,28 +20,9 @@ module.exports = function(data) {
   userTable[user.id] = user;
   database.set('userTable', userTable);
 
-  // get period
-  const period = getPeriod();
-
-  // hydrators database
-  const today = getDay();
-  let hydratorsTable = database.get('hydratorsTable');
-
-  hydratorsTable = hydratorsTable || {
-    day: today,
-    hydrators: [],
-  };
-
-  if (hydratorsTable.day) {
-    if (hydratorsTable.day !== today) {
-      hydratorsTable = {
-        day: today,
-        hydrators: [],
-      };
-    }
-  }
-
-  // add user to list
+  // hydrators table (resets daily like tasks)
+  const hydratorsTable = setupHydratorsTable();
+  const today = hydratorsTable.day;
   const newHydrator = {
     date: today,
     username: user.name,
