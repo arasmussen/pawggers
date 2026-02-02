@@ -1,5 +1,6 @@
 const escapeHTML = require('../util/escapeHTML');
 const getDay = require('../util/getDay');
+const getElapsed = require('../util/getElapsed');
 const setupTaskTable = require('./setupTaskTable');
 
 function generateTaskBody() {
@@ -27,17 +28,18 @@ function generateTaskBody() {
   let body = '';
   for (const [username, tasks] of Object.entries(byUser)) {
     body += `<div class="username">${escapeHTML(username)}</div><ul>`;
-    tasks.forEach(task => {
+    tasks.forEach((task, i) => {
       // truncate if too long
       let text = task.task;
-      if (task.task.length >= 40) {
-        text = text.substr(0, 39) + '…';
+      if (task.task.length >= 80) {
+        text = text.substr(0, 79) + '…';
       }
-      body += `<li>${
-        task.done
-          ? '<div class="box checked"><div class="check"></div></div>'
-          : '<div class="box"></div>'
-      } <div><span class="task">${escapeHTML(text)}</span></div></li>`;
+      const taskClass = task.done ? 'task completed' : 'task';
+      const taskNumber = String(i + 1).padStart(2, '0');
+      const elapsedStr = (task.done && task.created != null && task.doneAt != null && task.doneAt > task.created)
+        ? ` ${getElapsed(task.created, task.doneAt)}`
+        : '';
+      body += `<li><span class="taskNumber">${taskNumber}</span> <span class="${taskClass}"><span class="taskName">${escapeHTML(text)}</span><span class="elapsed">${elapsedStr}</span></span></li>`;
     });
     body += `</ul>`;
   }

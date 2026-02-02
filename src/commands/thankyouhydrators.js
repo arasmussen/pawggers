@@ -50,6 +50,6 @@ module.exports = function(context) {
     `Thank you to our hydrators today: ${list}! You all got 2,000 more pawggers emmmyCheer`
   );
 
-  //hydratorsTable.hydrators = [];
-  //database.set('hydratorsTable', hydratorsTable);
+  hydratorsTable.hydrators = [];
+  database.set('hydratorsTable', hydratorsTable);
 };

@@ -10,6 +10,7 @@ const Endpoints = {
   '/': require('./pages/index'),
   '/auction': require('./pages/auction'),
   '/emmyfest': require('./pages/emmyfest'),
+  '/dashboard': require('./pages/emmyhq-dashboard'),
   '/wall-of-fame': require('./pages/wall-of-fame'),
   '/api/channel-gift-sub': require('./endpoints/channel-gift-sub'),
   '/api/channel-new-sub': require('./endpoints/channel-new-sub'),

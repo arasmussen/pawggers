@@ -40,6 +40,23 @@ const PageCSS = `
     margin: 0 2px 0 0;
     opacity: 0.9;
   }
+  .task.completed .taskName {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+  .taskNumber {
+    font-weight: 600;
+    min-width: 1.5em;
+    margin-right: 6px;
+    opacity: 0.9;
+    letter-spacing: 1px;
+  }
+  .elapsed {
+    font-weight: 400;
+    opacity: 0.4;
+    letter-spacing: 0.01em;
+    margin-left: 4px;
+  }
   #scrollContainer {
     height: 612px;
     overflow-y:scroll;
@@ -50,29 +67,10 @@ const PageCSS = `
   #scrollContainer::-webkit-scrollbar {display: none;}
   ul {padding: 5px 0 1px 0;margin: 0;}
   li {
-    list-style-type:none;
+    list-style-type: none;
     display: flex;
-    align-items: center;
-    margin-bottom: 3.5px;
+    margin-bottom: 4px;
     letter-spacing: -0.02em;
-  }
-  .box {
-    width: 20px;
-    min-width: 20px;
-    height: 20px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-    margin-right: 8px;
-  }
-  .check:after{
-    content: '';
-    display: block;
-    width: 6px;
-    height: 12px;
-    border: solid #fff;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-    margin: 2px 0 0 7px;
   }
 `;
 const PageJS = `

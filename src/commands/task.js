@@ -56,6 +56,7 @@ module.exports = function(context) {
 
   // add task to list
   const newTask = {
+    userId: user.id,
     username: user.name,
     task: task,
     done: false,
