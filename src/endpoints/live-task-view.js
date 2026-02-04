@@ -38,11 +38,11 @@ const PageCSS = `
     color: #fff;
     letter-spacing: 0.02em;
     margin: 0 2px 0 0;
-    opacity: 0.9;
+    opacity: 0.95;
   }
   .task.completed .taskName {
     text-decoration: line-through;
-    opacity: 0.6;
+    opacity: 0.75;
   }
   .taskNumber {
     font-weight: 600;
@@ -53,7 +53,7 @@ const PageCSS = `
   }
   .elapsed {
     font-weight: 400;
-    opacity: 0.4;
+    opacity: 0.65;
     letter-spacing: 0.01em;
     margin-left: 4px;
   }
