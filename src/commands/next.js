@@ -5,6 +5,9 @@ const getElapsed = require('../util/getElapsed');
 const SocketServer = require('../managers/socket');
 const setupTaskTable = require('../tasks/setupTaskTable');
 
+const MAX_TASKS_PER_DAY = 99;
+const MAX_TASK_NAME_CHARS = 200;
+
 module.exports = function(context) {
   const { client, target } = context;
 
@@ -36,8 +39,19 @@ module.exports = function(context) {
     return;
   }
 
+  if (task.length > MAX_TASK_NAME_CHARS) {
+    client.say(target, `Shorten your task name please!`);
+    return;
+  }
+
   // setup database table
   const todoTable = setupTaskTable();
+
+  const currentUserTaskCount = todoTable.tasks.filter((t) => t.username === user.name).length;
+  if (currentUserTaskCount >= MAX_TASKS_PER_DAY) {
+    client.say(target, 'This puts your task count over 99 for the day. Stop trying to break me!');
+    return;
+  }
 
   // find tasks for user
   const tasksForUser = todoTable.tasks.filter((task) => {

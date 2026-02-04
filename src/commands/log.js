@@ -3,6 +3,9 @@ const generateTaskBody = require('../tasks/generateTaskBody');
 const setupTaskTable = require('../tasks/setupTaskTable');
 const socket = require('../managers/socket');
 
+const MAX_TASKS_PER_DAY = 99;
+const MAX_TASK_NAME_CHARS_TOTAL = 200;
+
 module.exports = function(context) {
   const { client, target } = context;
   if (!context?.['display-name'] || !context?.['user-id']) return;
@@ -18,7 +21,18 @@ module.exports = function(context) {
     return;
   }
 
+  const totalTaskChars = tasks.reduce((sum, t) => sum + t.length, 0);
+  if (totalTaskChars > MAX_TASK_NAME_CHARS_TOTAL) {
+    client.say(target, `All tasks in one log can't be over ${MAX_TASK_NAME_CHARS_TOTAL} characters.`);
+    return;
+  }
+
   const todoTable = setupTaskTable();
+  const currentUserTaskCount = todoTable.tasks.filter((t) => t.username === user.name).length;
+  if (currentUserTaskCount + tasks.length > MAX_TASKS_PER_DAY) {
+    client.say(target, 'This puts your task count over 99 for the day. Stop trying to break me!');
+    return;
+  }
   const now = Date.now();
   let firstActiveIndex = -1;
   let lastUserIndex = -1;
