@@ -41,13 +41,13 @@ module.exports = function(data) {
   const numBirds = earlyBirdTable.earlyBirds.length;
 
   if (numBirds === 0) {
-    pawggers = 1000;
+    pawggers = 2000;
     place = 'FIRST';
   } else if (numBirds === 1) {
     pawggers = 1000;
     place = 'SECOND';
   } else {
-    pawggers = 1000;
+    pawggers = 500;
     place = 'THIRD';
   }
 
@@ -77,14 +77,8 @@ module.exports = function(data) {
   const spend = abbreviateNumber(Number(userSpendTable[period][user.id].spend));
   
   // print out numbers
-  var prettyPawggers = '';
-  if (pawggers === 1000) {
-    prettyPawggers = '1,000';
-  } else {
-    prettyPawggers = pawggers.toString();
-  }
+  var prettyPawggers = pawggers >= 1000 ? pawggers.toLocaleString() : pawggers.toString();
 
   // print result
-  //twitch.client.say('#xhumming', `${user.name} comes in ${place} to claim a worm for ${prettyPawggers} pawggers! They now have ${spend} pawggers.`);
-  twitch.client.say('#xhumming', `${user.name} got worm for 1,000 pawggers! They now have ${spend} pawggers.`);
+  twitch.client.say('#xhumming', `${user.name} comes in ${place} to claim a worm for ${prettyPawggers} pawggers! They now have ${spend} pawggers.`);
 }

@@ -267,7 +267,7 @@ module.exports = function (request, response, server) {
 
       <div class="section-card" id="pawggers">
         <h2>Pawggers</h2>
-        <p class="section-intro">Pawggers are the in-stream currency that determine who gets a shiny VIP badge next month. You earn pawggers by doing channel redeems (2k redeem = 2k pawggers), winning games, digging, being an early bird, completing 3 !tasks per day, hydrating sarah, and winning on wheel spins. We pick new VIPs on the last stream of each&nbsp;month.</p>
+        <p class="section-intro">Pawggers are the in-stream currency that determine who gets a shiny VIP badge next month. You earn pawggers by doing channel redeems (2k redeem = 2k pawggers), winning games, digging, being an early bird (1st: 2k, 2nd: 1k, 3rd: 500), completing 3 !tasks per day, hydrating sarah, and winning on wheel spins. We pick new VIPs on the last stream of each&nbsp;month.</p>
         <div class="command-block">
         <div class="command-line"><span class="cmd">!pawggers</span> <span class="aliases">(!points)</span></div>
         <div class="command-desc">Check how many pawggers you&nbsp;have.</div>
