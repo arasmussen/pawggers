@@ -1,6 +1,7 @@
 const database = require('../database');
 const escapeHTML = require('../util/escapeHTML');
 const renderHTML = require('../util/renderHTML');
+const abbreviateNumber = require('../util/abbreviateNumber');
 
 const PageCSS = `
   html, body, #container {
@@ -170,10 +171,36 @@ module.exports = function (request, response, server) {
     });
   }
 
+  const FAKE_LEADERBOARD = [
+    { displayName: 'studybuddy42', spend: 125000 },
+    { displayName: 'cozyreads', spend: 98200 },
+    { displayName: 'pomopup', spend: 87600 },
+    { displayName: 'focusmode', spend: 65400 },
+    { displayName: 'quietgrind', spend: 52100 },
+    { displayName: 'desklamp', spend: 43800 },
+    { displayName: 'notionally', spend: 39200 },
+    { displayName: 'highlight', spend: 28700 },
+    { displayName: 'marginalia', spend: 21500 },
+    { displayName: 'bookmark', spend: 18400 },
+  ];
+
+  const monthName = new Date().toLocaleString('default', { month: 'long' });
+  let pawggersRowsHtml = '';
+  FAKE_LEADERBOARD.forEach((entry, index) => {
+    const rank = index + 1;
+    const top3 = rank <= 3 ? ' top-3' : '';
+    const displaySpend = abbreviateNumber(entry.spend);
+    pawggersRowsHtml += `<div class="row${top3}"><span class="rank">#${rank}</span><span class="name">${escapeHTML(entry.displayName)}</span><span class="total">${displaySpend}</span></div>`;
+  });
+
   const body = `
     <a class="back-link" href="/">← Home</a>
     <div class="main-container">
       <h1>emmyHQ Dashboard</h1>
+      <div class="leaderboard">
+        <h2>${monthName} leaderboard</h2>
+        <div class="leaderboard-list">${pawggersRowsHtml}</div>
+      </div>
       <div class="leaderboard">
         <h2>Tasks completed</h2>
         <div class="leaderboard-list">${taskRowsHtml}</div>

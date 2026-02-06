@@ -8,6 +8,7 @@ const twitch = require('./managers/twitch');
 
 const Endpoints = {
   '/': require('./pages/index'),
+  '/guide': require('./pages/guide'),
   '/auction': require('./pages/auction'),
   '/emmyfest': require('./pages/emmyfest'),
   '/dashboard': require('./pages/emmyhq-dashboard'),

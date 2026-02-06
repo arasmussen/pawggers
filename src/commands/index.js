@@ -8,7 +8,8 @@ module.exports = {
   '!giveawaywinner': require('./giveawaywinner'),
   '!testtesttest': require('./giveawaywinner'),
   '!startbreak': require('./startbreak'),
-
+  '!tyhydrators': require('./thankyouhydrators'),
+  
   // pawggers
   '!give': require('./give'),
   '!lb': require('./leaderboard'),
@@ -59,8 +60,6 @@ module.exports = {
   '!ttolend': require('./ttolend'),
   '!ttolstart': require('./ttolstart'),
   '!ttolguesses': require('./ttolguesses'),
-
-  '!tyhydrators': require('./thankyouhydrators'),
 
   '!h': require('../reward-hooks/hydrate.js'),
 };
