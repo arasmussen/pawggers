@@ -4,6 +4,7 @@ const database = require('../database');
 const getDay = require('../util/getDay');
 const getPeriod = require('../util/getPeriod');
 const twitch = require('../managers/twitch');
+const { threadId } = require('worker_threads');
 
 module.exports = function(data) {
   // data validation
@@ -40,17 +41,17 @@ module.exports = function(data) {
   var place = '';
   const numBirds = earlyBirdTable.earlyBirds.length;
 
+  // Weird Twitch order
   if (numBirds === 0) {
-    pawggers = 2000;
-    place = 'FIRST';
-  } else if (numBirds === 1) {
     pawggers = 1000;
     place = 'SECOND';
-  } else {
+  } else if (numBirds === 1) {
     pawggers = 500;
     place = 'THIRD';
+  } else {
+    pawggers = 2000;
+    place = 'FIRST';
   }
-
   // add user to list
   const newEarlyBird = {
     date: today,
