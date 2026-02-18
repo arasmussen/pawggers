@@ -111,11 +111,29 @@ const PageCSS = `
     margin-top: 24px;
   }
 
+  .section-card > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .section-card .affiliate-links li:last-child,
+  .section-card .pawggers-ways li:last-child {
+    margin-bottom: 0;
+  }
+
+  .section-card ul:not(:last-child) {
+    margin-bottom: 16px;
+  }
+
   .schedule-line {
     margin: 0 0 8px 0;
     font-size: 15px;
     color: #333;
     line-height: 1.4;
+  }
+
+  #twitch-local-time {
+    display: block;
+    margin-top: 4px;
   }
 
   .schedule-links {
@@ -133,6 +151,47 @@ const PageCSS = `
 
   .schedule-links a:hover {
     text-decoration: underline;
+  }
+
+  .affiliate-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .affiliate-links li {
+    margin: 0 0 10px 0;
+  }
+
+  .affiliate-links a {
+    color: #fc7354;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .affiliate-links a:hover {
+    text-decoration: underline;
+  }
+
+  .affiliate-links .link-desc {
+    display: block;
+    font-size: 14px;
+    color: #666;
+    font-weight: 400;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .pawggers-ways {
+    margin: 0 0 0 20px;
+    padding: 0;
+    font-size: 15px;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  .pawggers-ways li {
+    margin: 0 0 6px 0;
   }
 
   .section-card h2 {
@@ -215,13 +274,14 @@ module.exports = function (request, response, server) {
           <li><a href="#song-queue">Song queue</a></li>
           <li><a href="#hydration">Hydration</a></li>
           <li><a href="#vip">VIP</a></li>
+          <li><a href="#links">Links</a></li>
         </ul>
       </nav>
       <div class="guide-content">
       <div class="section-card" id="cowork-schedule">
         <h2>Cowork schedule</h2>
-        <p class="schedule-line"><strong>Twitch:</strong> Tuesday, Wednesday, Friday at 7:15&nbsp;PT <span id="twitch-local-time"></span></p>
-        <p class="schedule-line"><strong>Discord:</strong> Monday and Thursday, muted cowork—drop in and focus with us.</p>
+        <p class="schedule-line"><strong>Twitch:</strong> Tuesday, Wednesday, Friday at 7:15&nbsp;PT<span id="twitch-local-time"></span></p>
+        <p class="schedule-line"><strong>Discord:</strong> Monday and Thursday, muted coworking in a voice channel. Feel free to drop in and focus with us for accountability. Camera totally optional!</p>
         <div class="schedule-links">
           <a href="https://www.twitch.tv/xhumming" target="_blank" rel="noopener noreferrer">Twitch</a>
           <a href="https://discord.gg/jPBShcbfrV" target="_blank" rel="noopener noreferrer">Discord</a>
@@ -230,7 +290,7 @@ module.exports = function (request, response, server) {
 
       <div class="section-card" id="tasks">
         <h2>Tasks</h2>
-        <p class="section-intro">We have our own task bot. Here are the commands you should know to track your tasks. If you finish at least 3 tasks in a stream, you'll get 2k pawggers at the end of the day. Let's be&nbsp;productive!</p>
+        <p class="section-intro">We have our own task bot. Here are the commands you should know to track your tasks. If you finish at least 3 tasks in a stream, you'll get 2k pawggers at the end of the day. Let's get stuff&nbsp;done!</p>
         <div class="command-block">
         <div class="command-line"><span class="cmd">!task</span> <span class="aliases">(!add, !addtask, !c, !check, !mytask, !now, !taskadd, !taska, !todo)</span></div>
         <div class="command-desc">Add a task by doing !task [task name] or view your current task and how long you've been working on&nbsp;it.</div>
@@ -284,17 +344,46 @@ module.exports = function (request, response, server) {
 
       <div class="section-card" id="song-queue">
         <h2>Song queue</h2>
-        <p class="section-intro">We usually play lofi music on </p>
+        <p class="section-intro">We usually play lofi music on stream. On Fridays after pom three, we open up the song queue. You can add songs to the queue by using the channel redeems.</p>
       </div>
 
       <div class="section-card" id="hydration">
         <h2>Hydration</h2>
-        <p class="section-intro">Redeem the Hydrate channel reward (in the rewards menu) to remind Sarah to drink water. Everyone who hydrates during the stream gets logged for the day. At the end of the stream, Sarah runs !tyhydrators and thanks everyone who hydrated—and each of you gets 2,000&nbsp;pawggers.</p>
+        <p class="section-intro">Use the Hydrate channel redeem to remind Sarah to drink water. Everyone who hydrates during the stream gets 2,000 pawggers at the end of&nbsp;stream.</p>
       </div>
 
       <div class="section-card" id="vip">
         <h2>VIP</h2>
-        <p class="section-intro">VIP is our monthly shout-out for the top pawggers holders. Your pawggers total resets each month. We look at the leaderboard (!leaderboard) and pick new VIPs on the last stream of the month—so the more you participate (tasks, redeems, digging, hydrating, wheel spins, etc.), the better your shot at getting a shiny VIP badge next&nbsp;month.</p>
+        <p class="section-intro">We choose new VIPs at the end of every month. Anybody on the leaderboard is a contender for VIP. The higher you are on the leaderboard, the higher your chances of getting VIP.</p>
+        <p class="section-intro" style="margin-bottom: 8px;">Ways to earn pawggers:</p>
+        <ul class="pawggers-ways">
+          <li>Use channel points on redeems (2k redeem = 2k pawggers)</li>
+          <li>Finishing at least three tasks per day</li>
+          <li>Digging for pawggers</li>
+          <li>Winning on wheel spins</li>
+          <li>Being an early bird</li>
+          <li>Hydrating Sarah at least once during the stream</li>
+        </ul>
+        <p class="section-intro">Shiny pink diamond, bypass emote only and slow modes, send links, free song queue redeems, !vipsounds</p>
+      </div>
+
+      <div class="section-card" id="links">
+        <h2>Links</h2>
+        <p class="section-intro">Support the stream by using these affiliate links when you&nbsp;shop.</p>
+        <ul class="affiliate-links">
+          <li>
+            <a href="https://wisprflow.ai/r?SARAH1779" target="_blank" rel="noopener noreferrer nofollow">Wispr Flow</a>
+            <span class="link-desc">Speech dictation app. I saved so much time using this. Get a free month&nbsp;trial.</span>
+          </li>
+          <li>
+            <a href="https://www.joinhevy.com/938L6R/2CTPL/" target="_blank" rel="noopener noreferrer nofollow">Hevy</a>
+            <span class="link-desc">Weight-lifting app I use to track my progress. Add me!</span>
+          </li>
+          <li>
+            <a href="https://www.smackinsunflowerseeds.com/EMMY" target="_blank" rel="noopener noreferrer nofollow">Smackin' Sunflower Seeds</a>
+            <span class="link-desc">Extra flavorful sunflower seeds in so many flavors. I like dill the best! Get 10% off.</span>
+          </li>
+        </ul>
       </div>
       </div>
     </div>
@@ -310,10 +399,10 @@ module.exports = function (request, response, server) {
       if (el) {
         var laStr = new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles', timeZoneName: 'short' });
         var isPDT = laStr.indexOf('PDT') !== -1;
-        var utcHour = isPDT ? 2 : 3;
+        var utcHour = isPDT ? 14 : 15;
         var d = new Date(Date.UTC(2025, 1, 4, utcHour, 15, 0));
         var inLocal = d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: true });
-        el.textContent = '(' + inLocal + ' in your timezone)';
+        el.textContent = '(' + inLocal + ' in your\u00A0timezone)';
       }
     });
   `;
