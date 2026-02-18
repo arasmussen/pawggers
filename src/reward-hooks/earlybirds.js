@@ -43,14 +43,14 @@ module.exports = function(data) {
 
   // Weird Twitch order
   if (numBirds === 0) {
-    pawggers = 1000;
-    place = 'SECOND';
-  } else if (numBirds === 1) {
     pawggers = 500;
     place = 'THIRD';
-  } else {
+  } else if (numBirds === 1) {
     pawggers = 2000;
     place = 'FIRST';
+  } else {
+    pawggers = 1000;
+    place = 'SECOND';
   }
   // add user to list
   const newEarlyBird = {
