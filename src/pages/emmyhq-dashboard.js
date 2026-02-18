@@ -2,6 +2,8 @@ const database = require('../database');
 const escapeHTML = require('../util/escapeHTML');
 const renderHTML = require('../util/renderHTML');
 const abbreviateNumber = require('../util/abbreviateNumber');
+const getPeriod = require('../util/getPeriod');
+const isMod = require('../util/isMod');
 
 const PageCSS = `
   html, body, #container {
@@ -171,27 +173,31 @@ module.exports = function (request, response, server) {
     });
   }
 
-  const FAKE_LEADERBOARD = [
-    { displayName: 'studybuddy42', spend: 125000 },
-    { displayName: 'cozyreads', spend: 98200 },
-    { displayName: 'pomopup', spend: 87600 },
-    { displayName: 'focusmode', spend: 65400 },
-    { displayName: 'quietgrind', spend: 52100 },
-    { displayName: 'desklamp', spend: 43800 },
-    { displayName: 'notionally', spend: 39200 },
-    { displayName: 'highlight', spend: 28700 },
-    { displayName: 'marginalia', spend: 21500 },
-    { displayName: 'bookmark', spend: 18400 },
-  ];
+  // Pawggers leaderboard (same data as !lb)
+  const period = getPeriod();
+  const userSpendTable = database.get('userSpendTable') || {};
+  const periodData = userSpendTable[period] || {};
+  const pawggersLeaderboard = Object.keys(periodData)
+    .filter((userID) => !isMod(userID))
+    .sort((userID1, userID2) => (periodData[userID2].spend || 0) - (periodData[userID1].spend || 0))
+    .slice(0, 10)
+    .map((userID) => ({
+      displayName: userTable[userID]?.name || 'Unknown',
+      spend: Number(periodData[userID].spend) || 0,
+    }));
 
   const monthName = new Date().toLocaleString('default', { month: 'long' });
   let pawggersRowsHtml = '';
-  FAKE_LEADERBOARD.forEach((entry, index) => {
-    const rank = index + 1;
-    const top3 = rank <= 3 ? ' top-3' : '';
-    const displaySpend = abbreviateNumber(entry.spend);
-    pawggersRowsHtml += `<div class="row${top3}"><span class="rank">#${rank}</span><span class="name">${escapeHTML(entry.displayName)}</span><span class="total">${displaySpend}</span></div>`;
-  });
+  if (pawggersLeaderboard.length === 0) {
+    pawggersRowsHtml = '<p class="empty">New month! No leaderboard yet.</p>';
+  } else {
+    pawggersLeaderboard.forEach((entry, index) => {
+      const rank = index + 1;
+      const top3 = rank <= 3 ? ' top-3' : '';
+      const displaySpend = abbreviateNumber(entry.spend);
+      pawggersRowsHtml += `<div class="row${top3}"><span class="rank">#${rank}</span><span class="name">${escapeHTML(entry.displayName)}</span><span class="total">${displaySpend}</span></div>`;
+    });
+  }
 
   const body = `
     <a class="back-link" href="/">← Home</a>
