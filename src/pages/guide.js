@@ -372,12 +372,16 @@ module.exports = function (request, response, server) {
         <p class="section-intro">Support the stream by using these affiliate links when you&nbsp;shop.</p>
         <ul class="affiliate-links">
           <li>
-            <a href="https://wisprflow.ai/r?SARAH1779" target="_blank" rel="noopener noreferrer nofollow">Wispr Flow</a>
-            <span class="link-desc">Speech dictation app. I saved so much time using this. Get a free month&nbsp;trial.</span>
+            <a href="https://mantasleep.com/" target="_blank" rel="noopener noreferrer nofollow">Manta Sleep</a>
+            <span class="link-desc">Love these sleep masks!Use code NOOKENDS10 for 10% off.</span>
           </li>
           <li>
             <a href="https://www.joinhevy.com/938L6R/2CTPL/" target="_blank" rel="noopener noreferrer nofollow">Hevy</a>
             <span class="link-desc">Weight-lifting app I use to track my progress. Add me!</span>
+          </li>
+          <li>
+            <a href="https://wisprflow.ai/r?SARAH1779" target="_blank" rel="noopener noreferrer nofollow">Wispr Flow</a>
+            <span class="link-desc">Speech dictation app. I saved so much time using this. Get a free month&nbsp;trial.</span>
           </li>
           <li>
             <a href="https://www.smackinsunflowerseeds.com/EMMY" target="_blank" rel="noopener noreferrer nofollow">Smackin' Sunflower Seeds</a>

@@ -40,14 +40,12 @@ module.exports = function(context) {
   });
   database.set('userSpendTable', userSpendTable);
 
-  const list =
-    toPay.length <= 2
-      ? toPay.join(' and ')
-      : toPay.slice(0, -1).join(', ') + ', and ' + toPay[toPay.length - 1];
+  const count = toPay.length;
+  const hydratorsWord = count === 1 ? 'hydrator' : 'hydrators';
 
   client.say(
     target,
-    `Thank you to our hydrators today: ${list}! You all got 2,000 more pawggers emmmyCheer`
+    `Thank you to our ${count} ${hydratorsWord} today! You all got 2,000 more pawggers emmmyCheer`
   );
 
   hydratorsTable.hydrators = [];
