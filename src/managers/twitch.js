@@ -4,6 +4,7 @@ const config = require('../config');
 const request = require('request');
 const tmi = require('tmi.js');
 const util = require('util');
+const { handleEmmyReactions } = require('../commands/emmyReactions');
 
 const asyncRequest = util.promisify(request);
 
@@ -33,6 +34,9 @@ const Twitch = {
       // ignore messages from bot
       return;
     }
+    
+    // Emmy-style passive reactions (word triggers)
+    handleEmmyReactions(Twitch.client, target, context, message);
 
     const commandParts = message.trim().split(' ');
     const command = commandParts[0].toLowerCase();

@@ -1,5 +1,6 @@
 const database = require('../database');
 const generateTaskBody = require('../tasks/generateTaskBody');
+const generateDecoyTaskBody = require('../tasks/generateDecoyTaskBody');
 const setupTaskTable = require('../tasks/setupTaskTable');
 const socket = require('../managers/socket');
 
@@ -63,4 +64,5 @@ module.exports = function(context) {
   client.say(target, msg);
 
   socket.emit('update-task-view', generateTaskBody());
+  socket.emit('update-decoy-task-view', generateDecoyTaskBody());
 };
