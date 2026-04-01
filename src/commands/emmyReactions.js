@@ -30,13 +30,18 @@ function sayWithDelay(client, target, message) {
 function handleEmmyReactions(client, target, context, message) {
   if (!client || !target || !message) return;
 
+  // don't react to Emmy's own messages
+  const authorName = (context && (context.username || context['display-name'] || '')).toLowerCase();
+  if (authorName === 'emmydotjs') return;
+
   const msg = message.toLowerCase();
 
   // Emmy trigger #1: "meeting" / "call" / "zoom" → walk joke
-  const MEETING_WORDS = ['meeting', 'call', 'zoom'];
+  const MEETING_WORDS = ['meeting', 'call', 'zoom', 'meetings', 'calls'];
   const mentionsMeeting = MEETING_WORDS.some((w) => msg.includes(w));
+  const isMeetingDoneCommand = msg.trim().startsWith('!meetingdone');
 
-  if (mentionsMeeting && shouldTrigger('emmy_meeting', 0.30, 90 * 1000)) {
+  if (mentionsMeeting && !isMeetingDoneCommand && shouldTrigger('emmy_meeting', 0.30, 90 * 1000)) {
     const lines = [
       'meeting... is that like walkies?',
       'another meeting? boooooring',
@@ -109,6 +114,24 @@ function handleEmmyReactions(client, target, context, message) {
       'naps are the best',
       "i'm glad i was born a dog because naps",
       'a smol nap now means more energy for walkies and snacks later nise',
+    ];
+    const line = lines[Math.floor(Math.random() * lines.length)];
+
+    sayWithDelay(
+      client,
+      target,
+      line
+    );
+  }
+
+  // Emmy trigger #5: emails → email feelings
+  const EMAIL_WORDS = ['email', 'emails', 'inbox', 'outlook', 'gmail'];
+  const mentionsEmail = EMAIL_WORDS.some((w) => msg.includes(w));
+
+  if (mentionsEmail && shouldTrigger('emmy_email', 0.30, 120 * 1000)) {
+    const lines = [
+      'email me a treat!',
+      'email me why dont cha Flirt',
     ];
     const line = lines[Math.floor(Math.random() * lines.length)];
 
