@@ -50,7 +50,7 @@ function handleEmmyReactions(client, target, context, message) {
     sayWithDelay(
       client,
       target,
-      `[EmmyBot] ${line}`
+      line
     );
   }
 
@@ -68,11 +68,11 @@ function handleEmmyReactions(client, target, context, message) {
      ];
      const line = lines[Math.floor(Math.random() * lines.length)];
  
-     sayWithDelay(
-       client,
-       target,
-       `[EmmyBot] ${line}`
-     );
+    sayWithDelay(
+      client,
+      target,
+      line
+    );
    }
  
    // Emmy trigger #3: meals → food gremlin
@@ -95,7 +95,7 @@ function handleEmmyReactions(client, target, context, message) {
     sayWithDelay(
       client,
       target,
-      `[EmmyBot] ${line}`
+      line
     );
   }
 
@@ -115,7 +115,7 @@ function handleEmmyReactions(client, target, context, message) {
     sayWithDelay(
       client,
       target,
-      `[EmmyBot] ${line}`
+      line
     );
   }
 }
