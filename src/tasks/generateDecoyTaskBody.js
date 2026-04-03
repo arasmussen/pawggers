@@ -92,6 +92,8 @@ const DECOY_TASKS = [
   'fix it in post',
   'just deploy it',
   'prayge emmy overlord',
+  'crash out',
+  'crash out over nothing',
 ];
 
 // deterministic shuffle so each user gets a stable order of unique decoy tasks

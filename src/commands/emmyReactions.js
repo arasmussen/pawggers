@@ -17,13 +17,32 @@ function shouldTrigger(name, chance, cooldownMs) {
   return true;
 }
 
+function normalizeChannel(target) {
+  if (!target) return target;
+  return target.startsWith('#') ? target : `#${target}`;
+}
+
+// Twitch threaded reply: tmi.js say() cannot attach reply-parent-msg-id; use the socket when possible.
+function sayAsReplyTo(client, target, context, text) {
+  const parentId = context && context.id;
+  const chan = normalizeChannel(target);
+  const ws = client && client.ws;
+  const wsOpen = ws && (ws.readyState === 1 || ws.readyState === ws.OPEN);
+  if (parentId && chan && wsOpen) {
+    const safe = String(text).replace(/\r|\n/g, ' ');
+    ws.send(`@reply-parent-msg-id=${parentId} PRIVMSG ${chan} :${safe}`);
+    return;
+  }
+  client.say(target, text);
+}
+
 // send a message with a small random delay so emmy feels more "alive"
-function sayWithDelay(client, target, message) {
+function sayWithDelay(client, target, message, context) {
   const minDelay = 3000;
   const maxDelay = 8000;
   const delay = Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
   setTimeout(() => {
-    client.say(target, message);
+    sayAsReplyTo(client, target, context, message);
   }, delay);
 }
 
@@ -52,11 +71,7 @@ function handleEmmyReactions(client, target, context, message) {
     ];
     const line = lines[Math.floor(Math.random() * lines.length)];
 
-    sayWithDelay(
-      client,
-      target,
-      line
-    );
+    sayWithDelay(client, target, line, context);
   }
 
    // Emmy trigger #2: breaks / tired → gentle break enforcement
@@ -73,11 +88,7 @@ function handleEmmyReactions(client, target, context, message) {
      ];
      const line = lines[Math.floor(Math.random() * lines.length)];
  
-    sayWithDelay(
-      client,
-      target,
-      line
-    );
+    sayWithDelay(client, target, line, context);
    }
  
    // Emmy trigger #3: meals → food gremlin
@@ -97,11 +108,7 @@ function handleEmmyReactions(client, target, context, message) {
     ];
     const line = lines[Math.floor(Math.random() * lines.length)];
 
-    sayWithDelay(
-      client,
-      target,
-      line
-    );
+    sayWithDelay(client, target, line, context);
   }
 
   // Emmy trigger #4: naps → nap encouragement
@@ -117,11 +124,7 @@ function handleEmmyReactions(client, target, context, message) {
     ];
     const line = lines[Math.floor(Math.random() * lines.length)];
 
-    sayWithDelay(
-      client,
-      target,
-      line
-    );
+    sayWithDelay(client, target, line, context);
   }
 
   // Emmy trigger #5: emails → email feelings
@@ -135,11 +138,7 @@ function handleEmmyReactions(client, target, context, message) {
     ];
     const line = lines[Math.floor(Math.random() * lines.length)];
 
-    sayWithDelay(
-      client,
-      target,
-      line
-    );
+    sayWithDelay(client, target, line, context);
   }
 }
 
