@@ -46,6 +46,21 @@ function sayWithDelay(client, target, message, context) {
   }, delay);
 }
 
+function escapeRegExp(str) {
+  return String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Exact-ish keyword match:
+// - single words must be bounded by non-alphanumerics (so "startbreak" won't match "break")
+// - phrases match as contiguous text, still bounded at the ends
+function messageIncludesKeyword(message, keyword) {
+  const kw = String(keyword).toLowerCase().trim();
+  if (!kw) return false;
+  const escaped = escapeRegExp(kw);
+  const re = new RegExp(`(^|[^a-z0-9])${escaped}($|[^a-z0-9])`, 'i');
+  return re.test(message);
+}
+
 function handleEmmyReactions(client, target, context, message) {
   if (!client || !target || !message) return;
 
@@ -57,7 +72,7 @@ function handleEmmyReactions(client, target, context, message) {
 
   // Emmy trigger #1: "meeting" / "call" / "zoom" → walk joke
   const MEETING_WORDS = ['meeting', 'call', 'zoom', 'meetings', 'calls'];
-  const mentionsMeeting = MEETING_WORDS.some((w) => msg.includes(w));
+  const mentionsMeeting = MEETING_WORDS.some((w) => messageIncludesKeyword(msg, w));
   const isMeetingDoneCommand = msg.trim().startsWith('!meetingdone');
 
   if (mentionsMeeting && !isMeetingDoneCommand && shouldTrigger('emmy_meeting', 0.30, 90 * 1000)) {
@@ -76,7 +91,7 @@ function handleEmmyReactions(client, target, context, message) {
 
    // Emmy trigger #2: breaks / tired → gentle break enforcement
    const BREAK_WORDS = ['break', 'tired', 'exhausted', 'burnt out', 'burned out', 'eepy', 'sleepy'];
-   const mentionsBreakOrTired = BREAK_WORDS.some((w) => msg.includes(w));
+   const mentionsBreakOrTired = BREAK_WORDS.some((w) => messageIncludesKeyword(msg, w));
  
   if (mentionsBreakOrTired && shouldTrigger('emmy_break', 0.30, 90 * 1000)) {
      const lines = [
@@ -93,7 +108,7 @@ function handleEmmyReactions(client, target, context, message) {
  
    // Emmy trigger #3: meals → food gremlin
    const MEAL_WORDS = ['breakfast', 'lunch', 'dinner', 'snack', 'snacks', 'brunch'];
-   const mentionsMeal = MEAL_WORDS.some((w) => msg.includes(w));
+   const mentionsMeal = MEAL_WORDS.some((w) => messageIncludesKeyword(msg, w));
  
   if (mentionsMeal && shouldTrigger('emmy_meal', 0.30, 120 * 1000)) {
     const lines = [
@@ -113,7 +128,7 @@ function handleEmmyReactions(client, target, context, message) {
 
   // Emmy trigger #4: naps → nap encouragement
   const NAP_WORDS = ['nap', 'napping', 'power nap', 'rest my eyes'];
-  const mentionsNap = NAP_WORDS.some((w) => msg.includes(w));
+  const mentionsNap = NAP_WORDS.some((w) => messageIncludesKeyword(msg, w));
 
   if (mentionsNap && shouldTrigger('emmy_nap', 0.30, 180 * 1000)) {
     const lines = [
@@ -129,7 +144,7 @@ function handleEmmyReactions(client, target, context, message) {
 
   // Emmy trigger #5: emails → email feelings
   const EMAIL_WORDS = ['email', 'emails', 'inbox', 'outlook', 'gmail'];
-  const mentionsEmail = EMAIL_WORDS.some((w) => msg.includes(w));
+  const mentionsEmail = EMAIL_WORDS.some((w) => messageIncludesKeyword(msg, w));
 
   if (mentionsEmail && shouldTrigger('emmy_email', 0.30, 120 * 1000)) {
     const lines = [
