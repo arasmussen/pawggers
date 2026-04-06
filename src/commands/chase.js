@@ -11,7 +11,7 @@ module.exports = function(context) {
 
   const chase = database.get(DB_KEY);
   if (!chase?.redeemerId) {
-    client.say(target, `There's no active Zoomies chase right now.`);
+    client.say(target, `i don't have zoomies rn`);
     return;
   }
 
@@ -29,11 +29,11 @@ module.exports = function(context) {
     (c) => String(c.userId) === String(user.id)
   );
   if (existing) {
-    client.say(target, `${user.name}, you're already in this chase — one entry per person!`);
+    client.say(target, `@${user.name} you're already chasing me!`);
     return;
   }
 
-  const tickets = user.id === chase.redeemerId ? 5 : 1;
+  const tickets = 1;
   chase.chasers.push({
     userId: user.id,
     userName: user.name,

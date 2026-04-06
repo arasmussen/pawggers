@@ -9,12 +9,12 @@ function getTwitch() {
 const CHANNEL = '#xhumming';
 const DB_KEY = 'zoomiesChaseTable';
 const WINNER_COUNTS_KEY = 'zoomiesWinnerCounts';
-const LEGACY_WINNERS_LOG_KEY = 'zoomiesWinnersLog';
 
 const MS = 60 * 1000;
 
 let warn1Timeout = null;
 let warn2Timeout = null;
+let warnFinalTimeout = null;
 let finishTimeout = null;
 
 function clearTimers() {
@@ -26,6 +26,10 @@ function clearTimers() {
     clearTimeout(warn2Timeout);
     warn2Timeout = null;
   }
+  if (warnFinalTimeout) {
+    clearTimeout(warnFinalTimeout);
+    warnFinalTimeout = null;
+  }
   if (finishTimeout) {
     clearTimeout(finishTimeout);
     finishTimeout = null;
@@ -36,6 +40,16 @@ function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function rollZoomiesPayout() {
+  // Weighted tiers: higher is rarer (8k–10k is super rare)
+  const r = Math.floor(Math.random() * 1000); // 0..999
+  if (r < 620) return getRandomInt(2000, 3500);   // 62.0%
+  if (r < 880) return getRandomInt(3501, 5000);   // 26.0%
+  if (r < 960) return getRandomInt(5001, 7000);   // 8.0%
+  if (r < 995) return getRandomInt(7001, 7999);   // 3.5%
+  return getRandomInt(8000, 10000);               // 0.5%
 }
 
 function pickWeightedWinner(chasers) {
@@ -55,32 +69,7 @@ function chaseCountLine(n) {
   return `${who} trying to catch me, join them with !chase`;
 }
 
-function migrateLegacyZoomiesLogIfNeeded() {
-  const legacy = database.get(LEGACY_WINNERS_LOG_KEY);
-  if (!legacy?.entries?.length) {
-    return;
-  }
-  const stats = database.get(WINNER_COUNTS_KEY) || {};
-  for (let i = 0; i < legacy.entries.length; i++) {
-    const entry = legacy.entries[i];
-    const id = entry.winnerId;
-    if (!id) {
-      continue;
-    }
-    if (!stats[id]) {
-      stats[id] = { name: entry.winnerName || 'Unknown', wins: 0 };
-    }
-    stats[id].wins += 1;
-    if (entry.winnerName) {
-      stats[id].name = entry.winnerName;
-    }
-  }
-  database.set(WINNER_COUNTS_KEY, stats);
-  database.set(LEGACY_WINNERS_LOG_KEY, null);
-}
-
 function recordWinnerWin(winnerUserId, winnerName) {
-  migrateLegacyZoomiesLogIfNeeded();
   const stats = database.get(WINNER_COUNTS_KEY) || {};
   stats[winnerUserId] = stats[winnerUserId] || { name: winnerName, wins: 0 };
   stats[winnerUserId].wins += 1;
@@ -100,7 +89,7 @@ function scheduleChaseEnd(startedAt) {
     const line = chaseCountLine(n);
     getTwitch().client.say(
       CHANNEL,
-      `/announce STILL GOING! ${line}`
+      `/announce NANANA CAN'T CATCH ME ${line}`
     );
   }, MS);
 
@@ -113,9 +102,22 @@ function scheduleChaseEnd(startedAt) {
     const line = chaseCountLine(n);
     getTwitch().client.say(
       CHANNEL,
-      `/announce NANANA CAN'T CATCH ME ${line}`
+      `/announce STILL GOING! ${line}`
     );
   }, 2 * MS);
+
+  warnFinalTimeout = setTimeout(() => {
+    const c = database.get(DB_KEY);
+    if (!c || c.startedAt !== startedAt) {
+      return;
+    }
+    const n = c.chasers?.length || 0;
+    const line = chaseCountLine(n);
+    getTwitch().client.say(
+      CHANNEL,
+      `/announce phew i'm getting tired now.. ${line}`
+    );
+  }, (3 * MS) - (10 * 1000));
 
   finishTimeout = setTimeout(() => {
     const c = database.get(DB_KEY);
@@ -137,7 +139,7 @@ function finishZoomiesChase(options) {
   }
 
   const winner = pickWeightedWinner(chase.chasers);
-  const pawggers = getRandomInt(3000, 5000);
+  const pawggers = rollZoomiesPayout();
 
   const period = getPeriod();
   let userSpendTable = database.get('userSpendTable');
@@ -154,7 +156,7 @@ function finishZoomiesChase(options) {
 
   const spend = abbreviateNumber(Number(userSpendTable[period][winner.userId].spend));
   const pretty = pawggers.toLocaleString();
-  const msg = `${winner.userName} caught me and wins ${pretty} pawggers! They now have ${spend} pawggers.`;
+  const msg = `${winner.userName} caught me and wins ${pretty} pawggers! They now have ${spend} pawggers`;
 
   if (client && target) {
     client.say(target, msg);
@@ -197,8 +199,6 @@ function startAfterRedeem(user) {
 
 module.exports = {
   DB_KEY,
-  WINNER_COUNTS_KEY,
   startAfterRedeem,
   finishZoomiesChase,
-  clearTimers,
 };

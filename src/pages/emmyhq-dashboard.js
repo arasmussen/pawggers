@@ -237,7 +237,7 @@ module.exports = function (request, response, server) {
         <div class="leaderboard-list">${checkInRowsHtml}</div>
       </div>
       <div class="leaderboard">
-        <h2>Zoomies wins (all time)</h2>
+        <h2>Zoomies wins</h2>
         <div class="leaderboard-list">${zoomiesRowsHtml}</div>
       </div>
     </div>

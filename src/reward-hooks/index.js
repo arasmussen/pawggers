@@ -4,9 +4,8 @@ const Rewards = {
   EarlyBirds: '18e618a5-476f-4f63-a353-8c6ff9b5562c',
   GiveawayEntry: '4ab117c9-da32-4ea6-b411-78bc65b4decd',
   Hydrate: '24bc0256-ad10-47c0-9564-b97fe440ec7a',
-  PetEmmy: 'fc268e39-e2f4-4676-a1b4-dfc8282d9336',
-  // Create channel point reward "Zoomies" on Twitch, then paste its reward ID here:
-  Zoomies: '00000000-0000-4000-8000-000000000001',
+  PetEmmy: 'fc268e39-e2f4-4676-a1b4-dfc8282d9  // Create channel point reward "Zoomies" on Twitch, then paste its reward ID here:
+  Zoomies: 'a6519ff8-075f-48ff-82de-c5946b4b6f0f',
 };
 
 module.exports = {
@@ -17,4 +16,7 @@ module.exports = {
   [Rewards.Hydrate]: require('./hydrate'),
   [Rewards.PetEmmy]: require('./petemmy'),
   [Rewards.Zoomies]: require('./zoomies'),
+('./petemmy'),
+mmy'),
+temmy'),
 };
