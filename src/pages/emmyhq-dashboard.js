@@ -128,6 +128,7 @@ const PageCSS = `
     padding: 24px;
     font-size: 15px;
   }
+
 `;
 
 module.exports = function (request, response, server) {
@@ -186,6 +187,26 @@ module.exports = function (request, response, server) {
       spend: Number(periodData[userID].spend) || 0,
     }));
 
+  const zoomiesCounts = database.get('zoomiesWinnerCounts') || {};
+  const zoomiesTotals = Object.entries(zoomiesCounts).map(([userId, data]) => ({
+    userId,
+    displayName: data?.name || userTable[userId]?.name || 'Unknown',
+    wins: Number(data?.wins) || 0,
+  }));
+  zoomiesTotals.sort((a, b) => b.wins - a.wins);
+
+  let zoomiesRowsHtml = '';
+  if (zoomiesTotals.length === 0) {
+    zoomiesRowsHtml = '<p class="empty">No Zoomies wins recorded yet.</p>';
+  } else {
+    zoomiesTotals.forEach((entry, index) => {
+      const rank = index + 1;
+      const top3 = rank <= 3 ? ' top-3' : '';
+      const winWord = entry.wins === 1 ? 'win' : 'wins';
+      zoomiesRowsHtml += `<div class="row${top3}"><span class="rank">#${rank}</span><span class="name">${escapeHTML(entry.displayName)}</span><span class="total">${entry.wins} ${winWord}</span></div>`;
+    });
+  }
+
   const monthName = new Date().toLocaleString('default', { month: 'long' });
   let pawggersRowsHtml = '';
   if (pawggersLeaderboard.length === 0) {
@@ -214,6 +235,10 @@ module.exports = function (request, response, server) {
       <div class="leaderboard">
         <h2>Check-ins</h2>
         <div class="leaderboard-list">${checkInRowsHtml}</div>
+      </div>
+      <div class="leaderboard">
+        <h2>Zoomies wins (all time)</h2>
+        <div class="leaderboard-list">${zoomiesRowsHtml}</div>
       </div>
     </div>
   `;

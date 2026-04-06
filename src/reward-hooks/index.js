@@ -5,6 +5,8 @@ const Rewards = {
   GiveawayEntry: '4ab117c9-da32-4ea6-b411-78bc65b4decd',
   Hydrate: '24bc0256-ad10-47c0-9564-b97fe440ec7a',
   PetEmmy: 'fc268e39-e2f4-4676-a1b4-dfc8282d9336',
+  // Create channel point reward "Zoomies" on Twitch, then paste its reward ID here:
+  Zoomies: '00000000-0000-4000-8000-000000000001',
 };
 
 module.exports = {
@@ -14,4 +16,5 @@ module.exports = {
   [Rewards.GiveawayEntry]: require('./giveawayentry'),
   [Rewards.Hydrate]: require('./hydrate'),
   [Rewards.PetEmmy]: require('./petemmy'),
+  [Rewards.Zoomies]: require('./zoomies'),
 };
