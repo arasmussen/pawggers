@@ -1,6 +1,7 @@
 const escapeHTML = require('../util/escapeHTML');
 const database = require('../database');
 const getDay = require('../util/getDay');
+const isMod = require('../util/isMod');
 const generateTaskBody = require('./generateTaskBody');
 
 function generateFakeTaskBody() {
@@ -61,19 +62,26 @@ function generateDailyLeaderboardRows({ fake } = {}) {
   const day = getDay();
   const dailyTable = (database.get('dailyPawggersEarnedTable') || {})[day] || {};
 
+  const excludedUsernames = new Set(['xhumming', 'emmydotjs']);
+
   const totals = (fake
     ? [
-        { name: 'sarah', earned: 12800 },
-        { name: 'chatpawgger', earned: 5400 },
-        { name: 'zoomieschamp', earned: 2600 },
+        { userId: null, name: 'sarah', earned: 12800 },
+        { userId: null, name: 'chatpawgger', earned: 5400 },
+        { userId: null, name: 'zoomieschamp', earned: 2600 },
       ]
-    : Object.values(dailyTable)
+    : Object.entries(dailyTable).map(([userId, entry]) => ({ userId, ...entry }))
   )
-    .map((entry) => ({
-      displayName: entry?.name || 'Unknown',
-      earned: Number(entry?.earned) || 0,
-    }))
+    .map((entry) => {
+      const displayName = entry?.name || 'Unknown';
+      const earned = Number(entry?.earned) || 0;
+      const userId = entry?.userId != null ? String(entry.userId) : null;
+      const normalizedName = String(displayName).trim().toLowerCase();
+      return { userId, displayName, normalizedName, earned };
+    })
     .filter((entry) => entry.earned > 0)
+    .filter((entry) => !excludedUsernames.has(entry.normalizedName))
+    .filter((entry) => !entry.userId || !isMod(entry.userId))
     .sort((a, b) => b.earned - a.earned || a.displayName.localeCompare(b.displayName))
     .slice(0, 3);
 

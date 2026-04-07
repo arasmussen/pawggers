@@ -5,7 +5,7 @@ const Rewards = {
   GiveawayEntry: '4ab117c9-da32-4ea6-b411-78bc65b4decd',
   Hydrate: '24bc0256-ad10-47c0-9564-b97fe440ec7a',
   PetEmmy: 'fc268e39-e2f4-4676-a1b4-dfc8282d9336',
-  Zoomies: 'a6519ff8-075f-48ff-82de-c5946b4b6f0f',
+  Zoomies: '597bfc92-e46e-49cc-8e35-d3fee6048101',
 };
 
 module.exports = {

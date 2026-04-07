@@ -1,40 +1,32 @@
 const abbreviateNumber = require('../util/abbreviateNumber');
+const config = require('../config');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
-const recordDailyPawggersEarned = require('../util/recordDailyPawggersEarned');
 
 function getTwitch() {
   return require('../managers/twitch');
 }
 
-const CHANNEL = '#xhumming';
+const CHANNEL = `#${config.channel.name}`;
 const DB_KEY = 'zoomiesChaseTable';
 const WINNER_COUNTS_KEY = 'zoomiesWinnerCounts';
 
 const MS = 60 * 1000;
 
-let warn1Timeout = null;
-let warn2Timeout = null;
-let warnFinalTimeout = null;
-let finishTimeout = null;
+let warn1Timeout = null;      // 1 minute in (2 min left)
+let warn2Timeout = null;      // 2 minutes in (1 min left)
+let warnFinalTimeout = null;  // 10 seconds left
+let finishTimeout = null;     // 3 minutes in
 
 function clearTimers() {
-  if (warn1Timeout) {
-    clearTimeout(warn1Timeout);
-    warn1Timeout = null;
-  }
-  if (warn2Timeout) {
-    clearTimeout(warn2Timeout);
-    warn2Timeout = null;
-  }
-  if (warnFinalTimeout) {
-    clearTimeout(warnFinalTimeout);
-    warnFinalTimeout = null;
-  }
-  if (finishTimeout) {
-    clearTimeout(finishTimeout);
-    finishTimeout = null;
-  }
+  if (warn1Timeout) clearTimeout(warn1Timeout);
+  if (warn2Timeout) clearTimeout(warn2Timeout);
+  if (warnFinalTimeout) clearTimeout(warnFinalTimeout);
+  if (finishTimeout) clearTimeout(finishTimeout);
+  warn1Timeout = null;
+  warn2Timeout = null;
+  warnFinalTimeout = null;
+  finishTimeout = null;
 }
 
 function getRandomInt(min, max) {
@@ -44,7 +36,7 @@ function getRandomInt(min, max) {
 }
 
 function rollZoomiesPayout() {
-  // Weighted tiers: higher is rarer (8k–10k is super rare)
+  // Weighted tiers: higher is rarer; 8k–10k is super rare
   const r = Math.floor(Math.random() * 1000); // 0..999
   if (r < 620) return getRandomInt(2000, 3500);   // 62.0%
   if (r < 880) return getRandomInt(3501, 5000);   // 26.0%
@@ -58,9 +50,7 @@ function pickWeightedWinner(chasers) {
   let r = Math.floor(Math.random() * total);
   for (const c of chasers) {
     r -= c.tickets;
-    if (r < 0) {
-      return c;
-    }
+    if (r < 0) return c;
   }
   return chasers[chasers.length - 1];
 }
@@ -78,53 +68,54 @@ function recordWinnerWin(winnerUserId, winnerName) {
   database.set(WINNER_COUNTS_KEY, stats);
 }
 
+function safeSay(message) {
+  try {
+    const client = getTwitch()?.client;
+    if (!client) {
+      console.warn('[zoomies] twitch client not ready, dropping message:', message);
+      return;
+    }
+    client.say(CHANNEL, message);
+    console.log('[zoomies] sent:', message);
+  } catch (e) {
+    console.warn('[zoomies] failed to say message', e?.message || e);
+  }
+}
+
 function scheduleChaseEnd(startedAt) {
   clearTimers();
 
+  // 2 minutes left (1 minute in)
   warn1Timeout = setTimeout(() => {
     const c = database.get(DB_KEY);
-    if (!c || c.startedAt !== startedAt) {
-      return;
-    }
-    const n = c.chasers?.length || 0;
-    const line = chaseCountLine(n);
-    getTwitch().client.say(
-      CHANNEL,
-      `/announce NANANA CAN'T CATCH ME ${line}`
-    );
+    if (!c || c.startedAt !== startedAt) return;
+    const line = chaseCountLine(c.chasers?.length || 0);
+    console.log('[zoomies] 2 min left warning firing');
+    safeSay(`/announce NANANA CAN'T CATCH ME ${line}`);
   }, MS);
 
+  // 1 minute left (2 minutes in)
   warn2Timeout = setTimeout(() => {
     const c = database.get(DB_KEY);
-    if (!c || c.startedAt !== startedAt) {
-      return;
-    }
-    const n = c.chasers?.length || 0;
-    const line = chaseCountLine(n);
-    getTwitch().client.say(
-      CHANNEL,
-      `/announce STILL GOING! ${line}`
-    );
+    if (!c || c.startedAt !== startedAt) return;
+    const line = chaseCountLine(c.chasers?.length || 0);
+    console.log('[zoomies] 1 min left warning firing');
+    safeSay(`/announce STILL GOING! ${line}`);
   }, 2 * MS);
 
+  // 10 seconds left (2:50)
   warnFinalTimeout = setTimeout(() => {
     const c = database.get(DB_KEY);
-    if (!c || c.startedAt !== startedAt) {
-      return;
-    }
-    const n = c.chasers?.length || 0;
-    const line = chaseCountLine(n);
-    getTwitch().client.say(
-      CHANNEL,
-      `/announce phew i'm getting tired now.. ${line}`
-    );
+    if (!c || c.startedAt !== startedAt) return;
+    const line = chaseCountLine(c.chasers?.length || 0);
+    console.log('[zoomies] 10s left warning firing');
+    safeSay(`/announce phew i'm getting tired now.. ${line}`);
   }, (3 * MS) - (10 * 1000));
 
   finishTimeout = setTimeout(() => {
     const c = database.get(DB_KEY);
-    if (!c || c.startedAt !== startedAt) {
-      return;
-    }
+    if (!c || c.startedAt !== startedAt) return;
+    console.log('[zoomies] auto-finish firing');
     finishZoomiesChase({});
   }, 3 * MS);
 }
@@ -150,10 +141,8 @@ function finishZoomiesChase(options) {
   userSpendTable[period][winner.userId].spend = userSpendTable[period][winner.userId].spend || 0;
   userSpendTable[period][winner.userId].spend += pawggers;
   database.set('userSpendTable', userSpendTable);
-  recordDailyPawggersEarned(winner.userId, winner.userName, pawggers);
 
   recordWinnerWin(winner.userId, winner.userName);
-
   database.set(DB_KEY, null);
 
   const spend = abbreviateNumber(Number(userSpendTable[period][winner.userId].spend));
@@ -163,7 +152,7 @@ function finishZoomiesChase(options) {
   if (client && target) {
     client.say(target, msg);
   } else {
-    getTwitch().client.say(CHANNEL, msg);
+    safeSay(msg);
   }
 
   return { ok: true };
@@ -183,20 +172,13 @@ function startAfterRedeem(user) {
     redeemerName: user.name,
     startedAt,
     chasers: [
-      {
-        userId: user.id,
-        userName: user.name,
-        tickets: 5,
-      },
+      { userId: user.id, userName: user.name, tickets: 5 },
     ],
   });
 
   scheduleChaseEnd(startedAt);
 
-  getTwitch().client.say(
-    CHANNEL,
-    `${user.name} triggered zoomies! see if you can catch me heheheh !chase`
-  );
+  safeSay(`${user.name} triggered zoomies! see if you can catch me heheheh !chase`);
 }
 
 module.exports = {
@@ -204,3 +186,4 @@ module.exports = {
   startAfterRedeem,
   finishZoomiesChase,
 };
+

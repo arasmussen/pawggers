@@ -41,6 +41,7 @@ module.exports = function(context) {
   });
   database.set(DB_KEY, chase);
 
-  const ticketWord = tickets === 1 ? 'ticket' : 'tickets';
-  client.say(target, `${user.name} joined the chase (${tickets} ${ticketWord})!`);
+  const n = chase.chasers.length;
+  const chasingLine = n === 1 ? '1 person is' : `${n} people are`;
+  client.say(target, `${user.name} is in! ${chasingLine} chasing me!`);
 };
