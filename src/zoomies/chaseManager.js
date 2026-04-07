@@ -1,6 +1,7 @@
 const abbreviateNumber = require('../util/abbreviateNumber');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
+const recordDailyPawggersEarned = require('../util/recordDailyPawggersEarned');
 
 function getTwitch() {
   return require('../managers/twitch');
@@ -149,6 +150,7 @@ function finishZoomiesChase(options) {
   userSpendTable[period][winner.userId].spend = userSpendTable[period][winner.userId].spend || 0;
   userSpendTable[period][winner.userId].spend += pawggers;
   database.set('userSpendTable', userSpendTable);
+  recordDailyPawggersEarned(winner.userId, winner.userName, pawggers);
 
   recordWinnerWin(winner.userId, winner.userName);
 

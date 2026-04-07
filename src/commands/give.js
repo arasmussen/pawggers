@@ -3,6 +3,7 @@ const { ClientRequest } = require('http');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
 const isSarah = require('../util/isSarah');
+const recordDailyPawggersEarned = require('../util/recordDailyPawggersEarned');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -93,6 +94,7 @@ module.exports = function(context) {
   userSpendTable[period][userID].spend = userSpendTable[period][userID].spend || 0;
   userSpendTable[period][userID].spend += amount;
   database.set('userSpendTable', userSpendTable);
+  recordDailyPawggersEarned(userID, userTable[userID]?.name || username, amount);
 
   // get spend
   const spend = abbreviateNumber(Number(userSpendTable[period][userID].spend));

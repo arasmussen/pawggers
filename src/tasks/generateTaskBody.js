@@ -3,7 +3,8 @@ const getDay = require('../util/getDay');
 const getElapsed = require('../util/getElapsed');
 const setupTaskTable = require('./setupTaskTable');
 
-function generateTaskBody() {
+function generateTaskBody(options = {}) {
+  const liveStreamStats = Boolean(options.liveStreamStats);
   // setup database
   const todoTable = setupTaskTable();
 
@@ -44,6 +45,9 @@ function generateTaskBody() {
     body += `</ul>`;
   }
 
+  if (liveStreamStats) {
+    return `<div class="tasksStreamHeader"><div class="sectionTitle">TASKS</div><div class="tasksCounter">${tasksDone}/${totalTasks}</div></div><div id="scrollContainer" class="scrollContainer--topTaskFade"><ul>${body}</ul></div>`;
+  }
   return `<div class="tasksDone"> TASKS<div class="tasksCounter">${tasksDone}/${totalTasks}</div></div><div id="scrollContainer"><ul>${body}</ul></div>`;
 }
 

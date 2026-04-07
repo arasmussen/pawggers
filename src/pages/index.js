@@ -141,6 +141,7 @@ module.exports = function(request, response, server) {
           <a target="_blank" class="link" href="https://twitch.tv/xhumming">work/study streams</a>
           <a class="link" href="/guide">emmyHQ guide</a>
           <a class="link" href="/dashboard">emmyHQ dashboard</a>
+          <a class="link" href="/api/live-stream-stats">live stream stats</a>
           <a class="link" href="https://emmy.dog/wall-of-fame">wall of fame</a>
           <a target="_blank" class="link" href="https://shop.emmy.dog">rep our merch</a>
           <a target="_blank" class="link" href="https://discord.gg/SVKHb6Xfqp">join our discord</a>

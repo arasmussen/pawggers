@@ -21,6 +21,7 @@ const Endpoints = {
   '/api/giveaway-entries': require('./pages/giveaway-entries-page'),
   '/api/live-task-view': require('./endpoints/live-task-view'),
   '/api/live-task-view-decoy': require('./endpoints/live-task-view-decoy'),
+  '/api/live-stream-stats': require('./endpoints/live-stream-stats'),
   '/api/live-ttol-view': require('./endpoints/live-ttol-view'),
   '/api/reward-redeemed': require('./endpoints/reward-redeemed'),
   '/api/reward-updated': require('./endpoints/reward-updated'),

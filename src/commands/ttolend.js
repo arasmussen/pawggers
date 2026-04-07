@@ -2,6 +2,7 @@ const { ClientRequest } = require('http');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
 const isSarah = require('../util/isSarah');
+const recordDailyPawggersEarned = require('../util/recordDailyPawggersEarned');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -77,6 +78,8 @@ module.exports = function(context) {
     userSpendTable[period][guesserID].spend = userSpendTable[period][guesserID].spend || 0;
     userSpendTable[period][guesserID].spend += 2000;
     database.set('userSpendTable', userSpendTable);
+    const userTable = database.get('userTable') || {};
+    recordDailyPawggersEarned(guesserID, userTable?.[guesserID]?.name || 'Unknown', 2000);
   });
 
   // print result

@@ -37,7 +37,7 @@ class Database {
   }
 
   get(key) {
-    if (!Database._isLoaded) {
+    if (!this._isLoaded) {
       this._load();
     }
 
@@ -45,7 +45,7 @@ class Database {
   }
 
   set(key, value) {
-    if (!Database._isLoaded) {
+    if (!this._isLoaded) {
       this._load();
     }
 

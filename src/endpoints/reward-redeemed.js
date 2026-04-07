@@ -1,5 +1,6 @@
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
+const recordDailyPawggersEarned = require('../util/recordDailyPawggersEarned');
 const rewardHooks = require('../reward-hooks');
 const twitch = require('../managers/twitch');
 
@@ -55,6 +56,7 @@ module.exports = function(request, response) {
   userSpendTable[period][user.id].spend = userSpendTable[period][user.id].spend || 0;
   userSpendTable[period][user.id].spend += spend;
   database.set('userSpendTable', userSpendTable);
+  recordDailyPawggersEarned(user.id, user.name, spend);
 
   let userTable = database.get('userTable');
   userTable = userTable || {};

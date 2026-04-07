@@ -3,6 +3,7 @@ const { ClientRequest } = require('http');
 const database = require('../database');
 const getDay = require('../util/getDay');
 const getPeriod = require('../util/getPeriod');
+const recordDailyPawggersEarned = require('../util/recordDailyPawggersEarned');
 const twitch = require('../managers/twitch');
 const { threadId } = require('worker_threads');
 
@@ -73,6 +74,7 @@ module.exports = function(data) {
   userSpendTable[period][user.id].spend = userSpendTable[period][user.id].spend || 0;
   userSpendTable[period][user.id].spend += pawggers;
   database.set('userSpendTable', userSpendTable);
+  recordDailyPawggersEarned(user.id, user.name, pawggers);
 
   // get total pawggers
   const spend = abbreviateNumber(Number(userSpendTable[period][user.id].spend));

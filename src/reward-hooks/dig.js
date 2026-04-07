@@ -2,6 +2,7 @@ const abbreviateNumber = require ('../util/abbreviateNumber');
 const { ClientRequest } = require('http');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
+const recordDailyPawggersEarned = require('../util/recordDailyPawggersEarned');
 const twitch = require('../managers/twitch');
 
 module.exports = function(data) {
@@ -81,6 +82,7 @@ module.exports = function(data) {
   const pirateStole = pirateRandomizer <= 10;
   if (pirateRandomizer > 10) {
     userSpendTable[period][user.id].spend += foundPawggers;
+    recordDailyPawggersEarned(user.id, user.name, foundPawggers);
   } else {
     // track pirate loot for the month
     let pirateLootTable = database.get('pirateLootTable');

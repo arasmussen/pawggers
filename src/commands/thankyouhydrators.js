@@ -2,6 +2,7 @@ const database = require('../database');
 const getPeriod = require('../util/getPeriod');
 const isSarah = require('../util/isSarah');
 const setupHydratorsTable = require('../hydrators/setupHydratorsTable');
+const recordDailyPawggersEarned = require('../util/recordDailyPawggersEarned');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -37,6 +38,7 @@ module.exports = function(context) {
     const u = usernameToUser[username.toLowerCase()];
     userSpendTable[period][u.id] = userSpendTable[period][u.id] || {};
     userSpendTable[period][u.id].spend = (userSpendTable[period][u.id].spend || 0) + 2000;
+    recordDailyPawggersEarned(u.id, u.name, 2000);
   });
   database.set('userSpendTable', userSpendTable);
 

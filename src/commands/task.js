@@ -2,6 +2,7 @@ const { ClientRequest } = require('http');
 const database = require('../database');
 const generateTaskBody = require('../tasks/generateTaskBody');
 const generateDecoyTaskBody = require('../tasks/generateDecoyTaskBody');
+const generateLiveStreamStatsBody = require('../tasks/generateLiveStreamStatsBody');
 const getElapsed = require('../util/getElapsed');
 const SocketServer = require('../managers/socket');
 const setupTaskTable = require('../tasks/setupTaskTable');
@@ -90,4 +91,5 @@ module.exports = function(context) {
   // update socket clients
   SocketServer.emit('update-task-view', generateTaskBody());
   SocketServer.emit('update-decoy-task-view', generateDecoyTaskBody());
+  SocketServer.emit('update-live-stream-stats', generateLiveStreamStatsBody());
 }
