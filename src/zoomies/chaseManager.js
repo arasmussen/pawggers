@@ -13,20 +13,11 @@ const WINNER_COUNTS_KEY = 'zoomiesWinnerCounts';
 
 const MS = 60 * 1000;
 
-let warn1Timeout = null;      // 1 minute in (2 min left)
-let warn2Timeout = null;      // 2 minutes in (1 min left)
-let warnFinalTimeout = null;  // 10 seconds left
-let finishTimeout = null;     // 3 minutes in
+let tickInterval = null;
 
 function clearTimers() {
-  if (warn1Timeout) clearTimeout(warn1Timeout);
-  if (warn2Timeout) clearTimeout(warn2Timeout);
-  if (warnFinalTimeout) clearTimeout(warnFinalTimeout);
-  if (finishTimeout) clearTimeout(finishTimeout);
-  warn1Timeout = null;
-  warn2Timeout = null;
-  warnFinalTimeout = null;
-  finishTimeout = null;
+  if (tickInterval) clearInterval(tickInterval);
+  tickInterval = null;
 }
 
 function getRandomInt(min, max) {
@@ -76,7 +67,6 @@ function safeSay(message) {
       return;
     }
     client.say(CHANNEL, message);
-    console.log('[zoomies] sent:', message);
   } catch (e) {
     console.warn('[zoomies] failed to say message', e?.message || e);
   }
@@ -85,39 +75,46 @@ function safeSay(message) {
 function scheduleChaseEnd(startedAt) {
   clearTimers();
 
-  // 2 minutes left (1 minute in)
-  warn1Timeout = setTimeout(() => {
+  tickInterval = setInterval(() => {
     const c = database.get(DB_KEY);
-    if (!c || c.startedAt !== startedAt) return;
-    const line = chaseCountLine(c.chasers?.length || 0);
-    console.log('[zoomies] 2 min left warning firing');
-    safeSay(`/announce NANANA CAN'T CATCH ME ${line}`);
-  }, MS);
+    if (!c || c.startedAt !== startedAt) {
+      clearTimers();
+      return;
+    }
 
-  // 1 minute left (2 minutes in)
-  warn2Timeout = setTimeout(() => {
-    const c = database.get(DB_KEY);
-    if (!c || c.startedAt !== startedAt) return;
-    const line = chaseCountLine(c.chasers?.length || 0);
-    console.log('[zoomies] 1 min left warning firing');
-    safeSay(`/announce STILL GOING! ${line}`);
-  }, 2 * MS);
+    const elapsedMs = Date.now() - c.startedAt;
+    const n = c.chasers?.length || 0;
+    const line = chaseCountLine(n);
 
-  // 10 seconds left (2:50)
-  warnFinalTimeout = setTimeout(() => {
-    const c = database.get(DB_KEY);
-    if (!c || c.startedAt !== startedAt) return;
-    const line = chaseCountLine(c.chasers?.length || 0);
-    console.log('[zoomies] 10s left warning firing');
-    safeSay(`/announce phew i'm getting tired now.. ${line}`);
-  }, (3 * MS) - (10 * 1000));
+    // 2 minutes left (1 minute in)
+    if (!c.warn2MinSent && elapsedMs >= 1 * MS) {
+      c.warn2MinSent = true;
+      database.set(DB_KEY, c);
+      safeSay(`/announce NANANA CAN'T CATCH ME ${line}`);
+      return;
+    }
 
-  finishTimeout = setTimeout(() => {
-    const c = database.get(DB_KEY);
-    if (!c || c.startedAt !== startedAt) return;
-    console.log('[zoomies] auto-finish firing');
-    finishZoomiesChase({});
-  }, 3 * MS);
+    // 1 minute left (2 minutes in)
+    if (!c.warn1MinSent && elapsedMs >= 2 * MS) {
+      c.warn1MinSent = true;
+      database.set(DB_KEY, c);
+      safeSay(`/announce STILL GOING! ${line}`);
+      return;
+    }
+
+    // 10 seconds left (2:50)
+    if (!c.warn10sSent && elapsedMs >= (3 * MS) - (10 * 1000)) {
+      c.warn10sSent = true;
+      database.set(DB_KEY, c);
+      safeSay(`/announce phew i'm getting tired now.. ${line}`);
+      return;
+    }
+
+    // Finish at 3 minutes
+    if (elapsedMs >= 3 * MS) {
+      finishZoomiesChase({});
+    }
+  }, 1000);
 }
 
 /** @param {{ client?: object, target?: string }} options */
