@@ -49,4 +49,24 @@ module.exports = function(request, response) {
   // respond
   response.writeHead(200, { 'Content-Type': 'application/json' });
   response.end('success');
+
+  // best-effort: mark canceled in local queue
+  try {
+    const eventId = data?.event?.id;
+    if (eventId) {
+      const queueKey = 'redeemQueue';
+      const queue = database.get(queueKey) || [];
+      const idx = queue.findIndex((x) => String(x?.id) === String(eventId));
+      if (idx >= 0) {
+        queue[idx] = {
+          ...queue[idx],
+          status: 'canceled',
+          updatedAt: new Date().toISOString(),
+        };
+        database.set(queueKey, queue);
+      }
+    }
+  } catch (e) {
+    console.warn('reward-updated: failed to update redeemQueue entry', e?.message || e);
+  }
 }

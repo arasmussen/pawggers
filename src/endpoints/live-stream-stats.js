@@ -23,7 +23,7 @@ const PageCSS = `
     font-family: 'Rubik', sans-serif;
     font-weight: 400;
     color: #fff;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.65);
   }
 
   .section {
@@ -56,7 +56,6 @@ const PageCSS = `
     justify-content: space-between;
     align-items: baseline;
     flex-shrink: 0;
-    padding: 0 0 6px 0;
   }
   .tasksStreamHeader .sectionTitle {
     padding: 0;
@@ -120,24 +119,24 @@ const PageCSS = `
   .section--tasksFill #scrollContainer {
     flex: 1;
     min-height: 0;
-    margin-top: 4px;
+    padding: 0 0 8px 0;
   }
   /* Fade list content at the top of the viewport so rows vanish before the header line */
   #scrollContainer.scrollContainer--topTaskFade {
     -webkit-mask-image: linear-gradient(
       to bottom,
       transparent 0%,
-      rgba(0, 0, 0, 0.35) 14px,
-      rgba(0, 0, 0, 0.85) 32px,
-      #000 44px,
+      rgba(0, 0, 0, 0.35) 6px,
+      rgba(0, 0, 0, 0.85) 14px,
+      #000 20px,
       #000 100%
     );
     mask-image: linear-gradient(
       to bottom,
       transparent 0%,
-      rgba(0, 0, 0, 0.35) 14px,
-      rgba(0, 0, 0, 0.85) 32px,
-      black 44px,
+      rgba(0, 0, 0, 0.35) 6px,
+      rgba(0, 0, 0, 0.85) 14px,
+      black 20px,
       black 100%
     );
     -webkit-mask-size: 100% 100%;

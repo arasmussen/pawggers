@@ -3,6 +3,7 @@ const getPeriod = require('../util/getPeriod');
 const recordDailyPawggersEarned = require('../util/recordDailyPawggersEarned');
 const rewardHooks = require('../reward-hooks');
 const twitch = require('../managers/twitch');
+const config = require('../config');
 
 module.exports = function(request, response) {
   console.log(`[${new Date().toISOString()}] /api/reward-redeemed`);
@@ -66,6 +67,45 @@ module.exports = function(request, response) {
   // respond
   response.writeHead(200, { 'Content-Type': 'application/json' });
   response.end('success');
+
+  // store redeem in local queue (for overlay/debug/admin tooling)
+  try {
+    const event = data?.event;
+    const allowIds = config?.redeemQueue?.rewardIds;
+    const allowlistEnabled = Array.isArray(allowIds) && allowIds.length > 0;
+    const rewardId = event?.reward?.id;
+    if (allowlistEnabled && !allowIds.includes(rewardId)) {
+      // still run hook logic below, but don't store in the queue
+      return;
+    }
+
+    const queueKey = 'redeemQueue';
+    const queue = database.get(queueKey) || [];
+
+    const entry = {
+      id: event?.id || `${Date.now()}_${event?.user_id || 'unknown'}_${event?.reward?.id || 'unknown'}`,
+      redeemedAt: event?.redeemed_at || new Date().toISOString(),
+      status: event?.status || 'unfulfilled',
+      user: {
+        id: event?.user_id,
+        name: event?.user_name,
+      },
+      reward: {
+        id: event?.reward?.id,
+        title: event?.reward?.title,
+        cost: event?.reward?.cost,
+      },
+      userInput: event?.user_input || '',
+    };
+
+    queue.push(entry);
+    // keep the queue from growing forever
+    const MAX = 200;
+    const trimmed = queue.length > MAX ? queue.slice(queue.length - MAX) : queue;
+    database.set(queueKey, trimmed);
+  } catch (e) {
+    console.warn('reward-redeemed: failed to record redeemQueue entry', e?.message || e);
+  }
 
   console.log(`Name: ${data.event.reward.title} ID: ${data.event.reward.id}`);
 

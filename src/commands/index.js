@@ -10,6 +10,7 @@ module.exports = {
   '!testtesttest': require('./giveawaywinner'),
   '!startbreak': require('./startbreak'),
   '!tyhydrators': require('./thankyouhydrators'),
+  '!redeems': require('./redeems'),
   '!zoomieswinner': require('./zoomieswinner'),
   
   // pawggers

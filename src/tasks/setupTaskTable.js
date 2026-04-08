@@ -16,6 +16,8 @@ function setupTaskTable() {
       day: today,
       tasks: [],
     };
+    // keep redeem queue in sync with daily task resets
+    database.set('redeemQueue', []);
   }
   database.set('todoTable', todoTable);
 

@@ -23,6 +23,7 @@ const Endpoints = {
   '/api/live-task-view-decoy': require('./endpoints/live-task-view-decoy'),
   '/api/live-stream-stats': require('./endpoints/live-stream-stats'),
   '/api/live-ttol-view': require('./endpoints/live-ttol-view'),
+  '/api/redeem-queue': require('./endpoints/redeem-queue'),
   '/api/reward-redeemed': require('./endpoints/reward-redeemed'),
   '/api/reward-updated': require('./endpoints/reward-updated'),
 };
