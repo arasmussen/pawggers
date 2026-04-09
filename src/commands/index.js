@@ -11,6 +11,8 @@ module.exports = {
   '!startbreak': require('./startbreak'),
   '!tyhydrators': require('./thankyouhydrators'),
   '!redeems': require('./redeems'),
+  '!nextbreak': require('./nextbreak'),
+  '!clearnextbreak': require('./clearnextbreak'),
   '!zoomieswinner': require('./zoomieswinner'),
   
   // pawggers

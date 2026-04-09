@@ -3,6 +3,7 @@ const database = require('../database');
 const getDay = require('../util/getDay');
 const isMod = require('../util/isMod');
 const generateTaskBody = require('./generateTaskBody');
+const config = require('../config');
 
 function generateFakeTaskBody() {
   const fake = [
@@ -104,6 +105,49 @@ function generateLiveStreamStatsBody({ fake } = {}) {
   const tasksHtml = fake ? generateFakeTaskBody() : generateTaskBody({ liveStreamStats: true });
   const dailyTop3 = generateDailyLeaderboardRows({ fake });
 
+  let nextBreakHtml = '';
+  const allowIds = config?.redeemQueue?.rewardIds;
+  const allowlistEnabled = Array.isArray(allowIds) && allowIds.length > 0;
+  const queue = fake
+    ? [
+        {
+          redeemedAt: '2026-04-08T00:00:00.000Z',
+          status: 'unfulfilled',
+          reward: { id: (allowIds && allowIds[0]) || 'fake', title: 'Game Break' },
+          userInput: 'gos',
+        },
+      ]
+    : (database.get('redeemQueue') || []);
+
+  const breakItems = queue
+    .filter((x) => String(x?.status || '').toLowerCase() === 'unfulfilled')
+    .filter((x) => !allowlistEnabled || allowIds.includes(x?.reward?.id));
+
+  if (breakItems.length > 0) {
+    const oldest = breakItems
+      .slice()
+      .sort((a, b) => {
+        const ta = Date.parse(a?.redeemedAt || '') || 0;
+        const tb = Date.parse(b?.redeemedAt || '') || 0;
+        return ta - tb;
+      })[0];
+
+    const userInput = String(oldest?.userInput || '').trim();
+    const isManual = String(oldest?.id) === 'manual_nextbreak';
+    const line = isManual
+      ? `${escapeHTML(userInput)}`
+      : `game: ${escapeHTML(userInput)}`;
+
+    nextBreakHtml = `
+      <div class="section">
+        <div class="card">
+          <div class="sectionTitle">NEXT BREAK</div>
+          <div class="nextBreakLine">${line}</div>
+        </div>
+      </div>
+    `;
+  }
+
   return `
     <div class="section section--tasksFill">
       <div class="card">${tasksHtml}</div>
@@ -116,6 +160,7 @@ function generateLiveStreamStatsBody({ fake } = {}) {
         </div>
       </div>
     ` : ''}
+    ${nextBreakHtml}
   `;
 }
 

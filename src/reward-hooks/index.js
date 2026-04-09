@@ -6,6 +6,7 @@ const Rewards = {
   Hydrate: '24bc0256-ad10-47c0-9564-b97fe440ec7a',
   PetEmmy: 'fc268e39-e2f4-4676-a1b4-dfc8282d9336',
   Zoomies: '597bfc92-e46e-49cc-8e35-d3fee6048101',
+  GameBreak: 'eec682f1-8e79-40c0-b580-f12bd4dd869c',
 };
 
 module.exports = {

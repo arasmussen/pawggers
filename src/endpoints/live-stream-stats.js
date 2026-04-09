@@ -199,6 +199,10 @@ const PageCSS = `
     opacity: 0.8;
     padding: 6px 0;
   }
+
+  .nextBreakLine {
+    padding: 0 0 12px 0;
+  }
 `;
 
 const PageJS = `
@@ -275,7 +279,13 @@ module.exports = function(request, response, server) {
 
   const baseURL = 'https://emmy.dog/';
   const url = new URL(request.url, baseURL);
-  const fake = url.searchParams.get('fake') === '1';
+  const fakeParam = url.searchParams.get('fake');
+  const host = String(request.headers?.host || '').toLowerCase();
+  const isLocalHost = host.startsWith('localhost') || host.startsWith('127.0.0.1');
+  const isProductionHost = host.includes('emmy.dog');
+  // Default to fake unless we're clearly on the production hostname.
+  // (This makes local testing work even when viewing via LAN IP or machine hostname.)
+  const fake = fakeParam != null ? fakeParam === '1' : (isLocalHost || !isProductionHost);
 
   const body = generateLiveStreamStatsBody({ fake });
 
