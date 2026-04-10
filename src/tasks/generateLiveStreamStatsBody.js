@@ -114,7 +114,10 @@ function generateLiveStreamStatsBody({ fake } = {}) {
 
   const breakItems = queue
     .filter((x) => String(x?.status || '').toLowerCase() === 'unfulfilled')
-    .filter((x) => !allowlistEnabled || allowIds.includes(x?.reward?.id));
+    .filter((x) => {
+      if (x?.isManual === true) return true;
+      return !allowlistEnabled || allowIds.includes(x?.reward?.id);
+    });
 
   if (breakItems.length > 0) {
     const oldest = breakItems
@@ -126,10 +129,10 @@ function generateLiveStreamStatsBody({ fake } = {}) {
       })[0];
 
     const userInput = String(oldest?.userInput || '').trim();
-    const isManual = String(oldest?.id) === 'manual_nextbreak';
-    const line = isManual
-      ? `${escapeHTML(userInput)}`
-      : `game: ${escapeHTML(userInput)}`;
+    const isManual = oldest?.isManual === true || String(oldest?.id) === 'manual_nextbreak';
+    const gameBreakId = Array.isArray(allowIds) && allowIds.length > 0 ? allowIds[0] : null;
+    const isGameBreakRedeem = !isManual && gameBreakId && String(oldest?.reward?.id) === String(gameBreakId);
+    const line = isGameBreakRedeem ? `game: ${escapeHTML(userInput)}` : `${escapeHTML(userInput)}`;
 
     nextBreakHtml = `
       <div class="section">
