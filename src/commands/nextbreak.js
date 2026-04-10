@@ -5,7 +5,7 @@ const generateLiveStreamStatsBody = require('../tasks/generateLiveStreamStatsBod
 const SocketServer = require('../managers/socket');
 
 const MANUAL_ID = 'manual_nextbreak';
-const ConfigPath = path.resolve(__dirname, '../../config.json');
+const ConfigPath = path.resolve(__dirname, '../../../config.json');
 
 function getGameBreakRewardId() {
   try {
