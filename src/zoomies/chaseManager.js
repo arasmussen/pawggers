@@ -2,6 +2,7 @@ const abbreviateNumber = require('../util/abbreviateNumber');
 const config = require('../config');
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
+const isMod = require('../util/isMod');
 
 function getTwitch() {
   return require('../managers/twitch');
@@ -90,7 +91,7 @@ function scheduleChaseEnd(startedAt) {
     if (!c.warn2MinSent && elapsedMs >= 1 * MS) {
       c.warn2MinSent = true;
       database.set(DB_KEY, c);
-      safeSay(`/announce NANANA CAN'T CATCH ME ${line}`);
+      safeSay(`NANANA CAN'T CATCH ME ${line}`);
       return;
     }
 
@@ -98,7 +99,7 @@ function scheduleChaseEnd(startedAt) {
     if (!c.warn1MinSent && elapsedMs >= 2 * MS) {
       c.warn1MinSent = true;
       database.set(DB_KEY, c);
-      safeSay(`/announce STILL GOING! ${line}`);
+      safeSay(`STILL GOING! ${line}`);
       return;
     }
 
@@ -106,7 +107,7 @@ function scheduleChaseEnd(startedAt) {
     if (!c.warn10sSent && elapsedMs >= (3 * MS) - (10 * 1000)) {
       c.warn10sSent = true;
       database.set(DB_KEY, c);
-      safeSay(`/announce phew i'm getting tired now.. ${line}`);
+      safeSay(`phew i'm getting tired now.. ${line}`);
       return;
     }
 
@@ -127,7 +128,22 @@ function finishZoomiesChase(options) {
     return { ok: false };
   }
 
-  const winner = pickWeightedWinner(chase.chasers);
+  const chasers = chase.chasers;
+  const nonMods = chasers.filter((c) => !isMod(String(c.userId)));
+
+  let firstPick = pickWeightedWinner(chasers);
+  let winner = firstPick;
+
+  if (isMod(String(firstPick.userId))) {
+    safeSay(`@${firstPick.userName} caught me, but i escaped!`);
+    if (nonMods.length === 0) {
+      safeSay(`everyone chasing was a mod — no pawggers this round`);
+      database.set(DB_KEY, null);
+      return { ok: true };
+    }
+    winner = pickWeightedWinner(nonMods);
+  }
+
   const pawggers = rollZoomiesPayout();
 
   const period = getPeriod();
