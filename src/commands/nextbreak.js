@@ -1,14 +1,22 @@
 const database = require('../database');
-const config = require('../config');
+const fs = require('fs');
+const path = require('path');
 const generateLiveStreamStatsBody = require('../tasks/generateLiveStreamStatsBody');
 const SocketServer = require('../managers/socket');
 
 const MANUAL_ID = 'manual_nextbreak';
+const ConfigPath = path.resolve(__dirname, '../../config.json');
 
 function getGameBreakRewardId() {
-  const ids = config?.redeemQueue?.rewardIds;
-  if (Array.isArray(ids) && ids.length > 0) return ids[0];
-  return null;
+  try {
+    const config = JSON.parse(fs.readFileSync(ConfigPath, 'utf8'));
+    const ids = config?.redeemQueue?.rewardIds;
+    if (Array.isArray(ids) && ids.length > 0) return ids[0];
+    return null;
+  } catch (e) {
+    console.warn('nextbreak: failed to read config.json', e?.message || e);
+    return null;
+  }
 }
 
 module.exports = function(context) {
@@ -17,7 +25,7 @@ module.exports = function(context) {
 
   const input = context.variables.join(' ').trim();
   if (!input) {
-    client.say(target, `usage: !nextbreak [game]`);
+    client.say(target, `usage: !nextbreak [text]`);
     return;
   }
 

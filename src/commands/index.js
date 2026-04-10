@@ -12,6 +12,7 @@ module.exports = {
   '!tyhydrators': require('./thankyouhydrators'),
   '!redeems': require('./redeems'),
   '!nextbreak': require('./nextbreak'),
+  '!clearbreak': require('./clearbreak'),
   '!clearnextbreak': require('./clearnextbreak'),
   '!zoomieswinner': require('./zoomieswinner'),
   
