@@ -9,13 +9,16 @@ const ConfigPath = path.resolve(__dirname, '../../config.json');
 
 function getGameBreakRewardId() {
   try {
+    if (!fs.existsSync(ConfigPath)) {
+      return { ok: false, reason: `missing config.json at ${ConfigPath}` };
+    }
     const config = JSON.parse(fs.readFileSync(ConfigPath, 'utf8'));
     const ids = config?.redeemQueue?.rewardIds;
-    if (Array.isArray(ids) && ids.length > 0) return ids[0];
-    return null;
+    if (Array.isArray(ids) && ids.length > 0) return { ok: true, rewardId: ids[0] };
+    return { ok: false, reason: `config.json redeemQueue.rewardIds is empty` };
   } catch (e) {
     console.warn('nextbreak: failed to read config.json', e?.message || e);
-    return null;
+    return { ok: false, reason: `failed to read config.json` };
   }
 }
 
@@ -29,11 +32,12 @@ module.exports = function(context) {
     return;
   }
 
-  const rewardId = getGameBreakRewardId();
-  if (!rewardId) {
-    client.say(target, `next break isn't configured yet`);
+  const cfg = getGameBreakRewardId();
+  if (!cfg?.ok || !cfg.rewardId) {
+    client.say(target, `next break isn't configured yet (${cfg?.reason || 'unknown'})`);
     return;
   }
+  const rewardId = cfg.rewardId;
 
   const queueKey = 'redeemQueue';
   const queue = database.get(queueKey) || [];

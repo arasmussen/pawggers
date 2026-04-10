@@ -108,16 +108,9 @@ function generateLiveStreamStatsBody({ fake } = {}) {
   let nextBreakHtml = '';
   const allowIds = config?.redeemQueue?.rewardIds;
   const allowlistEnabled = Array.isArray(allowIds) && allowIds.length > 0;
-  const queue = fake
-    ? [
-        {
-          redeemedAt: '2026-04-08T00:00:00.000Z',
-          status: 'unfulfilled',
-          reward: { id: (allowIds && allowIds[0]) || 'fake', title: 'Game Break' },
-          userInput: 'gos',
-        },
-      ]
-    : (database.get('redeemQueue') || []);
+  // Always use the real redeem queue for NEXT BREAK so the section hides
+  // when there are no pending allowlisted redeems (even in local fake-mode UI).
+  const queue = database.get('redeemQueue') || [];
 
   const breakItems = queue
     .filter((x) => String(x?.status || '').toLowerCase() === 'unfulfilled')
