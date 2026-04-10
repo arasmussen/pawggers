@@ -174,7 +174,7 @@ const PageCSS = `
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 6px 0;
+    margin: 0 0 6px 0;
   }
   .lb-rank {
     min-width: 36px;

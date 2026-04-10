@@ -1,5 +1,6 @@
 const { ClientRequest } = require('http');
 const isSarah = require('../util/isSarah');
+const clearBreak = require('./clearbreak');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -83,6 +84,8 @@ module.exports = function(context) {
 
   // print result
   if (mode === 'pom') {
+    // Also clear the manually-set next break (mods-only) so the overlay can fall back
+    clearBreak(context);
     setTimeout(() => {
       client.say(target, `It's pom time! Here's your motivational quote:`);
     }, 500);
