@@ -1,5 +1,5 @@
 const database = require('../database');
-const config = require('../config');
+const getRedeemQueueAllowlist = require('../util/getRedeemQueueAllowlist');
 
 function formatItem(x) {
   const title = x?.reward?.title || 'unknown reward';
@@ -12,14 +12,11 @@ module.exports = function(context) {
   const { client, target } = context;
   if (!client || !target) return;
 
-  const allowIds = config?.redeemQueue?.rewardIds;
-  const allowlistEnabled = Array.isArray(allowIds) && allowIds.length > 0;
+  const allowIds = getRedeemQueueAllowlist();
 
   const queue = database.get('redeemQueue') || [];
   let pending = queue.filter((x) => String(x?.status || 'unfulfilled').toLowerCase() === 'unfulfilled');
-  if (allowlistEnabled) {
-    pending = pending.filter((x) => allowIds.includes(x?.reward?.id));
-  }
+  pending = pending.filter((x) => allowIds.includes(x?.reward?.id));
 
   pending = pending.slice().sort((a, b) => {
     const ta = Date.parse(a?.redeemedAt || '') || 0;
@@ -28,7 +25,7 @@ module.exports = function(context) {
   });
 
   if (pending.length === 0) {
-    client.say(target, `no redeems in queue rn so we yap!`);
+    client.say(target, `no redeems in queue rn`);
     return;
   }
 

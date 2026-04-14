@@ -6,6 +6,7 @@ const twitch = require('../managers/twitch');
 const config = require('../config');
 const socket = require('../managers/socket');
 const generateLiveStreamStatsBody = require('../tasks/generateLiveStreamStatsBody');
+const getRedeemQueueAllowlist = require('../util/getRedeemQueueAllowlist');
 
 module.exports = function(request, response) {
   console.log(`[${new Date().toISOString()}] /api/reward-redeemed`);
@@ -73,10 +74,9 @@ module.exports = function(request, response) {
   // store redeem in local queue (for overlay/debug/admin tooling)
   try {
     const event = data?.event;
-    const allowIds = config?.redeemQueue?.rewardIds;
-    const allowlistEnabled = Array.isArray(allowIds) && allowIds.length > 0;
+    const allowIds = getRedeemQueueAllowlist();
     const rewardId = event?.reward?.id;
-    if (allowlistEnabled && !allowIds.includes(rewardId)) {
+    if (!allowIds.includes(rewardId)) {
       // still run hook logic below, but don't store in the queue
     } else {
       const queueKey = 'redeemQueue';

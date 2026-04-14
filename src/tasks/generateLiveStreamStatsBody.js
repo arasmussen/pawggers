@@ -4,6 +4,7 @@ const getDay = require('../util/getDay');
 const isMod = require('../util/isMod');
 const generateTaskBody = require('./generateTaskBody');
 const config = require('../config');
+const getRedeemQueueAllowlist = require('../util/getRedeemQueueAllowlist');
 
 function slugifyDomIdPart(input) {
   return String(input || '')
@@ -115,7 +116,7 @@ function generateLiveStreamStatsBody({ fake } = {}) {
   const dailyTop3 = generateDailyLeaderboardRows({ fake });
 
   let nextBreakHtml = '';
-  const allowIds = config?.redeemQueue?.rewardIds;
+  const allowIds = getRedeemQueueAllowlist();
   const allowlistEnabled = Array.isArray(allowIds) && allowIds.length > 0;
   // Sync from disk so overlay matches db.json (process memory can be stale).
   database.reload();
