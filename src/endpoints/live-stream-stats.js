@@ -219,6 +219,14 @@ function safeSetScroll(scrollTop) {
   el.scrollTop = scrollTop;
 }
 
+function slugifyDomIdPart(input) {
+  return String(input || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 socket.on('update-live-stream-stats', (message) => {
   const prevScroll = safeGetScroll();
   document.body.innerHTML = message;
@@ -227,6 +235,7 @@ socket.on('update-live-stream-stats', (message) => {
 
 let scrollingDown = true;
 let scrollInterval;
+let resumeTimeout;
 
 function listScroll() {
   const scrollContainer = document.getElementById('scrollContainer');
@@ -262,6 +271,33 @@ function startScroll() {
   clearInterval(scrollInterval);
   scrollInterval = setInterval(listScroll, 70);
 }
+
+function stopAutoScroll() {
+  clearInterval(scrollInterval);
+  clearTimeout(resumeTimeout);
+}
+
+function resumeAutoScrollAfter(ms) {
+  clearTimeout(resumeTimeout);
+  resumeTimeout = setTimeout(startScroll, ms);
+}
+
+socket.on('scroll-live-stream-stats-to-user', (payload) => {
+  const username = payload && payload.username;
+  const scrollContainer = document.getElementById('scrollContainer');
+  if (!scrollContainer) return;
+
+  const targetId = 'user-' + (slugifyDomIdPart(username) || 'unknown');
+  const targetEl = document.getElementById(targetId);
+  if (!targetEl) return;
+
+  stopAutoScroll();
+  // Smoothly scroll the scrollContainer to the user header.
+  // scrollIntoView will scroll the nearest scrollable ancestor (our container).
+  targetEl.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+  // Hold for 5 seconds, then continue auto-scroll from this position.
+  resumeAutoScrollAfter(5000);
+});
 
 function main() {
   startScroll();

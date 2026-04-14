@@ -92,4 +92,5 @@ module.exports = function(context) {
   SocketServer.emit('update-task-view', generateTaskBody());
   SocketServer.emit('update-decoy-task-view', generateDecoyTaskBody());
   SocketServer.emit('update-live-stream-stats', generateLiveStreamStatsBody());
+  SocketServer.emit('scroll-live-stream-stats-to-user', { username: user.name });
 }

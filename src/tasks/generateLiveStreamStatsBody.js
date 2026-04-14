@@ -5,6 +5,14 @@ const isMod = require('../util/isMod');
 const generateTaskBody = require('./generateTaskBody');
 const config = require('../config');
 
+function slugifyDomIdPart(input) {
+  return String(input || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 function generateFakeTaskBody() {
   const fake = [
     {
@@ -44,7 +52,8 @@ function generateFakeTaskBody() {
 
   let body = '';
   for (const group of fake) {
-    body += `<div class="username">${escapeHTML(group.username)}</div><ul>`;
+    const userAnchorId = `user-${slugifyDomIdPart(group.username) || 'unknown'}`;
+    body += `<div class="username" id="${userAnchorId}">${escapeHTML(group.username)}</div><ul>`;
     group.tasks.forEach((t, i) => {
       const taskClass = t.done ? 'task completed' : 'task';
       const taskNumber = String(i + 1).padStart(2, '0');

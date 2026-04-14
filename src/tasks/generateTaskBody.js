@@ -3,6 +3,14 @@ const getDay = require('../util/getDay');
 const getElapsed = require('../util/getElapsed');
 const setupTaskTable = require('./setupTaskTable');
 
+function slugifyDomIdPart(input) {
+  return String(input || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 function generateTaskBody(options = {}) {
   const liveStreamStats = Boolean(options.liveStreamStats);
   // setup database
@@ -28,7 +36,8 @@ function generateTaskBody(options = {}) {
   // generate body
   let body = '';
   for (const [username, tasks] of Object.entries(byUser)) {
-    body += `<div class="username">${escapeHTML(username)}</div><ul>`;
+    const userAnchorId = `user-${slugifyDomIdPart(username) || 'unknown'}`;
+    body += `<div class="username" id="${userAnchorId}">${escapeHTML(username)}</div><ul>`;
     tasks.forEach((task, i) => {
       // truncate if too long
       let text = task.task;
