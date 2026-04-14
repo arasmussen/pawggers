@@ -1,9 +1,9 @@
 const database = require('../database');
 const getRedeemQueueAllowlist = require('../util/getRedeemQueueAllowlist');
+const { getRedeemChatShortLabel } = require('../util/breakRedeemDisplay');
 
 function formatItem(x) {
-  const title = x?.reward?.title || 'unknown reward';
-  return `${title}`;
+  return getRedeemChatShortLabel(x) || (x?.reward?.title || 'unknown reward');
 }
 
 const MAX_ITEMS_IN_CHAT = 10;

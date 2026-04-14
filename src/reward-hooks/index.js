@@ -7,6 +7,9 @@ const Rewards = {
   PetEmmy: 'fc268e39-e2f4-4676-a1b4-dfc8282d9336',
   Zoomies: '597bfc92-e46e-49cc-8e35-d3fee6048101',
   GameBreak: 'eec682f1-8e79-40c0-b580-f12bd4dd869c',
+  CultureBreak: '72643134-9360-48f0-9763-2dc2f0768c7b',
+  MusicBreak: 'b8a53ce8-851c-44d7-b529-ec40367b0fb7',
+  WatchBreak: '83af6303-7555-49b4-9881-1507fd1f5cee',
 };
 
 module.exports = {

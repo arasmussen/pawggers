@@ -5,6 +5,7 @@ const isMod = require('../util/isMod');
 const generateTaskBody = require('./generateTaskBody');
 const config = require('../config');
 const getRedeemQueueAllowlist = require('../util/getRedeemQueueAllowlist');
+const { getBreakDisplayLine } = require('../util/breakRedeemDisplay');
 
 function slugifyDomIdPart(input) {
   return String(input || '')
@@ -147,11 +148,8 @@ function generateLiveStreamStatsBody({ fake } = {}) {
         return ta - tb;
       })[0];
 
-    const userInput = String(oldest?.userInput || '').trim();
-    const isManual = oldest?.isManual === true || String(oldest?.id) === 'manual_nextbreak';
-    const gameBreakId = Array.isArray(allowIds) && allowIds.length > 0 ? allowIds[0] : null;
-    const isGameBreakRedeem = !isManual && gameBreakId && String(oldest?.reward?.id) === String(gameBreakId);
-    const line = isGameBreakRedeem ? `game: ${escapeHTML(userInput)}` : `${escapeHTML(userInput)}`;
+    const rawLine = getBreakDisplayLine(oldest);
+    const line = escapeHTML(rawLine);
 
     if (line.trim() !== '') {
       nextBreakHtml = `
