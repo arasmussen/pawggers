@@ -1,5 +1,7 @@
 const database = require('../database');
 const getPeriod = require('../util/getPeriod');
+const socket = require('../managers/socket');
+const generateLiveStreamStatsBody = require('../tasks/generateLiveStreamStatsBody');
 
 module.exports = function(request, response) {
   console.log(`[${new Date().toISOString()}] /api/reward-updated`);
@@ -59,6 +61,7 @@ module.exports = function(request, response) {
           updatedAt: new Date().toISOString(),
         };
         database.set(queueKey, queue);
+        socket.emit('update-live-stream-stats', generateLiveStreamStatsBody());
       }
     }
   } catch (e) {
