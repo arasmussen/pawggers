@@ -2,6 +2,7 @@ const { ClientRequest } = require('http');
 const database = require('../database');
 const generateTaskBody = require('../tasks/generateTaskBody');
 const setupTaskTable = require('../tasks/setupTaskTable');
+const getElapsed = require('../util/getElapsed');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -43,7 +44,12 @@ module.exports = function(context) {
     if (i === completedTasksForUser.length - 1 && completedTasksForUser.length > 1) {
       completedTaskNames += 'and ';
     }
-    completedTaskNames += completedTasksForUser[i].task;
+    const t = completedTasksForUser[i];
+    const elapsed = (t.created != null && t.doneAt != null && t.doneAt > t.created)
+      ? getElapsed(t.created, t.doneAt)
+      : null;
+    const elapsedStr = (elapsed && elapsed !== '0:00') ? ` (${elapsed})` : '';
+    completedTaskNames += `${t.task}${elapsedStr}`;
     if (i < completedTasksForUser.length - 1) {
       completedTaskNames += ', ';
     } else {
