@@ -75,11 +75,10 @@ function handleEmmyReactions(client, target, context, message) {
   const mentionsMeeting = MEETING_WORDS.some((w) => messageIncludesKeyword(msg, w));
   const isMeetingDoneCommand = msg.trim().startsWith('!meetingdone');
 
-  if (mentionsMeeting && !isMeetingDoneCommand && shouldTrigger('emmy_meeting', 0.30, 90 * 1000)) {
+  if (mentionsMeeting && !isMeetingDoneCommand && shouldTrigger('emmy_meeting', 0.20, 360 * 1000)) {
     const lines = [
       'meeting... is that like walkies?',
       'another meeting? boooooring',
-      "meetings sound suspiciously like times you're not throwing the ball for me.",
       'if that meeting could have been an email...',
       'good luck with your meeting! give me pets after',
       "don't forget about me during your boring meeting!",
@@ -93,7 +92,7 @@ function handleEmmyReactions(client, target, context, message) {
    const BREAK_WORDS = ['break', 'tired', 'exhausted', 'burnt out', 'burned out', 'eepy', 'sleepy'];
    const mentionsBreakOrTired = BREAK_WORDS.some((w) => messageIncludesKeyword(msg, w));
  
-  if (mentionsBreakOrTired && shouldTrigger('emmy_break', 0.30, 90 * 1000)) {
+  if (mentionsBreakOrTired && shouldTrigger('emmy_break', 0.20, 360 * 1000)) {
      const lines = [
        'i prescribe one sip of water, one stretch, and at least five pets for me.',
        'break time! i fully support this paws.',
@@ -110,7 +109,7 @@ function handleEmmyReactions(client, target, context, message) {
    const MEAL_WORDS = ['breakfast', 'lunch', 'dinner', 'snack', 'snacks', 'brunch'];
    const mentionsMeal = MEAL_WORDS.some((w) => messageIncludesKeyword(msg, w));
  
-  if (mentionsMeal && shouldTrigger('emmy_meal', 0.30, 120 * 1000)) {
+  if (mentionsMeal && shouldTrigger('emmy_meal', 0.20, 360 * 1000)) {
     const lines = [
       'food? i want food',
       'food? sharsies?',
@@ -130,7 +129,7 @@ function handleEmmyReactions(client, target, context, message) {
   const NAP_WORDS = ['nap', 'napping', 'power nap', 'rest my eyes'];
   const mentionsNap = NAP_WORDS.some((w) => messageIncludesKeyword(msg, w));
 
-  if (mentionsNap && shouldTrigger('emmy_nap', 0.30, 180 * 1000)) {
+  if (mentionsNap && shouldTrigger('emmy_nap', 0.20, 360 * 1000)) {
     const lines = [
       'i fully support horizontal productivity',
       'naps are the best',
@@ -146,10 +145,13 @@ function handleEmmyReactions(client, target, context, message) {
   const EMAIL_WORDS = ['email', 'emails', 'inbox', 'outlook', 'gmail'];
   const mentionsEmail = EMAIL_WORDS.some((w) => messageIncludesKeyword(msg, w));
 
-  if (mentionsEmail && shouldTrigger('emmy_email', 0.30, 120 * 1000)) {
+  if (mentionsEmail && shouldTrigger('emmy_email', 0.20, 360 * 1000)) {
     const lines = [
       'email me a treat!',
       'email me why dont cha Flirt',
+      'send those emails!! emmmyCheer',
+      'inbox zero let\'s go!',
+      'email me some treats!',
     ];
     const line = lines[Math.floor(Math.random() * lines.length)];
 

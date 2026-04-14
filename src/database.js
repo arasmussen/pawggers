@@ -52,6 +52,12 @@ class Database {
     this._data[key] = value;
     this._write();
   }
+
+  /** Re-read db.json from disk (fixes stale in-memory state vs file). */
+  reload() {
+    this._isLoaded = false;
+    this._load();
+  }
 };
 
 module.exports = new Database();

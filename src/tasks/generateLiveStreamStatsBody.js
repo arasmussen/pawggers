@@ -108,15 +108,24 @@ function generateLiveStreamStatsBody({ fake } = {}) {
   let nextBreakHtml = '';
   const allowIds = config?.redeemQueue?.rewardIds;
   const allowlistEnabled = Array.isArray(allowIds) && allowIds.length > 0;
-  // Always use the real redeem queue for NEXT BREAK so the section hides
-  // when there are no pending allowlisted redeems (even in local fake-mode UI).
+  // Sync from disk so overlay matches db.json (process memory can be stale).
+  database.reload();
   const queue = database.get('redeemQueue') || [];
 
+  function isUnfulfilled(x) {
+    const s = String(x?.status || 'unfulfilled').toLowerCase();
+    return s === 'unfulfilled';
+  }
+
   const breakItems = queue
-    .filter((x) => String(x?.status || '').toLowerCase() === 'unfulfilled')
+    .filter(isUnfulfilled)
     .filter((x) => {
-      if (x?.isManual === true) return true;
-      return !allowlistEnabled || allowIds.includes(x?.reward?.id);
+      const manual =
+        x?.isManual === true || String(x?.id) === 'manual_nextbreak';
+      if (manual) return true;
+      // Without an allowlist, do not guess which redeems are "break" redeems.
+      if (!allowlistEnabled) return false;
+      return allowIds.includes(x?.reward?.id);
     });
 
   if (breakItems.length > 0) {
@@ -134,7 +143,8 @@ function generateLiveStreamStatsBody({ fake } = {}) {
     const isGameBreakRedeem = !isManual && gameBreakId && String(oldest?.reward?.id) === String(gameBreakId);
     const line = isGameBreakRedeem ? `game: ${escapeHTML(userInput)}` : `${escapeHTML(userInput)}`;
 
-    nextBreakHtml = `
+    if (line.trim() !== '') {
+      nextBreakHtml = `
       <div class="section">
         <div class="card">
           <div class="sectionTitle">NEXT BREAK</div>
@@ -142,6 +152,7 @@ function generateLiveStreamStatsBody({ fake } = {}) {
         </div>
       </div>
     `;
+    }
   }
 
   return `
