@@ -9,8 +9,12 @@ module.exports = function(context) {
   const { client, target } = context;
   if (!client || !target) return;
 
+  const silent = Boolean(context?.silentClearBreak);
+
   if (!context?.['user-id'] || !isMod(context['user-id'])) {
-    client.say(target, `mods only`);
+    if (!silent) {
+      client.say(target, `mods only`);
+    }
     return;
   }
 
@@ -23,6 +27,11 @@ module.exports = function(context) {
   database.set(queueKey, next);
 
   SocketServer.emit('update-live-stream-stats', generateLiveStreamStatsBody());
+  if (silent) {
+    // Used by other commands (e.g. !t pom) to avoid chat spam.
+    return;
+  }
+
   client.say(target, removed ? `cleared next break` : `no manual next break to clear`);
 };
 

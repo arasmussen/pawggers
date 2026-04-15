@@ -91,7 +91,7 @@ function scheduleChaseEnd(startedAt) {
     if (!c.warn2MinSent && elapsedMs >= 1 * MS) {
       c.warn2MinSent = true;
       database.set(DB_KEY, c);
-      safeSay(`NANANA CAN'T CATCH ME ${line}`);
+      safeSay(`emmmyTipTap NANANA CAN'T CATCH ME ${line}`);
       return;
     }
 
@@ -99,15 +99,15 @@ function scheduleChaseEnd(startedAt) {
     if (!c.warn1MinSent && elapsedMs >= 2 * MS) {
       c.warn1MinSent = true;
       database.set(DB_KEY, c);
-      safeSay(`STILL GOING! ${line}`);
+      safeSay(`emmmyTipTap STILL GOING! ${line}`);
       return;
     }
 
-    // 10 seconds left (2:50)
-    if (!c.warn10sSent && elapsedMs >= (3 * MS) - (10 * 1000)) {
+    // 30 seconds left (2:30)
+    if (!c.warn10sSent && elapsedMs >= (2 * MS) + (30 * 1000)) {
       c.warn10sSent = true;
       database.set(DB_KEY, c);
-      safeSay(`phew i'm getting tired now.. ${line}`);
+      safeSay(`emmmyTipTap phew i'm getting tired now.. ${line}`);
       return;
     }
 

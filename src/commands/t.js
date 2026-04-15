@@ -85,7 +85,7 @@ module.exports = function(context) {
   // print result
   if (mode === 'pom') {
     // Also clear the manually-set next break (mods-only) so the overlay can fall back
-    clearBreak(context);
+    clearBreak({ ...context, silentClearBreak: true });
     setTimeout(() => {
       client.say(target, `It's pom time! Here's your motivational quote:`);
     }, 500);
