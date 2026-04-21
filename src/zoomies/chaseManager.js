@@ -185,7 +185,7 @@ function startAfterRedeem(user) {
     redeemerName: user.name,
     startedAt,
     chasers: [
-      { userId: user.id, userName: user.name, tickets: 5 },
+      { userId: user.id, userName: user.name, tickets: 3 },
     ],
   });
 

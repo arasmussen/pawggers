@@ -26,6 +26,10 @@ module.exports = function(context) {
     name: context['display-name'],
   };
 
+  function scrollOverlayToUser() {
+    SocketServer.emit('scroll-live-stream-stats-to-user', { username: user.name });
+  }
+
   // add user to table
   let userTable = database.get('userTable');
   userTable = userTable || {};
@@ -61,12 +65,17 @@ module.exports = function(context) {
 
   if (task === '' && !activeTaskForUser) {
     client.say(target, `You don't have an active task. Use !task [task name] to start one.`);
+    scrollOverlayToUser();
     return;
   }
 
   if (activeTaskForUser) {
     const elapsed = getElapsed(activeTaskForUser.created);
     client.say(target, `${user.name}, you're working on: ${activeTaskForUser.task} (${elapsed})`);
+    // Only scroll the overlay for bare "!task" (no args), not when adding a task.
+    if (task === '') {
+      scrollOverlayToUser();
+    }
     return;
   }
 
@@ -92,5 +101,5 @@ module.exports = function(context) {
   SocketServer.emit('update-task-view', generateTaskBody());
   SocketServer.emit('update-decoy-task-view', generateDecoyTaskBody());
   SocketServer.emit('update-live-stream-stats', generateLiveStreamStatsBody());
-  SocketServer.emit('scroll-live-stream-stats-to-user', { username: user.name });
+  // Do not auto-scroll the overlay when the user is adding a new task ("!task some words").
 }

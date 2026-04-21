@@ -282,6 +282,15 @@ function resumeAutoScrollAfter(ms) {
   resumeTimeout = setTimeout(startScroll, ms);
 }
 
+function scrollContainerToElement(scrollContainer, targetEl, behavior) {
+  const cRect = scrollContainer.getBoundingClientRect();
+  const tRect = targetEl.getBoundingClientRect();
+  const nextTop = scrollContainer.scrollTop + (tRect.top - cRect.top);
+  const maxTop = Math.max(0, scrollContainer.scrollHeight - scrollContainer.clientHeight);
+  const clamped = Math.max(0, Math.min(nextTop, maxTop));
+  scrollContainer.scrollTo({ top: clamped, behavior: behavior || 'auto' });
+}
+
 socket.on('scroll-live-stream-stats-to-user', (payload) => {
   const username = payload && payload.username;
   const scrollContainer = document.getElementById('scrollContainer');
@@ -292,9 +301,8 @@ socket.on('scroll-live-stream-stats-to-user', (payload) => {
   if (!targetEl) return;
 
   stopAutoScroll();
-  // Smoothly scroll the scrollContainer to the user header.
-  // scrollIntoView will scroll the nearest scrollable ancestor (our container).
-  targetEl.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+  // scrollIntoView often scrolls the window, not our overflow div — set scrollTop on #scrollContainer.
+  scrollContainerToElement(scrollContainer, targetEl, 'smooth');
   // Hold for 5 seconds, then continue auto-scroll from this position.
   resumeAutoScrollAfter(5000);
 });
