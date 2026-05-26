@@ -9,6 +9,7 @@ module.exports = {
   '!giveawaywinner': require('./giveawaywinner'),
   '!testtesttest': require('./giveawaywinner'),
   '!startbreak': require('./startbreak'),
+  '!playgos': require('./playgos'),
   '!tyhydrators': require('./thankyouhydrators'),
   '!redeems': require('./redeems'),
   '!nextbreak': require('./nextbreak'),
