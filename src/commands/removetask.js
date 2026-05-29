@@ -1,4 +1,3 @@
-const { ClientRequest } = require('http');
 const database = require('../database');
 const isMod = require('../util/isMod');
 const generateTaskBody = require('../tasks/generateTaskBody');
@@ -6,32 +5,38 @@ const generateDecoyTaskBody = require('../tasks/generateDecoyTaskBody');
 const generateLiveStreamStatsBody = require('../tasks/generateLiveStreamStatsBody');
 const setupTaskTable = require('../tasks/setupTaskTable');
 const socket = require('../managers/socket');
+const {
+  getFocusedTaskId,
+  setFocusedTaskId,
+  getUserTaskEntryByOrdinal,
+  getActiveUserTaskEntries,
+  getFirstIncompleteUserOrdinal,
+  pauseTaskTimer,
+  reconcileUserFocus,
+  switchFocusToUserOrdinal,
+} = require('../tasks/taskUtils');
 
 module.exports = function(context) {
   const { client, target } = context;
 
-  // data validation
-  if (!context?.['display-name'] ||
-      !context?.['user-id']) {
+  if (!context?.['display-name'] || !context?.['user-id']) {
     console.log('validation failed');
     return;
   }
 
-  // get user
   const user = {
     id: context['user-id'],
     name: context['display-name'],
   };
-  
-  // setup database table
+
   const todoTable = setupTaskTable();
+  const now = Date.now();
 
   const userIsMentioned = context.variables.length === 1 && context.variables[0][0] === '@';
 
-  // remove all tasks if mod is removing for user (in case TOS), else remove active task for author
   if (userIsMentioned) {
     if (!isMod(user.id)) {
-      client.say(target, 'Only mods can remove tasks by others.');
+      client.say(target, 'Only mods can remove tasks by others');
       return;
     }
 
@@ -43,43 +48,76 @@ module.exports = function(context) {
 
     client.say(target, `Removed all tasks from @${atUsername}`);
 
-    // update socket clients
     socket.emit('update-task-view', generateTaskBody());
     socket.emit('update-decoy-task-view', generateDecoyTaskBody());
     socket.emit('update-live-stream-stats', generateLiveStreamStatsBody());
     return;
   }
-  
-  // find tasks for user
-  const tasksForUser = todoTable.tasks.filter((task) => {
-    return user.name === task.username;
-  });
 
-  // if all tasks are done
-  const userHasAllDoneTasks = tasksForUser.every((task) => {
-    return task.done;
-  });
+  const arg = context.variables.join(' ').trim().toLowerCase();
+  const activeEntries = getActiveUserTaskEntries(todoTable, user.name);
 
-  if (userHasAllDoneTasks) {
-    client.say(target, `${user.name}, you don't have any active tasks.`);
+  if (arg === 'all') {
+    activeEntries.forEach(({ task }) => pauseTaskTimer(task, now));
+    todoTable.tasks = todoTable.tasks.filter((t) => t.username !== user.name);
+    setFocusedTaskId(user.id, null);
+    database.set('todoTable', todoTable);
+    client.say(target, `All tasks removed for ${user.name}`);
+    socket.emit('update-task-view', generateTaskBody());
+    socket.emit('update-decoy-task-view', generateDecoyTaskBody());
+    socket.emit('update-live-stream-stats', generateLiveStreamStatsBody());
     return;
   }
 
-  // handle if active task exists
-  const activeTaskForUser = tasksForUser.find((task) => {
-    return !task.done;
-  });
+  if (activeEntries.length === 0) {
+    client.say(target, `${user.name}, you don't have any active tasks`);
+    return;
+  }
 
-  todoTable.tasks = todoTable.tasks.filter((task) => {
-    return task !== activeTaskForUser;
-  });
+  let toRemove = null;
+
+  if (/^\d+$/.test(arg)) {
+    const ord = parseInt(arg, 10);
+    const entry = getUserTaskEntryByOrdinal(todoTable, user.name, ord);
+    if (!entry) {
+      client.say(target, `${user.name}, there is no task #${ord}`);
+      return;
+    }
+    toRemove = entry.task;
+  } else if (arg === '') {
+    reconcileUserFocus(todoTable, user.id, user.name, now);
+    const focusId = getFocusedTaskId(user.id);
+    toRemove = focusId
+      ? todoTable.tasks.find((t) => t.id === focusId && t.username === user.name && !t.done)
+      : null;
+    if (!toRemove) {
+      toRemove = activeEntries[0].task;
+    }
+  } else {
+    client.say(target, `${user.name}, use !remove, !remove all, or !remove [task number]`);
+    return;
+  }
+
+  const wasFocused = toRemove.id === getFocusedTaskId(user.id);
+  pauseTaskTimer(toRemove, now);
+  todoTable.tasks = todoTable.tasks.filter((t) => t !== toRemove);
+
+  if (wasFocused) {
+    setFocusedTaskId(user.id, null);
+  }
+
+  const nextOrd = getFirstIncompleteUserOrdinal(todoTable, user.name);
+  if (nextOrd != null && wasFocused) {
+    switchFocusToUserOrdinal(todoTable, user.id, user.name, nextOrd, now);
+  } else {
+    reconcileUserFocus(todoTable, user.id, user.name, now);
+  }
+
   database.set('todoTable', todoTable);
 
-  // print result
-  client.say(target, `Active task removed, ${user.name}.`);
+  client.say(target, `Task removed, ${user.name}`);
 
-  // update socket clients
   socket.emit('update-task-view', generateTaskBody());
   socket.emit('update-decoy-task-view', generateDecoyTaskBody());
   socket.emit('update-live-stream-stats', generateLiveStreamStatsBody());
-}
+};

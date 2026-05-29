@@ -1,26 +1,37 @@
-const { ClientRequest } = require('http');
 const database = require('../database');
 const generateTaskBody = require('../tasks/generateTaskBody');
 const generateDecoyTaskBody = require('../tasks/generateDecoyTaskBody');
 const generateLiveStreamStatsBody = require('../tasks/generateLiveStreamStatsBody');
-const getElapsed = require('../util/getElapsed');
 const SocketServer = require('../managers/socket');
 const setupTaskTable = require('../tasks/setupTaskTable');
-
-const MAX_TASKS_PER_DAY = 99;
+const {
+  MAX_TASKS_PER_DAY,
+  MAX_TASKS_PER_DAY_MESSAGE,
+  newTaskId,
+  splitTaskTitles,
+  findLastUserTaskGlobalIndex,
+  getFocusedTaskId,
+  setFocusedTaskId,
+  reconcileUserFocus,
+  getTaskElapsedMs,
+  formatElapsedMs,
+} = require('../tasks/taskUtils');
 const MAX_TASK_NAME_CHARS = 200;
+
+function emitTaskViews() {
+  SocketServer.emit('update-task-view', generateTaskBody());
+  SocketServer.emit('update-decoy-task-view', generateDecoyTaskBody());
+  SocketServer.emit('update-live-stream-stats', generateLiveStreamStatsBody());
+}
 
 module.exports = function(context) {
   const { client, target } = context;
 
-  // data validation
-  if (!context?.['display-name'] ||
-      !context?.['user-id']) {
+  if (!context?.['display-name'] || !context?.['user-id']) {
     console.log('validation failed');
     return;
   }
 
-  // get user
   const user = {
     id: context['user-id'],
     name: context['display-name'],
@@ -30,76 +41,87 @@ module.exports = function(context) {
     SocketServer.emit('scroll-live-stream-stats-to-user', { username: user.name });
   }
 
-  // add user to table
   let userTable = database.get('userTable');
   userTable = userTable || {};
   userTable[user.id] = user;
   database.set('userTable', userTable);
-  
-  // get task
-  const task = context.variables.join(' ').trim();
-  
-  // setup database table
+
+  const rawInput = context.variables.join(' ').trim();
   const todoTable = setupTaskTable();
 
-  if (task.length > MAX_TASK_NAME_CHARS) {
-    client.say(target, `Shorten your task name please!`);
-    return;
-  }
-
-  const currentUserTaskCount = todoTable.tasks.filter((t) => t.username === user.name).length;
-  if (currentUserTaskCount >= MAX_TASKS_PER_DAY) {
-    client.say(target, 'This puts your task count over 99 for the day. Stop trying to break me!');
-    return;
-  }
-
-  // find tasks for user
-  const tasksForUser = todoTable.tasks.filter((task) => {
-    return user.name === task.username;
-  });
-
-  // handle if active task exists
-  const activeTaskForUser = tasksForUser.find((task) => {
-    return !task.done;
-  });
-
-  if (task === '' && !activeTaskForUser) {
-    client.say(target, `You don't have an active task. Use !task [task name] to start one.`);
+  if (rawInput === '') {
+    reconcileUserFocus(todoTable, user.id, user.name);
+    const focusId = getFocusedTaskId(user.id);
+    const focusedTask = focusId
+      ? todoTable.tasks.find((t) => t.id === focusId && t.username === user.name && !t.done)
+      : null;
+    if (focusedTask) {
+      const elapsed = formatElapsedMs(getTaskElapsedMs(focusedTask));
+      client.say(target, `${user.name}, you're working on: ${focusedTask.task} (${elapsed})`);
+    } else {
+      client.say(target, `You don't have an active task. Use !task [task name] to start one.`);
+    }
     scrollOverlayToUser();
     return;
   }
 
-  if (activeTaskForUser) {
-    const elapsed = getElapsed(activeTaskForUser.created);
-    client.say(target, `${user.name}, you're working on: ${activeTaskForUser.task} (${elapsed})`);
-    // Only scroll the overlay for bare "!task" (no args), not when adding a task.
-    if (task === '') {
-      scrollOverlayToUser();
+  const titles = splitTaskTitles(rawInput);
+  for (const t of titles) {
+    if (t.length > MAX_TASK_NAME_CHARS) {
+      client.say(target, 'Shorten your task name please!');
+      return;
     }
+  }
+
+  const currentUserTaskCount = todoTable.tasks.filter((t) => t.username === user.name).length;
+  if (currentUserTaskCount + titles.length > MAX_TASKS_PER_DAY) {
+    client.say(target, MAX_TASKS_PER_DAY_MESSAGE);
     return;
   }
 
-  // add task to list
-  const newTask = {
-    userId: user.id,
-    username: user.name,
-    task: task,
-    done: false,
-    created: Date.now(),
-  };
-  todoTable.tasks.push(newTask);
+  const focusIdBefore = getFocusedTaskId(user.id);
+  const hadValidFocus = Boolean(
+    focusIdBefore &&
+      todoTable.tasks.some(
+        (t) => t.id === focusIdBefore && t.username === user.name && !t.done,
+      ),
+  );
+
+  const insertAfter = findLastUserTaskGlobalIndex(todoTable, user.name);
+  const now = Date.now();
+  const newIds = [];
+  let insertIdx = insertAfter === -1 ? todoTable.tasks.length : insertAfter + 1;
+
+  titles.forEach((title) => {
+    const row = {
+      id: newTaskId(),
+      userId: user.id,
+      username: user.name,
+      task: title,
+      done: false,
+      created: now,
+      accumulatedMs: 0,
+      focusStartedAt: null,
+    };
+    newIds.push(row.id);
+    todoTable.tasks.splice(insertIdx, 0, row);
+    insertIdx += 1;
+  });
+
+  if (!hadValidFocus && titles.length > 0) {
+    setFocusedTaskId(user.id, newIds[0]);
+  }
+
+  reconcileUserFocus(todoTable, user.id, user.name);
   database.set('todoTable', todoTable);
 
-  // random encouragement
   const encouragementList = ['Good luck!', 'You got this!', 'Get that bread!', 'Focus up!', 'We believe in you!'];
   const encouragement = encouragementList[Math.floor(Math.random() * encouragementList.length)];
+  const msg =
+    titles.length === 1
+      ? `Task added, ${user.name}. ${encouragement}`
+      : `${titles.length} tasks added, ${user.name}. ${encouragement}`;
+  client.say(target, msg);
 
-  // print result
-  client.say(target, `Task added, ${user.name}. ${encouragement}`);
-
-  // update socket clients
-  SocketServer.emit('update-task-view', generateTaskBody());
-  SocketServer.emit('update-decoy-task-view', generateDecoyTaskBody());
-  SocketServer.emit('update-live-stream-stats', generateLiveStreamStatsBody());
-  // Do not auto-scroll the overlay when the user is adding a new task ("!task some words").
-}
+  emitTaskViews();
+};

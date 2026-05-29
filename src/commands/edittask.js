@@ -1,65 +1,77 @@
-const { ClientRequest } = require('http');
 const database = require('../database');
 const generateTaskBody = require('../tasks/generateTaskBody');
 const generateDecoyTaskBody = require('../tasks/generateDecoyTaskBody');
 const generateLiveStreamStatsBody = require('../tasks/generateLiveStreamStatsBody');
 const setupTaskTable = require('../tasks/setupTaskTable');
 const socket = require('../managers/socket');
+const {
+  getFocusedTaskId,
+  getUserTaskEntryByOrdinal,
+  reconcileUserFocus,
+} = require('../tasks/taskUtils');
+
+const MAX_TASK_NAME_CHARS = 200;
 
 module.exports = function(context) {
   const { client, target } = context;
 
-  // data validation
-  if (!context?.['display-name'] ||
-      !context?.['user-id']) {
+  if (!context?.['display-name'] || !context?.['user-id']) {
     console.log('validation failed');
     return;
   }
 
-  // get user
   const user = {
     id: context['user-id'],
     name: context['display-name'],
   };
 
-  // get task
-  const task = context.variables.join(' ').trim();
-  if (task === '') {
+  const raw = context.variables.join(' ').trim();
+  if (raw === '') {
     client.say(target, `What do you want to change your task to?`);
     return;
   }
-  
-  // setup database table
+
   const todoTable = setupTaskTable();
+  const now = Date.now();
+  reconcileUserFocus(todoTable, user.id, user.name, now);
 
-  // find tasks for user
-  const tasksForUser = todoTable.tasks.filter((task) => {
-    return user.name === task.username;
-  });
-
-  // if all tasks are done
-  const userHasAllDoneTasks = tasksForUser.every((task) => {
-    return task.done;
-  });
-
-  if (userHasAllDoneTasks) {
-    client.say(target, `${user.name}, you don't have any active tasks.`);
-    return;
+  const editOrdinalMatch = raw.match(/^(\d+)\s+(.+)$/);
+  let targetTask = null;
+  if (editOrdinalMatch) {
+    const ord = parseInt(editOrdinalMatch[1], 10);
+    const newText = editOrdinalMatch[2].trim();
+    if (newText === '' || newText.length > MAX_TASK_NAME_CHARS) {
+      client.say(target, newText === '' ? `What do you want to change your task to?` : `Shorten your task name please!`);
+      return;
+    }
+    const entry = getUserTaskEntryByOrdinal(todoTable, user.name, ord);
+    if (!entry || entry.task.done) {
+      client.say(target, `${user.name}, there is no active task #${ord} to edit`);
+      return;
+    }
+    targetTask = entry.task;
+    targetTask.task = newText;
+  } else {
+    const focusId = getFocusedTaskId(user.id);
+    targetTask = focusId
+      ? todoTable.tasks.find((t) => t.id === focusId && t.username === user.name && !t.done)
+      : null;
+    if (!targetTask) {
+      client.say(target, `${user.name}, you don't have a focused active task. Use !focus [number] or !edit [number] [new task]`);
+      return;
+    }
+    if (raw.length > MAX_TASK_NAME_CHARS) {
+      client.say(target, `Shorten your task name please!`);
+      return;
+    }
+    targetTask.task = raw;
   }
 
-  // edit if active task exists
-  const activeTaskForUser = tasksForUser.find((task) => {
-    return !task.done;
-  });
-
-  activeTaskForUser.task = task;
   database.set('todoTable', todoTable);
 
-  // print result
-  client.say(target, `${user.name}, I've edited your task to: ${task}`);
+  client.say(target, `${user.name}, I've edited your task to: ${targetTask.task}`);
 
-  // update socket clients
   socket.emit('update-task-view', generateTaskBody());
   socket.emit('update-decoy-task-view', generateDecoyTaskBody());
   socket.emit('update-live-stream-stats', generateLiveStreamStatsBody());
-}
+};

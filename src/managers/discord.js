@@ -12,7 +12,7 @@ const WebhookIDs = {
 };
 
 const discord = {
-	async sendMessage(channel, message) {
+	async sendMessage(channel, message, options = {}) {
 		const webhookID = WebhookIDs[channel];
 		if (!webhookID) {
 			throw new Error(`Could not find webhookID for ${channel}`);
@@ -32,11 +32,12 @@ const discord = {
 
 		const webhookURL = `https://discord.com/api/webhooks/${webhookID}/${webhookToken}`;
 
-		const response = await asyncRequest({
+		await asyncRequest({
       method: 'POST',
       uri: webhookURL,
       json: {
         content: message,
+				...(options.allowedMentions ? { allowed_mentions: options.allowedMentions } : {}),
       },
     });
 	},

@@ -1,6 +1,7 @@
 const escapeHTML = require('../util/escapeHTML');
-const getElapsed = require('../util/getElapsed');
+const database = require('../database');
 const setupTaskTable = require('./setupTaskTable');
+const { getTaskElapsedMs, formatElapsedMs } = require('./taskUtils');
 
 // silly decoy tasks for april fools
 const DECOY_TASKS = [
@@ -124,6 +125,16 @@ function generateDecoyTaskBody() {
 
   const totalTasks = todoTable.tasks.length;
 
+  const focusMap = database.get('taskFocus') || {};
+  const userTable = database.get('userTable') || {};
+  const usernameToFocusId = {};
+  Object.keys(userTable).forEach((uid) => {
+    const u = userTable[uid];
+    if (u && u.name && focusMap[uid]) {
+      usernameToFocusId[u.name] = focusMap[uid];
+    }
+  });
+
   const byUser = todoTable.tasks.reduce((acc, task) => {
     acc[task.username] = acc[task.username] || [];
     acc[task.username].push(task);
@@ -136,11 +147,13 @@ function generateDecoyTaskBody() {
     const decoysForUser = shuffleDecoysForUser(username);
     tasks.forEach((task, i) => {
       const fakeText = decoysForUser[i % decoysForUser.length];
-      const taskClass = task.done ? 'task completed' : 'task';
+      const focusId = (task.userId && focusMap[task.userId]) || usernameToFocusId[username];
+      const isFocused = !task.done && focusId && task.id === focusId;
+      let taskClass = task.done ? 'task completed' : 'task';
+      if (isFocused) taskClass += ' task--focused';
       const taskNumber = String(i + 1).padStart(2, '0');
-      const elapsedStr = (task.done && task.created != null && task.doneAt != null && task.doneAt > task.created)
-        ? ` ${getElapsed(task.created, task.doneAt)}`
-        : '';
+      const elapsedMs = getTaskElapsedMs(task);
+      const elapsedStr = elapsedMs > 0 ? ` ${formatElapsedMs(elapsedMs)}` : '';
       body += `<li><span class="taskNumber">${taskNumber}</span> <span class="${taskClass}"><span class="taskName">${escapeHTML(fakeText)}</span><span class="elapsed">${elapsedStr}</span></span></li>`;
     });
     body += `</ul>`;

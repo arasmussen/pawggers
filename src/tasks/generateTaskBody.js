@@ -1,7 +1,7 @@
 const escapeHTML = require('../util/escapeHTML');
-const getDay = require('../util/getDay');
-const getElapsed = require('../util/getElapsed');
+const database = require('../database');
 const setupTaskTable = require('./setupTaskTable');
+const { getTaskElapsedMs, formatElapsedMs } = require('./taskUtils');
 
 function slugifyDomIdPart(input) {
   return String(input || '')
@@ -20,11 +20,17 @@ function generateTaskBody(options = {}) {
     return task.done;
   }).length;
 
-  const itemLength = todoTable.tasks.filter((task) => {
-    return
-  });
-
   const totalTasks = todoTable.tasks.length;
+
+  const focusMap = database.get('taskFocus') || {};
+  const userTable = database.get('userTable') || {};
+  const usernameToFocusId = {};
+  Object.keys(userTable).forEach((uid) => {
+    const u = userTable[uid];
+    if (u && u.name && focusMap[uid]) {
+      usernameToFocusId[u.name] = focusMap[uid];
+    }
+  });
 
   // group by user
   const byUser = todoTable.tasks.reduce((acc, task) => {
@@ -44,11 +50,13 @@ function generateTaskBody(options = {}) {
       if (task.task.length >= 80) {
         text = text.substr(0, 79) + '…';
       }
-      const taskClass = task.done ? 'task completed' : 'task';
+      const focusId = (task.userId && focusMap[task.userId]) || usernameToFocusId[username];
+      const isFocused = !task.done && focusId && task.id === focusId;
+      let taskClass = task.done ? 'task completed' : 'task';
+      if (isFocused) taskClass += ' task--focused';
       const taskNumber = String(i + 1).padStart(2, '0');
-      const elapsedStr = (task.done && task.created != null && task.doneAt != null && task.doneAt > task.created)
-        ? ` ${getElapsed(task.created, task.doneAt)}`
-        : '';
+      const elapsedMs = getTaskElapsedMs(task);
+      const elapsedStr = elapsedMs > 0 ? ` ${formatElapsedMs(elapsedMs)}` : '';
       body += `<li><span class="taskNumber">${taskNumber}</span> <span class="${taskClass}"><span class="taskName">${escapeHTML(text)}</span><span class="elapsed">${elapsedStr}</span></span></li>`;
     });
     body += `</ul>`;

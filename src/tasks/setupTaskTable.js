@@ -1,6 +1,7 @@
 const database = require('../database');
 const getDay = require('../util/getDay');
 const lockInTaskStats = require('./lockInTaskStats');
+const { migrateTaskFields } = require('./taskUtils');
 
 function setupTaskTable() {
   const today = getDay();
@@ -19,6 +20,8 @@ function setupTaskTable() {
     // keep redeem queue in sync with daily task resets
     database.set('redeemQueue', []);
   }
+
+  migrateTaskFields(todoTable);
   database.set('todoTable', todoTable);
 
   return todoTable;

@@ -43,6 +43,7 @@ module.exports = {
   '!edit': require('./edittask'),
   '!edittask': require('./edittask'),
   '!finished': require('./done'),
+  '!focus': require('./focus'),
   '!log': require('./log'),
   '!mytask': require('./task'),
   '!next': require('./next'),
@@ -60,6 +61,8 @@ module.exports = {
   '!taskdone': require('./done'),
   '!taskrecord': require('./taskrecord'),
   '!todo': require('./task'),
+  '!backlog': require('./backlog'),
+  '!bl': require('./backlog'),
 
   // ttol
   '!guess': require('./ttol'),
