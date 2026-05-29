@@ -14,6 +14,7 @@ const {
   pauseTaskTimer,
   reconcileUserFocus,
   switchFocusToUserOrdinal,
+  taskSay,
 } = require('../tasks/taskUtils');
 
 module.exports = function(context) {
@@ -36,7 +37,7 @@ module.exports = function(context) {
 
   if (userIsMentioned) {
     if (!isMod(user.id)) {
-      client.say(target, 'Only mods can remove tasks by others');
+      taskSay(client, target, 'Only mods can remove tasks by others');
       return;
     }
 
@@ -46,7 +47,7 @@ module.exports = function(context) {
     });
     database.set('todoTable', todoTable);
 
-    client.say(target, `Removed all tasks from @${atUsername}`);
+    taskSay(client, target, `Removed all tasks from @${atUsername}`);
 
     socket.emit('update-task-view', generateTaskBody());
     socket.emit('update-decoy-task-view', generateDecoyTaskBody());
@@ -62,7 +63,7 @@ module.exports = function(context) {
     todoTable.tasks = todoTable.tasks.filter((t) => t.username !== user.name);
     setFocusedTaskId(user.id, null);
     database.set('todoTable', todoTable);
-    client.say(target, `All tasks removed for ${user.name}`);
+    taskSay(client, target, `All tasks removed for ${user.name}`);
     socket.emit('update-task-view', generateTaskBody());
     socket.emit('update-decoy-task-view', generateDecoyTaskBody());
     socket.emit('update-live-stream-stats', generateLiveStreamStatsBody());
@@ -70,7 +71,7 @@ module.exports = function(context) {
   }
 
   if (activeEntries.length === 0) {
-    client.say(target, `${user.name}, you don't have any active tasks`);
+    taskSay(client, target, `${user.name}, you don't have any active tasks`);
     return;
   }
 
@@ -80,7 +81,7 @@ module.exports = function(context) {
     const ord = parseInt(arg, 10);
     const entry = getUserTaskEntryByOrdinal(todoTable, user.name, ord);
     if (!entry) {
-      client.say(target, `${user.name}, there is no task #${ord}`);
+      taskSay(client, target, `${user.name}, there is no task #${ord}`);
       return;
     }
     toRemove = entry.task;
@@ -94,7 +95,7 @@ module.exports = function(context) {
       toRemove = activeEntries[0].task;
     }
   } else {
-    client.say(target, `${user.name}, use !remove, !remove all, or !remove [task number]`);
+    taskSay(client, target, `${user.name}, use !remove, !remove all, or !remove [task number]`);
     return;
   }
 
@@ -115,7 +116,7 @@ module.exports = function(context) {
 
   database.set('todoTable', todoTable);
 
-  client.say(target, `Task removed, ${user.name}`);
+  taskSay(client, target, `Task removed, ${user.name}`);
 
   socket.emit('update-task-view', generateTaskBody());
   socket.emit('update-decoy-task-view', generateDecoyTaskBody());

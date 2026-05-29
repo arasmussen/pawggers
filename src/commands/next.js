@@ -10,9 +10,9 @@ const {
   newTaskId,
   findLastUserTaskGlobalIndex,
   getFocusedTaskId,
-  setFocusedTaskId,
   getActiveUserTaskEntries,
   getFirstIncompleteUserOrdinal,
+  getUserTaskEntries,
   getUserTaskEntryByOrdinal,
   markTaskDone,
   clearUserFocusIfTask,
@@ -20,6 +20,7 @@ const {
   switchFocusToUserOrdinal,
   getTaskElapsedMs,
   formatElapsedMs,
+  taskSay,
 } = require('../tasks/taskUtils');
 const MAX_TASK_NAME_CHARS = 200;
 
@@ -45,25 +46,38 @@ module.exports = function(context) {
   const todoTable = setupTaskTable();
   const now = Date.now();
 
-  reconcileUserFocus(todoTable, user.id, user.name, now);
-
-  const activeEntries = getActiveUserTaskEntries(todoTable, user.name);
-  const focusId = getFocusedTaskId(user.id);
-  let focusedTask = focusId
-    ? todoTable.tasks.find((t) => t.id === focusId && t.username === user.name && !t.done)
+  // Capture explicit focus before reconcile can auto-assign to the first active task.
+  const focusIdBefore = getFocusedTaskId(user.id);
+  const focusedTaskBefore = focusIdBefore
+    ? todoTable.tasks.find((t) => t.id === focusIdBefore && t.username === user.name && !t.done)
     : null;
-  if (!focusedTask && activeEntries.length > 0) {
-    focusedTask = activeEntries[0].task;
-  }
 
   const encouragementList = ['Good luck!', 'You got this!', 'Get that bread!', 'Focus up!', 'We believe in you!'];
   const encouragement = encouragementList[Math.floor(Math.random() * encouragementList.length)];
 
+  const emitUpdates = () => {
+    SocketServer.emit('update-task-view', generateTaskBody());
+    SocketServer.emit('update-decoy-task-view', generateDecoyTaskBody());
+    SocketServer.emit('update-live-stream-stats', generateLiveStreamStatsBody());
+  };
+
   if (raw === '') {
+    reconcileUserFocus(todoTable, user.id, user.name, now);
+
+    const activeEntries = getActiveUserTaskEntries(todoTable, user.name);
+    const focusId = getFocusedTaskId(user.id);
+    let focusedTask = focusId
+      ? todoTable.tasks.find((t) => t.id === focusId && t.username === user.name && !t.done)
+      : null;
+    if (!focusedTask && activeEntries.length > 0) {
+      focusedTask = activeEntries[0].task;
+    }
+
     if (!focusedTask) {
-      client.say(target, `/me What's your next task?`);
+      taskSay(client, target, `/me What's your next task?`);
       return;
     }
+
     const prevText = focusedTask.task;
     const prevElapsed = formatElapsedMs(getTaskElapsedMs(focusedTask));
     markTaskDone(focusedTask, now);
@@ -74,13 +88,12 @@ module.exports = function(context) {
     if (nextOrd == null) {
       reconcileUserFocus(todoTable, user.id, user.name, now);
       database.set('todoTable', todoTable);
-      client.say(
+      taskSay(
+        client,
         target,
         `/me Nice ${user.name}! ${prevText} is emmmyDone (took ${prevElapsed}). You're all caught up—great work! ${encouragement}`,
       );
-      SocketServer.emit('update-task-view', generateTaskBody());
-      SocketServer.emit('update-decoy-task-view', generateDecoyTaskBody());
-      SocketServer.emit('update-live-stream-stats', generateLiveStreamStatsBody());
+      emitUpdates();
       return;
     }
 
@@ -90,19 +103,17 @@ module.exports = function(context) {
 
     const nextEntry = getUserTaskEntryByOrdinal(todoTable, user.name, nextOrd);
     const nextTaskName = nextEntry ? nextEntry.task.task : '';
-    client.say(
+    taskSay(
+      client,
       target,
       `/me Nice ${user.name}! ${prevText} is emmmyDone (took ${prevElapsed}). Now focused on #${nextOrd}: ${nextTaskName}—${encouragement}`,
     );
-
-    SocketServer.emit('update-task-view', generateTaskBody());
-    SocketServer.emit('update-decoy-task-view', generateDecoyTaskBody());
-    SocketServer.emit('update-live-stream-stats', generateLiveStreamStatsBody());
+    emitUpdates();
     return;
   }
 
   if (raw.length > MAX_TASK_NAME_CHARS) {
-    client.say(target, `Shorten your task name please!`);
+    taskSay(client, target, `Shorten your task name please!`);
     return;
   }
 
@@ -111,70 +122,92 @@ module.exports = function(context) {
   const isOrdinalOnly = /^\d+$/.test(raw);
   if (isOrdinalOnly) {
     const n = parseInt(raw, 10);
-    if (!focusedTask) {
+    const targetEntry = getUserTaskEntryByOrdinal(todoTable, user.name, n);
+    if (!targetEntry || targetEntry.task.done) {
+      taskSay(client, target, `${user.name}, you don't have a task #${n}`);
+      return;
+    }
+
+    if (!focusedTaskBefore) {
       const sw = switchFocusToUserOrdinal(todoTable, user.id, user.name, n, now);
       if (!sw.ok) {
-        client.say(target, `${user.name}, ${sw.message}`);
+        taskSay(client, target, `${user.name}, ${sw.message}`);
         return;
       }
       reconcileUserFocus(todoTable, user.id, user.name, now);
       database.set('todoTable', todoTable);
-      client.say(target, `/me ${user.name}, you didn't have a task going but now focused on #${n}: ${sw.task.task}—${encouragement}`);
-      SocketServer.emit('update-task-view', generateTaskBody());
-      SocketServer.emit('update-decoy-task-view', generateDecoyTaskBody());
-      SocketServer.emit('update-live-stream-stats', generateLiveStreamStatsBody());
+      taskSay(client, target, `/me ${user.name}, you didn't have a task going but now focused on #${n}: ${sw.task.task}—${encouragement}`);
+      emitUpdates();
       return;
     }
 
-    const prevText = focusedTask.task;
-    const prevElapsed = formatElapsedMs(getTaskElapsedMs(focusedTask));
-    markTaskDone(focusedTask, now);
-    clearUserFocusIfTask(user.id, focusedTask.id);
-
-    const targetEntry = getUserTaskEntryByOrdinal(todoTable, user.name, n);
-    if (!targetEntry || targetEntry.task.done) {
+    if (focusedTaskBefore.id === targetEntry.task.id) {
+      switchFocusToUserOrdinal(todoTable, user.id, user.name, n, now);
       reconcileUserFocus(todoTable, user.id, user.name, now);
       database.set('todoTable', todoTable);
-      client.say(target, `${user.name}, you don't have a task #${n}`);
-      SocketServer.emit('update-task-view', generateTaskBody());
-      SocketServer.emit('update-decoy-task-view', generateDecoyTaskBody());
-      SocketServer.emit('update-live-stream-stats', generateLiveStreamStatsBody());
+      taskSay(client, target, `/me ${user.name}, you're already focused on #${n}: ${targetEntry.task.task}—${encouragement}`);
+      emitUpdates();
       return;
     }
+
+    const prevText = focusedTaskBefore.task;
+    const prevElapsed = formatElapsedMs(getTaskElapsedMs(focusedTaskBefore));
+    markTaskDone(focusedTaskBefore, now);
+    clearUserFocusIfTask(user.id, focusedTaskBefore.id);
 
     switchFocusToUserOrdinal(todoTable, user.id, user.name, n, now);
     reconcileUserFocus(todoTable, user.id, user.name, now);
     database.set('todoTable', todoTable);
 
-    client.say(
+    taskSay(
+      client,
       target,
       `/me Nice ${user.name}! ${prevText} is emmmyDone (took ${prevElapsed}). Now focused on #${n}: ${targetEntry.task.task}—${encouragement}`,
     );
-
-    SocketServer.emit('update-task-view', generateTaskBody());
-    SocketServer.emit('update-decoy-task-view', generateDecoyTaskBody());
-    SocketServer.emit('update-live-stream-stats', generateLiveStreamStatsBody());
+    emitUpdates();
     return;
   }
 
-  // New task text
-  if (currentUserTaskCount >= MAX_TASKS_PER_DAY) {
-    client.say(target, MAX_TASKS_PER_DAY_MESSAGE);
+  // New task text — complete explicit focus, then focus existing match or add new task
+  const existingActive = getActiveUserTaskEntries(todoTable, user.name).find(
+    (e) => e.task.task.toLowerCase() === raw.toLowerCase(),
+  );
+
+  if (!existingActive && currentUserTaskCount >= MAX_TASKS_PER_DAY) {
+    taskSay(client, target, MAX_TASKS_PER_DAY_MESSAGE);
     return;
   }
 
-  if (focusedTask) {
-    const prevText = focusedTask.task;
-    const prevElapsed = formatElapsedMs(getTaskElapsedMs(focusedTask));
-    markTaskDone(focusedTask, now);
-    clearUserFocusIfTask(user.id, focusedTask.id);
-    const totalDoneToday = todoTable.tasks.filter((t) => t.username === user.name && t.done).length;
-    client.say(
-      target,
-      `/me Nice ${user.name}! ${prevText} is emmmyDone (took ${prevElapsed}). That's ${totalDoneToday} today—on to the next one. ${encouragement}`,
-    );
-  } else {
-    client.say(target, `/me ${user.name}, you didn't have a task going but I've added that one. ${encouragement}`);
+  let prevText = null;
+  let prevElapsed = null;
+  if (focusedTaskBefore) {
+    prevText = focusedTaskBefore.task;
+    prevElapsed = formatElapsedMs(getTaskElapsedMs(focusedTaskBefore));
+    markTaskDone(focusedTaskBefore, now);
+    clearUserFocusIfTask(user.id, focusedTaskBefore.id);
+  }
+
+  if (existingActive) {
+    switchFocusToUserOrdinal(todoTable, user.id, user.name, existingActive.userOrdinal, now);
+    reconcileUserFocus(todoTable, user.id, user.name, now);
+    database.set('todoTable', todoTable);
+
+    if (prevText) {
+      const totalDoneToday = todoTable.tasks.filter((t) => t.username === user.name && t.done).length;
+      taskSay(
+        client,
+        target,
+        `/me Nice ${user.name}! ${prevText} is emmmyDone (took ${prevElapsed}). That's ${totalDoneToday} today—now focused on #${existingActive.userOrdinal}: ${existingActive.task.task}. ${encouragement}`,
+      );
+    } else {
+      taskSay(
+        client,
+        target,
+        `/me ${user.name}, you didn't have a task going but now focused on #${existingActive.userOrdinal}: ${existingActive.task.task}—${encouragement}`,
+      );
+    }
+    emitUpdates();
+    return;
   }
 
   const insertAfter = findLastUserTaskGlobalIndex(todoTable, user.name);
@@ -190,11 +223,25 @@ module.exports = function(context) {
     focusStartedAt: null,
   };
   todoTable.tasks.splice(insertIdx, 0, newRow);
-  setFocusedTaskId(user.id, newRow.id);
+
+  const newEntry = getUserTaskEntries(todoTable, user.name).find((e) => e.task.id === newRow.id);
+  switchFocusToUserOrdinal(todoTable, user.id, user.name, newEntry.userOrdinal, now);
   reconcileUserFocus(todoTable, user.id, user.name, now);
   database.set('todoTable', todoTable);
 
-  SocketServer.emit('update-task-view', generateTaskBody());
-  SocketServer.emit('update-decoy-task-view', generateDecoyTaskBody());
-  SocketServer.emit('update-live-stream-stats', generateLiveStreamStatsBody());
+  if (prevText) {
+    const totalDoneToday = todoTable.tasks.filter((t) => t.username === user.name && t.done).length;
+    taskSay(
+      client,
+      target,
+      `/me Nice ${user.name}! ${prevText} is emmmyDone (took ${prevElapsed}). That's ${totalDoneToday} today—now focused on #${newEntry.userOrdinal}: ${raw}. ${encouragement}`,
+    );
+  } else {
+    taskSay(
+      client,
+      target,
+      `/me ${user.name}, you didn't have a task going but now focused on #${newEntry.userOrdinal}: ${raw}—${encouragement}`,
+    );
+  }
+  emitUpdates();
 };

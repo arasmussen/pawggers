@@ -36,6 +36,12 @@ function setTaskFocusMap(map) {
   database.set('taskFocus', map);
 }
 
+/** Prefix task bot chat replies with Twitch /me (idempotent). */
+function taskSay(client, target, message) {
+  const text = String(message ?? '');
+  client.say(target, text.startsWith('/me ') ? text : `/me ${text}`);
+}
+
 function getFocusedTaskId(userId) {
   const m = getTaskFocusMap();
   return m[userId] || null;
@@ -133,6 +139,16 @@ function markTaskDone(task, now = Date.now()) {
   task.done = true;
   task.doneAt = now;
   task.focusStartedAt = null;
+}
+
+/** Restore a completed task; keeps accumulatedMs, timer resumes only when focused. */
+function markTaskUndone(task) {
+  if (!task.done) return false;
+  task.done = false;
+  task.doneAt = null;
+  task.focusStartedAt = null;
+  if (task.accumulatedMs == null) task.accumulatedMs = 0;
+  return true;
 }
 
 /** Pause timer on every task for this user (used before bulk complete). */
@@ -243,6 +259,7 @@ module.exports = {
   parseTaskNumberList,
   getTaskFocusMap,
   setTaskFocusMap,
+  taskSay,
   getFocusedTaskId,
   setFocusedTaskId,
   getUserTaskEntries,
@@ -256,6 +273,7 @@ module.exports = {
   formatElapsedMs,
   finalizeTaskDuration,
   markTaskDone,
+  markTaskUndone,
   pauseAllUserTaskTimers,
   clearUserFocusIfTask,
   reconcileUserFocus,

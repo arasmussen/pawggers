@@ -8,6 +8,7 @@ const {
   getFocusedTaskId,
   getUserTaskEntryByOrdinal,
   reconcileUserFocus,
+  taskSay,
 } = require('../tasks/taskUtils');
 
 const MAX_TASK_NAME_CHARS = 200;
@@ -27,7 +28,7 @@ module.exports = function(context) {
 
   const raw = context.variables.join(' ').trim();
   if (raw === '') {
-    client.say(target, `What do you want to change your task to?`);
+    taskSay(client, target, `What do you want to change your task to?`);
     return;
   }
 
@@ -41,12 +42,12 @@ module.exports = function(context) {
     const ord = parseInt(editOrdinalMatch[1], 10);
     const newText = editOrdinalMatch[2].trim();
     if (newText === '' || newText.length > MAX_TASK_NAME_CHARS) {
-      client.say(target, newText === '' ? `What do you want to change your task to?` : `Shorten your task name please!`);
+      taskSay(client, target, newText === '' ? `What do you want to change your task to?` : `Shorten your task name please!`);
       return;
     }
     const entry = getUserTaskEntryByOrdinal(todoTable, user.name, ord);
     if (!entry || entry.task.done) {
-      client.say(target, `${user.name}, there is no active task #${ord} to edit`);
+      taskSay(client, target, `${user.name}, there is no active task #${ord} to edit`);
       return;
     }
     targetTask = entry.task;
@@ -57,11 +58,11 @@ module.exports = function(context) {
       ? todoTable.tasks.find((t) => t.id === focusId && t.username === user.name && !t.done)
       : null;
     if (!targetTask) {
-      client.say(target, `${user.name}, you don't have a focused active task. Use !focus [number] or !edit [number] [new task]`);
+      taskSay(client, target, `${user.name}, you don't have a focused active task. Use !focus [number] or !edit [number] [new task]`);
       return;
     }
     if (raw.length > MAX_TASK_NAME_CHARS) {
-      client.say(target, `Shorten your task name please!`);
+      taskSay(client, target, `Shorten your task name please!`);
       return;
     }
     targetTask.task = raw;
@@ -69,7 +70,7 @@ module.exports = function(context) {
 
   database.set('todoTable', todoTable);
 
-  client.say(target, `${user.name}, I've edited your task to: ${targetTask.task}`);
+  taskSay(client, target, `${user.name}, I've edited your task to: ${targetTask.task}`);
 
   socket.emit('update-task-view', generateTaskBody());
   socket.emit('update-decoy-task-view', generateDecoyTaskBody());

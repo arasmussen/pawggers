@@ -6,6 +6,7 @@ const {
   getTaskElapsedMs,
   formatElapsedMs,
   reconcileUserFocus,
+  taskSay,
 } = require('../tasks/taskUtils');
 
 module.exports = function(context) {
@@ -26,7 +27,7 @@ module.exports = function(context) {
 
   const entries = getUserTaskEntries(todoTable, user.name);
   if (entries.length === 0) {
-    client.say(target, `You haven't done any tasks yet today. Use !task to get on the board!`);
+    taskSay(client, target, `You haven't done any tasks yet today. Use !task to get on the board!`);
     return;
   }
 
@@ -58,12 +59,13 @@ module.exports = function(context) {
 
   if (entries.length === 1 && focusedActive) {
     const elapsed = formatElapsedMs(getTaskElapsedMs(focusedActive.task));
-    client.say(target, `${user.name}, you're still working on: ${focusedActive.task.task} (${elapsed})`);
+    taskSay(client, target, `${user.name}, you're still working on: ${focusedActive.task.task} (${elapsed})`);
     return;
   }
 
   if (activeEntries.length === 0) {
-    client.say(
+    taskSay(
+      client,
       target,
       `${user.name}, you've completed ${completedTasksForUser.length} ${completedTasksForUser.length === 1 ? 'task' : 'tasks'} today: ${completedTaskNames}`,
     );
@@ -73,17 +75,17 @@ module.exports = function(context) {
   const activeList = activeEntries
     .map((e) => {
       const elapsed = formatElapsedMs(getTaskElapsedMs(e.task));
-      const star = focusedActive && e.task.id === focusedActive.task.id ? ' (focused)' : '';
-      return `#${e.userOrdinal}: ${e.task.task} (${elapsed})${star}`;
+      return `#${e.userOrdinal}: ${e.task.task} (${elapsed})`;
     })
     .join(' | ');
 
   if (completedTasksForUser.length === 0) {
-    client.say(target, `${user.name}, you haven't finished any of your tasks. !focus [task number] to start it`);
+    taskSay(client, target, `${user.name}, you haven't finished any of your tasks. !focus [task number] to start it`);
     return;
   }
 
-  client.say(
+  taskSay(
+    client,
     target,
     `${user.name}, you've completed ${completedTasksForUser.length} ${completedTasksForUser.length === 1 ? 'task' : 'tasks'} today: ${completedTaskNames} Still working on: ${activeList}`,
   );

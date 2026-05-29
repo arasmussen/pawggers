@@ -17,6 +17,7 @@ const {
   reconcileUserFocus,
   getTaskElapsedMs,
   formatElapsedMs,
+  taskSay,
 } = require('../tasks/taskUtils');
 
 module.exports = function(context) {
@@ -40,7 +41,7 @@ module.exports = function(context) {
   const activeEntries = getActiveUserTaskEntries(todoTable, user.name);
 
   if (activeEntries.length === 0) {
-    client.say(target, `${user.name}, you don't have a task atm. !task to start one or !focus [number] a task on your list`);
+    taskSay(client, target, `${user.name}, you don't have a task atm. !task to start one or !focus [number] a task on your list`);
     return;
   }
 
@@ -69,18 +70,18 @@ module.exports = function(context) {
       }
     });
     if (nums.length === 0) {
-      client.say(target, `${user.name}, use !done, !done all, or !done 1,2,3 with task numbers`);
+      taskSay(client, target, `${user.name}, use !done, !done all, or !done 1,2,3 with task numbers`);
       return;
     }
     for (let i = 0; i < nums.length; i++) {
       const n = nums[i];
       const entry = getUserTaskEntryByOrdinal(todoTable, user.name, n);
       if (!entry) {
-        client.say(target, `${user.name}, there is no task #${n}`);
+        taskSay(client, target, `${user.name}, there is no task #${n}`);
         return;
       }
       if (entry.task.done) {
-        client.say(target, `${user.name}, task #${n} is already done`);
+        taskSay(client, target, `${user.name}, task #${n} is already done`);
         return;
       }
       toComplete.push(entry.task);
@@ -107,12 +108,14 @@ module.exports = function(context) {
 
   if (toComplete.length === 1) {
     const elapsed = formatElapsedMs(getTaskElapsedMs(toComplete[0]));
-    client.say(
+    taskSay(
+      client,
       target,
       `emmmyDone Check check on ${toComplete[0].task}, ${user.name}. That took ${elapsed}. That's ${completedToday} today—${celebration}`,
     );
   } else {
-    client.say(
+    taskSay(
+      client,
       target,
       `${user.name}, emmmyDone on ${toComplete.length} tasks. That's ${completedToday} completed today—${celebration}`,
     );

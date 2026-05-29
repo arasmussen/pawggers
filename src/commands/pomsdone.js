@@ -4,6 +4,7 @@ const getPeriod = require('../util/getPeriod');
 const isSarah = require('../util/isSarah');
 const recordDailyPawggersEarned = require('../util/recordDailyPawggersEarned');
 const setupTaskTable = require('../tasks/setupTaskTable');
+const { taskSay } = require('../tasks/taskUtils');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -29,7 +30,7 @@ module.exports = function(context) {
 
   // return if not sarah
   if (!isSarah(user.id)) {
-    client.say(target, `Nice try, ${user.name}`);
+    taskSay(client, target, `Nice try, ${user.name}`);
     return;
   }
 
@@ -83,15 +84,15 @@ module.exports = function(context) {
   });
 
   // print results
-  client.say(target, `We've finished our poms for the day. Good job gang!`);
+  taskSay(client, target, `We've finished our poms for the day. Good job gang!`);
 
   // update if record broken
   if (totalCompletedTasks > statsTable.completedTaskRecord) {
     statsTable.completedTaskRecord = totalCompletedTasks;
-    client.say(target, `We've set a new daily completed tasks RECORD of ${totalCompletedTasks}!`);
+    taskSay(client, target, `We've set a new daily completed tasks RECORD of ${totalCompletedTasks}!`);
     database.set('statsTable', statsTable);
   }
 
-  client.say(target, `${totalCompletedTasks} tasks completed today—heck yeah! ${userIDsWithThreeTasks.length} people completed 3 or more tasks today! They have each earned 2,000 pawggers emmmyCheer`)
+  taskSay(client, target, `${totalCompletedTasks} tasks completed today—heck yeah! ${userIDsWithThreeTasks.length} people completed 3 or more tasks today! They have each earned 2,000 pawggers emmmyCheer`)
 }
 

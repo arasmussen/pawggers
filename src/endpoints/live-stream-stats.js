@@ -95,6 +95,12 @@ const PageCSS = `
     text-decoration: line-through;
     opacity: 0.75;
   }
+  .task.task--focused {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 2px 8px;
+    margin: -2px 0;
+  }
   .taskNumber {
     font-weight: 600;
     min-width: 1.5em;

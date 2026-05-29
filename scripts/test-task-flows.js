@@ -31,6 +31,8 @@ const commands = {
   log: require('../src/commands/log'),
   backlog: require('../src/commands/backlog'),
   summary: require('../src/commands/summary'),
+  undo: require('../src/commands/undo'),
+  undone: require('../src/commands/undo'),
 };
 
 let backup = null;
@@ -152,8 +154,10 @@ async function main() {
     runCommand(commands.backlog, '');
     const msg = lastMessage();
     assert(msg.includes("Here's your backlog"), 'backlog header');
-    assert(msg.includes('#1: alpha'), 'lists #1');
-    assert(msg.includes('#3: gamma'), 'lists #3');
+    assert(msg.includes('👉 1. alpha'), 'focused task highlighted');
+    assert(msg.includes('2. beta'), 'lists 2');
+    assert(msg.includes('3. gamma'), 'lists 3');
+    assert(msg.includes('  •  '), 'bullet separators between tasks');
   }));
 
   results.push(await test('!focus 2 — switches focus to beta', () => {
@@ -251,6 +255,100 @@ async function main() {
     const after = getTestEntries().length;
     assert(after === before - 1, 'one task removed');
     assert(lastMessage().includes('removed'), 'confirm remove');
+  }));
+
+  results.push(await test('!next 3 — completes focus and focuses task #3', () => {
+    removeTestUserFromDb();
+    runCommand(commands.task, 'one, two, three');
+    runCommand(commands.focus, '1');
+    clearChat();
+    runCommand(commands.next, '3');
+    const entries = getTestEntries();
+    assert(entries[0].task.done, '#1 one marked done');
+    assert(!entries[1].task.done, '#2 two still active');
+    assert(!entries[2].task.done, '#3 three still active');
+    assert(getFocusedTaskId(TEST_USER_ID) === entries[2].task.id, 'focus on #3 three');
+    assert(lastMessage().includes('Now focused on #3'), 'mentions focus on #3');
+  }));
+
+  results.push(await test('!next 3 with no focus — focuses #3 without completing others', () => {
+    removeTestUserFromDb();
+    runCommand(commands.task, 'one, two, three');
+    const focus = database.get('taskFocus') || {};
+    delete focus[TEST_USER_ID];
+    database.set('taskFocus', focus);
+    clearChat();
+    runCommand(commands.next, '3');
+    const entries = getTestEntries();
+    assert(!entries[0].task.done, '#1 one still active');
+    assert(!entries[1].task.done, '#2 two still active');
+    assert(getFocusedTaskId(TEST_USER_ID) === entries[2].task.id, 'focus on #3 three');
+  }));
+
+  results.push(await test('!next with new task text — completes focus and focuses new task', () => {
+    removeTestUserFromDb();
+    runCommand(commands.task, 'task A');
+    runCommand(commands.focus, '1');
+    clearChat();
+    runCommand(commands.next, 'task B');
+    const entries = getTestEntries();
+    assert(entries[0].task.done, 'task A marked done');
+    assert(entries.length === 2, 'only two tasks (no duplicate B)');
+    assert(entries[1].task.task === 'task B', 'task B added');
+    assert(getFocusedTaskId(TEST_USER_ID) === entries[1].task.id, 'task B focused');
+    assert(lastMessage().includes('emmmyDone'), 'completion message');
+    assert(lastMessage().includes('now focused on #2'), 'mentions focus on new task');
+  }));
+
+  results.push(await test('!next with existing task text — completes focus and focuses existing task', () => {
+    removeTestUserFromDb();
+    runCommand(commands.task, 'task A, task B');
+    runCommand(commands.focus, '1');
+    clearChat();
+    runCommand(commands.next, 'task B');
+    const entries = getTestEntries();
+    assert(entries[0].task.done, 'task A marked done');
+    assert(entries.length === 2, 'no duplicate task B');
+    assert(!entries[1].task.done, 'existing task B still active');
+    assert(getFocusedTaskId(TEST_USER_ID) === entries[1].task.id, 'existing task B focused');
+    assert(lastMessage().includes('emmmyDone'), 'completion message');
+    assert(lastMessage().includes('task B'), 'mentions task B');
+  }));
+
+  results.push(await test('!undo — restores most recently completed task with elapsed time kept', () => {
+    removeTestUserFromDb();
+    runCommand(commands.task, 'alpha');
+    runCommand(commands.done, '');
+    const entriesBefore = getTestEntries();
+    assert(entriesBefore[0].task.done, 'alpha done');
+    const elapsedBefore = entriesBefore[0].task.accumulatedMs;
+    clearChat();
+    runCommand(commands.undo, '');
+    const entries = getTestEntries();
+    assert(!entries[0].task.done, 'alpha incomplete again');
+    assert(entries[0].task.accumulatedMs === elapsedBefore, 'elapsed preserved');
+    assert(lastMessage().includes('task #1 is now incomplete'), 'undo confirmation');
+  }));
+
+  results.push(await test('!undo 1 — elapsed increases when undone task is focused', () => {
+    removeTestUserFromDb();
+    runCommand(commands.task, 'timed task');
+    runCommand(commands.done, '');
+    runCommand(commands.undo, '1');
+    runCommand(commands.focus, '1');
+    const entries = getTestEntries();
+    assert(!entries[0].task.done, 'task active');
+    assert(entries[0].task.focusStartedAt != null, 'timer running on focus');
+    assert(getFocusedTaskId(TEST_USER_ID) === entries[0].task.id, 'focused on undone task');
+  }));
+
+  results.push(await test('!undone alias — same as !undo', () => {
+    removeTestUserFromDb();
+    runCommand(commands.task, 'x');
+    runCommand(commands.done, '');
+    clearChat();
+    runCommand(commands.undone, '1');
+    assert(lastMessage().includes('task #1 is now incomplete'), 'undone alias works');
   }));
 
   // Restore

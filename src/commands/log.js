@@ -10,6 +10,7 @@ const {
   newTaskId,
   findLastUserTaskGlobalIndex,
   splitTaskTitles,
+  taskSay,
 } = require('../tasks/taskUtils');
 const MAX_TASK_NAME_CHARS_TOTAL = 200;
 
@@ -24,20 +25,20 @@ module.exports = function(context) {
 
   const tasks = splitTaskTitles(context.variables.join(' ').trim());
   if (!tasks.length) {
-    client.say(target, 'Which tasks would you like me to log?');
+    taskSay(client, target, 'Which tasks would you like me to log?');
     return;
   }
 
   const totalTaskChars = tasks.reduce((sum, t) => sum + t.length, 0);
   if (totalTaskChars > MAX_TASK_NAME_CHARS_TOTAL) {
-    client.say(target, `All tasks in one log can't be over ${MAX_TASK_NAME_CHARS_TOTAL} characters`);
+    taskSay(client, target, `All tasks in one log can't be over ${MAX_TASK_NAME_CHARS_TOTAL} characters`);
     return;
   }
 
   const todoTable = setupTaskTable();
   const currentUserTaskCount = todoTable.tasks.filter((t) => t.username === user.name).length;
   if (currentUserTaskCount + tasks.length > MAX_TASKS_PER_DAY) {
-    client.say(target, MAX_TASKS_PER_DAY_MESSAGE);
+    taskSay(client, target, MAX_TASKS_PER_DAY_MESSAGE);
     return;
   }
 
@@ -72,7 +73,7 @@ module.exports = function(context) {
     tasks.length === 1
       ? `${user.name}, I've logged that task for you—${celebration}`
       : `${user.name}, I've logged those ${tasks.length} tasks for you—${celebration}`;
-  client.say(target, msg);
+  taskSay(client, target, msg);
 
   socket.emit('update-task-view', generateTaskBody());
   socket.emit('update-decoy-task-view', generateDecoyTaskBody());

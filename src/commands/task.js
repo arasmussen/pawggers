@@ -15,6 +15,7 @@ const {
   reconcileUserFocus,
   getTaskElapsedMs,
   formatElapsedMs,
+  taskSay,
 } = require('../tasks/taskUtils');
 const MAX_TASK_NAME_CHARS = 200;
 
@@ -57,9 +58,9 @@ module.exports = function(context) {
       : null;
     if (focusedTask) {
       const elapsed = formatElapsedMs(getTaskElapsedMs(focusedTask));
-      client.say(target, `${user.name}, you're working on: ${focusedTask.task} (${elapsed})`);
+      taskSay(client, target, `${user.name}, you're working on: ${focusedTask.task} (${elapsed})`);
     } else {
-      client.say(target, `You don't have an active task. Use !task [task name] to start one.`);
+      taskSay(client, target, `You don't have an active task. Use !task [task name] to start one.`);
     }
     scrollOverlayToUser();
     return;
@@ -68,14 +69,14 @@ module.exports = function(context) {
   const titles = splitTaskTitles(rawInput);
   for (const t of titles) {
     if (t.length > MAX_TASK_NAME_CHARS) {
-      client.say(target, 'Shorten your task name please!');
+      taskSay(client, target, 'Shorten your task name please!');
       return;
     }
   }
 
   const currentUserTaskCount = todoTable.tasks.filter((t) => t.username === user.name).length;
   if (currentUserTaskCount + titles.length > MAX_TASKS_PER_DAY) {
-    client.say(target, MAX_TASKS_PER_DAY_MESSAGE);
+    taskSay(client, target, MAX_TASKS_PER_DAY_MESSAGE);
     return;
   }
 
@@ -121,7 +122,7 @@ module.exports = function(context) {
     titles.length === 1
       ? `Task added, ${user.name}. ${encouragement}`
       : `${titles.length} tasks added, ${user.name}. ${encouragement}`;
-  client.say(target, msg);
+  taskSay(client, target, msg);
 
   emitTaskViews();
 };

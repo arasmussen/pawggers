@@ -1,5 +1,6 @@
 const { ClientRequest } = require('http');
 const database = require('../database');
+const { taskSay } = require('../tasks/taskUtils');
 
 module.exports = function(context) {
   const { client, target } = context;
@@ -16,5 +17,5 @@ module.exports = function(context) {
     completedTaskRecord: 0,
   };
 
-  client.say(target, `The current completed task record is ${statsTable.completedTaskRecord}! emmmySurprised`);
+  taskSay(client, target, `The current completed task record is ${statsTable.completedTaskRecord}! emmmySurprised`);
 }
