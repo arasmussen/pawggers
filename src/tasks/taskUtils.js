@@ -129,6 +129,24 @@ function formatElapsedMs(ms) {
   return `${hours}:${mins.toString().padStart(2, '0')}`;
 }
 
+/** Format active tasks like backlog: `1. task  •  👉 2. other` */
+function formatActiveTaskList(entries, focusId, options = {}) {
+  const maxLabelChars = options.maxLabelChars ?? 60;
+  const includeElapsed = options.includeElapsed === true;
+
+  return entries.map((e) => {
+    let label = e.task.task;
+    if (label.length > maxLabelChars) {
+      label = label.slice(0, maxLabelChars - 1) + '…';
+    }
+    let entry = `${e.userOrdinal}. ${label}`;
+    if (includeElapsed) {
+      entry += ` (${formatElapsedMs(getTaskElapsedMs(e.task))})`;
+    }
+    return e.task.id === focusId ? `👉 ${entry}` : entry;
+  }).join('  •  ');
+}
+
 function finalizeTaskDuration(task, now = Date.now()) {
   pauseTaskTimer(task, now);
   return getTaskElapsedMs(task, now);
@@ -271,6 +289,7 @@ module.exports = {
   startTaskTimer,
   getTaskElapsedMs,
   formatElapsedMs,
+  formatActiveTaskList,
   finalizeTaskDuration,
   markTaskDone,
   markTaskUndone,

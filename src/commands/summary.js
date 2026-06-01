@@ -5,6 +5,7 @@ const {
   getUserTaskEntries,
   getTaskElapsedMs,
   formatElapsedMs,
+  formatActiveTaskList,
   reconcileUserFocus,
   taskSay,
 } = require('../tasks/taskUtils');
@@ -58,8 +59,8 @@ module.exports = function(context) {
   }
 
   if (entries.length === 1 && focusedActive) {
-    const elapsed = formatElapsedMs(getTaskElapsedMs(focusedActive.task));
-    taskSay(client, target, `${user.name}, you're still working on: ${focusedActive.task.task} (${elapsed})`);
+    const activeList = formatActiveTaskList([focusedActive], focusId, { includeElapsed: true });
+    taskSay(client, target, `${user.name}, you're still working on: ${activeList}`);
     return;
   }
 
@@ -72,12 +73,7 @@ module.exports = function(context) {
     return;
   }
 
-  const activeList = activeEntries
-    .map((e) => {
-      const elapsed = formatElapsedMs(getTaskElapsedMs(e.task));
-      return `#${e.userOrdinal}: ${e.task.task} (${elapsed})`;
-    })
-    .join(' | ');
+  const activeList = formatActiveTaskList(activeEntries, focusId, { includeElapsed: true });
 
   if (completedTasksForUser.length === 0) {
     taskSay(client, target, `${user.name}, you haven't finished any of your tasks. !focus [task number] to start it`);
