@@ -8,9 +8,11 @@ const socket = require('../managers/socket');
 const {
   getFocusedTaskId,
   setFocusedTaskId,
+  getUserTaskEntries,
   getUserTaskEntryByOrdinal,
   getActiveUserTaskEntries,
   getFirstIncompleteUserOrdinal,
+  parseTaskNumberList,
   pauseTaskTimer,
   reconcileUserFocus,
   switchFocusToUserOrdinal,
@@ -55,7 +57,8 @@ module.exports = function(context) {
     return;
   }
 
-  const arg = context.variables.join(' ').trim().toLowerCase();
+  const rawArg = context.variables.join(' ').trim();
+  const arg = rawArg.toLowerCase();
   const activeEntries = getActiveUserTaskEntries(todoTable, user.name);
 
   if (arg === 'all') {
@@ -75,50 +78,106 @@ module.exports = function(context) {
     return;
   }
 
-  let toRemove = null;
-
-  if (/^\d+$/.test(arg)) {
-    const ord = parseInt(arg, 10);
-    const entry = getUserTaskEntryByOrdinal(todoTable, user.name, ord);
-    if (!entry) {
-      taskSay(client, target, `${user.name}, there is no task #${ord}`);
-      return;
+  const numsRaw = parseTaskNumberList(rawArg);
+  const seen = new Set();
+  const nums = [];
+  numsRaw.forEach((n) => {
+    if (!seen.has(n)) {
+      seen.add(n);
+      nums.push(n);
     }
-    toRemove = entry.task;
-  } else if (arg === '') {
+  });
+
+  if (nums.length > 0) {
+    const tasksToRemove = [];
+    for (let i = 0; i < nums.length; i++) {
+      const n = nums[i];
+      const entry = getUserTaskEntryByOrdinal(todoTable, user.name, n);
+      if (!entry) {
+        taskSay(client, target, `${user.name}, there is no task #${n}`);
+        return;
+      }
+      tasksToRemove.push(entry.task);
+    }
+
+    const focusId = getFocusedTaskId(user.id);
+    let removedFocused = false;
+    const removedOrdinals = [];
+
+    nums.sort((a, b) => b - a).forEach((n) => {
+      const entry = getUserTaskEntryByOrdinal(todoTable, user.name, n);
+      if (!entry) return;
+      removedOrdinals.push(n);
+      const task = entry.task;
+      if (task.id === focusId) removedFocused = true;
+      pauseTaskTimer(task, now);
+      todoTable.tasks = todoTable.tasks.filter((t) => t !== task);
+    });
+
+    if (removedFocused) {
+      setFocusedTaskId(user.id, null);
+    }
+
+    const nextOrd = getFirstIncompleteUserOrdinal(todoTable, user.name);
+    if (nextOrd != null && removedFocused) {
+      switchFocusToUserOrdinal(todoTable, user.id, user.name, nextOrd, now);
+    } else {
+      reconcileUserFocus(todoTable, user.id, user.name, now);
+    }
+
+    database.set('todoTable', todoTable);
+
+    if (tasksToRemove.length === 1) {
+      taskSay(client, target, `Task #${removedOrdinals[0]} removed, ${user.name}`);
+    } else {
+      const list = removedOrdinals.sort((a, b) => a - b).map((n) => `#${n}`).join(', ');
+      taskSay(client, target, `Tasks ${list} removed, ${user.name}`);
+    }
+
+    socket.emit('update-task-view', generateTaskBody());
+    socket.emit('update-decoy-task-view', generateDecoyTaskBody());
+    socket.emit('update-live-stream-stats', generateLiveStreamStatsBody());
+    return;
+  }
+
+  if (arg === '') {
     reconcileUserFocus(todoTable, user.id, user.name, now);
     const focusId = getFocusedTaskId(user.id);
-    toRemove = focusId
+    let toRemove = focusId
       ? todoTable.tasks.find((t) => t.id === focusId && t.username === user.name && !t.done)
       : null;
     if (!toRemove) {
       toRemove = activeEntries[0].task;
     }
-  } else {
-    taskSay(client, target, `${user.name}, use !remove, !remove all, or !remove [task number]`);
+
+    const entry = getUserTaskEntries(todoTable, user.name).find((e) => e.task === toRemove);
+    const ord = entry ? entry.userOrdinal : null;
+
+    const wasFocused = toRemove.id === getFocusedTaskId(user.id);
+    pauseTaskTimer(toRemove, now);
+    todoTable.tasks = todoTable.tasks.filter((t) => t !== toRemove);
+
+    if (wasFocused) {
+      setFocusedTaskId(user.id, null);
+    }
+
+    const nextOrd = getFirstIncompleteUserOrdinal(todoTable, user.name);
+    if (nextOrd != null && wasFocused) {
+      switchFocusToUserOrdinal(todoTable, user.id, user.name, nextOrd, now);
+    } else {
+      reconcileUserFocus(todoTable, user.id, user.name, now);
+    }
+
+    database.set('todoTable', todoTable);
+
+    const ordMsg = ord != null ? `Task #${ord} removed` : 'Task removed';
+    taskSay(client, target, `${ordMsg}, ${user.name}`);
+
+    socket.emit('update-task-view', generateTaskBody());
+    socket.emit('update-decoy-task-view', generateDecoyTaskBody());
+    socket.emit('update-live-stream-stats', generateLiveStreamStatsBody());
     return;
   }
 
-  const wasFocused = toRemove.id === getFocusedTaskId(user.id);
-  pauseTaskTimer(toRemove, now);
-  todoTable.tasks = todoTable.tasks.filter((t) => t !== toRemove);
-
-  if (wasFocused) {
-    setFocusedTaskId(user.id, null);
-  }
-
-  const nextOrd = getFirstIncompleteUserOrdinal(todoTable, user.name);
-  if (nextOrd != null && wasFocused) {
-    switchFocusToUserOrdinal(todoTable, user.id, user.name, nextOrd, now);
-  } else {
-    reconcileUserFocus(todoTable, user.id, user.name, now);
-  }
-
-  database.set('todoTable', todoTable);
-
-  taskSay(client, target, `Task removed, ${user.name}`);
-
-  socket.emit('update-task-view', generateTaskBody());
-  socket.emit('update-decoy-task-view', generateDecoyTaskBody());
-  socket.emit('update-live-stream-stats', generateLiveStreamStatsBody());
+  taskSay(client, target, `${user.name}, use !remove, !remove all, or !remove 1 2 3 with task numbers`);
 };

@@ -3,6 +3,9 @@ const isMod = require('../util/isMod');
 const isSarah = require('../util/isSarah');
 
 const GOS_ADDICTS_ROLE_ID = '968908995547004949';
+const COOLDOWN_MS = 15 * 60 * 1000;
+
+let lastPlaygosPingAt = 0;
 
 module.exports = async function(context) {
   const { client, target } = context;
@@ -17,6 +20,14 @@ module.exports = async function(context) {
     return;
   }
 
+  const now = Date.now();
+  const elapsed = now - lastPlaygosPingAt;
+  if (lastPlaygosPingAt > 0 && elapsed < COOLDOWN_MS) {
+    const minsLeft = Math.ceil((COOLDOWN_MS - elapsed) / 60000);
+    client.say(target, `playgos ping on cooldown—try again in ${minsLeft} min`);
+    return;
+  }
+
   try {
     await discord.sendMessage(
       'cowork-chat',
@@ -28,6 +39,7 @@ module.exports = async function(context) {
         },
       }
     );
+    lastPlaygosPingAt = now;
   } catch (e) {
     console.log('[playgos] discord send failed', e);
     client.say(target, `discord send failed`);

@@ -69,7 +69,9 @@ module.exports = {
   '!bl': require('./backlog'),
   '!b': require('./backlog'),
   '!l': require('./backlog'),
+  '!list': require('./backlog'),
   '!q': require('./backlog'),
+  '!queue': require('./backlog'),
 
   // ttol
   '!guess': require('./ttol'),

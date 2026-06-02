@@ -129,13 +129,14 @@ async function main() {
     assert(entries[0].task.task === 'alpha', 'task title should be alpha');
     assert(!entries[0].task.done, 'should be active');
     assert(getFocusedTaskId(TEST_USER_ID) === entries[0].task.id, 'alpha should be focused');
-    assert(lastMessage().includes('Task added'), 'should confirm add');
+    assert(lastMessage().includes('Task #1 added') || lastMessage().includes('Task added'), 'should confirm add with number');
   }));
 
   results.push(await test('!task (no args) — reports focused task', () => {
     runCommand(commands.task, '');
     assert(lastMessage().includes('alpha'), 'should mention alpha');
     assert(lastMessage().includes('working on'), 'should say working on');
+    assert(lastMessage().includes('#1: alpha'), 'should include task number');
   }));
 
   results.push(await test('!task beta, gamma — adds without stealing focus', () => {
@@ -255,6 +256,18 @@ async function main() {
     const after = getTestEntries().length;
     assert(after === before - 1, 'one task removed');
     assert(lastMessage().includes('removed'), 'confirm remove');
+  }));
+
+  results.push(await test('!remove 1 3 — removes multiple by space-separated numbers', () => {
+    removeTestUserFromDb();
+    runCommand(commands.task, 'one, two, three, four');
+    clearChat();
+    runCommand(commands.remove, '1 3');
+    const entries = getTestEntries();
+    assert(entries.length === 2, 'two tasks remain');
+    assert(entries[0].task.task === 'two', '#2 two remains');
+    assert(entries[1].task.task === 'four', '#4 four remains');
+    assert(lastMessage().includes('#1') && lastMessage().includes('#3'), 'mentions removed numbers');
   }));
 
   results.push(await test('!next 3 — completes focus and focuses task #3', () => {

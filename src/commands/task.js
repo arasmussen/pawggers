@@ -12,6 +12,7 @@ const {
   findLastUserTaskGlobalIndex,
   getFocusedTaskId,
   setFocusedTaskId,
+  getUserTaskEntries,
   reconcileUserFocus,
   getTaskElapsedMs,
   formatElapsedMs,
@@ -57,8 +58,10 @@ module.exports = function(context) {
       ? todoTable.tasks.find((t) => t.id === focusId && t.username === user.name && !t.done)
       : null;
     if (focusedTask) {
+      const entry = getUserTaskEntries(todoTable, user.name).find((e) => e.task.id === focusedTask.id);
+      const ord = entry ? entry.userOrdinal : '?';
       const elapsed = formatElapsedMs(getTaskElapsedMs(focusedTask));
-      taskSay(client, target, `${user.name}, you're working on: ${focusedTask.task} (${elapsed})`);
+      taskSay(client, target, `${user.name}, you're working on #${ord}: ${focusedTask.task} (${elapsed})`);
     } else {
       taskSay(client, target, `You don't have an active task. Use !task [task name] to start one.`);
     }
@@ -118,10 +121,21 @@ module.exports = function(context) {
 
   const encouragementList = ['Good luck!', 'You got this!', 'Get that bread!', 'Focus up!', 'We believe in you!'];
   const encouragement = encouragementList[Math.floor(Math.random() * encouragementList.length)];
-  const msg =
-    titles.length === 1
-      ? `Task added, ${user.name}. ${encouragement}`
-      : `${titles.length} tasks added, ${user.name}. ${encouragement}`;
+  const firstNewEntry = getUserTaskEntries(todoTable, user.name).find((e) => newIds.includes(e.task.id));
+  const firstOrd = firstNewEntry ? firstNewEntry.userOrdinal : null;
+  let msg;
+  if (titles.length === 1) {
+    msg = firstOrd != null
+      ? `Task #${firstOrd} added, ${user.name}. ${encouragement}`
+      : `Task added, ${user.name}. ${encouragement}`;
+  } else {
+    const ordinals = newIds
+      .map((id) => getUserTaskEntries(todoTable, user.name).find((e) => e.task.id === id))
+      .filter(Boolean)
+      .map((e) => e.userOrdinal);
+    const ordList = ordinals.length > 0 ? ` (#${ordinals.join(', #')})` : '';
+    msg = `${titles.length} tasks added${ordList}, ${user.name}. ${encouragement}`;
+  }
   taskSay(client, target, msg);
 
   emitTaskViews();
