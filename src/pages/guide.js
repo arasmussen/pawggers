@@ -290,22 +290,22 @@ module.exports = function (request, response, server) {
 
       <div class="section-card" id="tasks">
         <h2>Tasks</h2>
-        <p class="section-intro">We have our own task bot. You can track multiple tasks at once—one is always &ldquo;focused&rdquo; and counts time on the overlay. Task numbers are the order on your list (#1, #2, …). If you finish at least 3 tasks in a stream, you'll get 2k pawggers at the end of the day. Let's get stuff&nbsp;done!</p>
+        <p class="section-intro">We have our own task bot. You can track multiple tasks at once. Your &ldquo;focused&rdquo; task keeps track of time spent. If you finish at least 3 tasks in a stream, you'll get 2k pawggers at the end of the day. Let's get stuff&nbsp;done!</p>
         <div class="command-block">
         <div class="command-line"><span class="cmd">!task</span> <span class="aliases">(!add, !addtask, !c, !check, !mytask, !now, !taskadd, !taska, !todo)</span></div>
-        <div class="command-desc">Add task(s) with !task [name]—separate several with commas or semicolons (e.g. !task email; slides). !task alone shows your focused task with its number and elapsed&nbsp;time.</div>
-      </div>
-      <div class="command-block">
-        <div class="command-line"><span class="cmd">!focus</span> <span class="aliases">(!f)</span></div>
-        <div class="command-desc">Switch which active task you're working on (e.g. !focus&nbsp;2).</div>
+        <div class="command-desc">Add task(s) with !task [name]. Separate several with commas or semicolons (e.g. !task email; slides). !task alone shows your focused task with its elapsed&nbsp;time.</div>
       </div>
       <div class="command-block">
         <div class="command-line"><span class="cmd">!backlog</span> <span class="aliases">(!list, !queue, !bl, !b, !l, !q)</span></div>
-        <div class="command-desc">List your incomplete tasks. Your focused task is marked with&nbsp;👉.</div>
+        <div class="command-desc">List your incomplete tasks. Your focused task is marked with&nbsp;👉</div>
+      </div>
+      <div class="command-block">
+        <div class="command-line"><span class="cmd">!focus</span> <span class="aliases">(!f)</span></div>
+        <div class="command-desc">Switch which task you're working on (e.g. !focus&nbsp;2).</div>
       </div>
       <div class="command-block">
         <div class="command-line"><span class="cmd">!next</span></div>
-        <div class="command-desc">!next — finish your focused task and move to the next incomplete one. !next [number] — finish focused and switch to that task. !next [new task] — finish focused and add or focus that&nbsp;task.</div>
+        <div class="command-desc">!next will finish your focused task and move to the next incomplete one. !next [number] will finish focused and switch to that task. !next [new task] will finish focused and add or focus that&nbsp;task.</div>
       </div>
       <div class="command-block">
         <div class="command-line"><span class="cmd">!done</span> <span class="aliases">(!finish, !complete, !donetask, !finished, !taskd, !taskdone)</span></div>
@@ -317,11 +317,11 @@ module.exports = function (request, response, server) {
       </div>
       <div class="command-block">
         <div class="command-line"><span class="cmd">!remove</span> <span class="aliases">(!delete, !removetask, !r)</span></div>
-        <div class="command-desc">!remove — drop your focused task. !remove [number] or !remove 1 3 — remove by number. !remove all — clear your whole&nbsp;list.</div>
+        <div class="command-desc">!remove will delete your focused task. !remove [number] or !remove 1 3 will delete based on number. !remove all will delete your whole&nbsp;list.</div>
       </div>
       <div class="command-block">
         <div class="command-line"><span class="cmd">!undo</span> <span class="aliases">(!undone)</span></div>
-        <div class="command-desc">Mark a completed task incomplete again (keeps its time). !undo or !undo [number]—most recent done if you omit the&nbsp;number.</div>
+        <div class="command-desc">Mark a completed task incomplete again. !undo (most recent) or !undo [number].</div>
       </div>
       <div class="command-block">
         <div class="command-line"><span class="cmd">!log</span></div>
@@ -329,7 +329,7 @@ module.exports = function (request, response, server) {
       </div>
       <div class="command-block">
         <div class="command-line"><span class="cmd">!summary</span></div>
-        <div class="command-desc">Today's completed tasks plus what you're still working on (same numbering as&nbsp;!backlog).</div>
+        <div class="command-desc">Today's completed tasks plus what you're still working on.</div>
       </div>
       <div class="command-block">
         <div class="command-line"><span class="cmd">!taskrecord</span></div>
