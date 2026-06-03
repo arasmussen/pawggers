@@ -38,6 +38,7 @@ module.exports = {
   '!complete': require('./done'),
   '!delete': require('./removetask'),
   '!done': require('./done'),
+  '!finish': require('./done'),
   '!donefortheday': require('./pomsdone'),
   '!donetask': require('./done'),
   '!edit': require('./edittask'),
